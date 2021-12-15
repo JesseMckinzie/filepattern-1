@@ -5,7 +5,7 @@ C++ and Python version of filepattern.
 To install filepattern:
 
 <ol>
-  <li>Clone resoprosity</li>
+  <li>Clone resoprosity with --recursive-submodules</li>
   <li>From the root directory, run "python setup.py bdist_wheel"</li>
   <li>Run "pip install path_to_whl_file " (in ./dist folder) </li>
 </ol>
