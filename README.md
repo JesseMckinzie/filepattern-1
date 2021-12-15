@@ -5,7 +5,7 @@ C++ and Python version of filepattern.
 To install filepattern:
 
 <ol>
-  <li>Clone resoprosity with --recursive-submodules</li>
+  <li>Clone repository with --recursive-submodules</li>
   <li>cd to the folder and then "run pip install ." </li>
 </ol>
   
