@@ -11,7 +11,7 @@ for file in files():
     print(file.second)
     print()
 
-print("\nGrouped by y: ")
+print("\nGrouped by r: ")
 for file in files(group_by='r'): 
     print(file.first)
     print(file.second)
