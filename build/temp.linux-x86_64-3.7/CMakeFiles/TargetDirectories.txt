@@ -1,5 +1,0 @@
-/home/ec2-user/Dev/FilePattern/build/temp.linux-x86_64-3.7/CMakeFiles/rebuild_cache.dir
-/home/ec2-user/Dev/FilePattern/build/temp.linux-x86_64-3.7/CMakeFiles/backend.dir
-/home/ec2-user/Dev/FilePattern/build/temp.linux-x86_64-3.7/CMakeFiles/edit_cache.dir
-/home/ec2-user/Dev/FilePattern/build/temp.linux-x86_64-3.7/lib/pybind11/CMakeFiles/rebuild_cache.dir
-/home/ec2-user/Dev/FilePattern/build/temp.linux-x86_64-3.7/lib/pybind11/CMakeFiles/edit_cache.dir
