@@ -6,8 +6,7 @@ To install filepattern:
 
 <ol>
   <li>Clone resoprosity with --recursive-submodules</li>
-  <li>From the root directory, run "python setup.py bdist_wheel"</li>
-  <li>Run "pip install path_to_whl_file " (in ./dist folder) </li>
+  <li>cd to the folder and then "run pip install ." </li>
 </ol>
   
 After installation, use "import pattern" to import the module into Python. The module contains the following classes: FilePattern, StringPattern, and ExternalFilePattern.
