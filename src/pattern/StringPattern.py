@@ -30,6 +30,18 @@ class StringPattern:
             #error = "No directory found. Invalid path " + filePath
             print(e.what())
 
+    def get_matching(self, variables: str) -> list:
+        """
+        Returns variables matching a specific value
+
+        :param str variables: variables to be matched e.g. variables="variable1=value1, variable2=value2"
+
+        :return list: list of matching files
+        """
+        try:
+            return self._file_pattern.getMatching(variables)
+        except ValueError as e:
+            print(e)
 
     def print_valid_files(self) -> None:
         """
@@ -51,7 +63,28 @@ class StringPattern:
         except ValueError as e: 
             print(e.what())
 
+    def group_by(self, group: str) -> None:
+        """
+        Groups valid files by given parameter
+
+        :param str group: variable to group by
+        """
+        self._file_pattern.groupBy(group)
+
+    
+    def __call__(self, group_by=None):
+        if(group_by is not None):
+            self._file_pattern.groupBy(group_by)
+        
+        return self
+
     def __iter__(self):
-        for file in self.file_pattern.validFiles.__iter__():
-            yield file
+        """
+        Returns iterator of valid files
+
+        If fp is a filepattern object, call as "for file in fp()"
+        The variables mapped to values are in file.first
+        The filepath is in file.second
+        """
+        return self._file_pattern.__iter__()
         

@@ -64,7 +64,12 @@ PYBIND11_MODULE(backend, m){
         .def("getMatching", &ExternalFilePattern::getMatching)
         //.def("getCounter", &ExternalFilePattern::getCounter)
         .def("getValidFilesBlock", &ExternalFilePattern::getValidFilesBlock)
-        .def("groupBy", &ExternalFilePattern::groupBy);
+        .def("groupBy", &ExternalFilePattern::groupBy)
+        .def("get", &ExternalFilePattern::get)
+        .def("__iter__", [](ExternalFilePattern &v){ 
+            std::vector<p::pair> vec = v.get();
+            return py::make_iterator(vec.begin(), vec.end());}, 
+            py::keep_alive<0, 1>());;
 }
 
 /*

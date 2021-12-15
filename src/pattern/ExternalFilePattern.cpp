@@ -48,10 +48,7 @@ vector<variableFileMap> ExternalFilePattern::get(){
                 size += item.first.length() + item.second.length();
             }
             member.first = map;
-            cout << str << endl;
             member.second.push_back(str);
-
-            cout << endl;
             vec.push_back(member);
             map.clear();
             member.second.clear();
@@ -74,7 +71,6 @@ vector<variableFileMap> ExternalFilePattern::get(){
     }
     infile.seekg(ptr, ios::beg);
 */
-    cout << "vec length: " << vec.size() << endl;
     return vec;
     
 }
