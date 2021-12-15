@@ -40,7 +40,7 @@ void FilePattern::matchFilesOneDir(bool cutPath){
     string s;
     string filePath;
     string file;
-    p::pair<map<string, string>, vector<string>> member;
+    p::pair member;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
     for (const auto& entry : this->iterator) {
@@ -84,7 +84,7 @@ void FilePattern::matchFilesMultDir(bool cutPath){
     string filePath;
     string file;
     bool matched;
-    p::pair<map<string, string>, vector<string>> member;
+    p::pair member;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
     for (const auto& entry : this->recursiveIterator) {
@@ -105,6 +105,7 @@ void FilePattern::matchFilesMultDir(bool cutPath){
         }
         // Check if filename matches filepattern
         mapping.clear();
+        member.second.clear();
         if(regex_match(file, patternRegex)) {
             matched = false;
             for(int i = 0; i < validFiles.size(); i++){ 

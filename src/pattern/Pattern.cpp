@@ -103,14 +103,14 @@ void Pattern::groupBy(const string& groupBy) {
     for(const auto& v: var){
         if(v.first != groupBy) groupBy = v.first;
     }
-    */p::pair<map<string, string>, vector<string>> member;
+    */p::pair member;
     
-    sort(validFiles.begin(), validFiles.end(), [&groupBy = as_const(groupBy)](p::pair<map<string, string>, vector<string>>& p1, p::pair<map<string, string>, vector<string>>& p2){
+    sort(validFiles.begin(), validFiles.end(), [&groupBy = as_const(groupBy)](p::pair& p1, p::pair& p2){
         return p1.first[groupBy] < p2.first[groupBy];
     });
 
     string currentValue = validFiles[0].first[groupBy];
-    vector<p::pair<map<string, string>, vector<string>>> emptyVec;
+    vector<p::pair> emptyVec;
     int i = 0;
     int group_ptr = 0;
 
@@ -119,7 +119,7 @@ void Pattern::groupBy(const string& groupBy) {
         while(this->validFiles[i].first[groupBy] == currentValue) {
             this->validGroupedFiles[group_ptr].push_back(this->validFiles[i]);
 
-            sort(validGroupedFiles[group_ptr].begin(), validGroupedFiles[group_ptr].end(), [](p::pair<map<string, string>, vector<string>>& m1, p::pair<map<string, string>, vector<string>>& m2){
+            sort(validGroupedFiles[group_ptr].begin(), validGroupedFiles[group_ptr].end(), [](p::pair& m1, p::pair& m2){
                 return m1.first["file"] < m2.first["file"];
             });
 
@@ -174,16 +174,16 @@ map<string, string> Pattern::matchFilesLoop(map<string, string>& mapping, const 
     return mapping;
 }
 
-vector<p::pair<map<string, string>, vector<std::string>>> Pattern::getMatching(string variables){
+vector<p::pair> Pattern::getMatching(string& variables){
 
     //remove spaces if present
     variables.erase(std::remove_if(variables.begin(), variables.end(), ::isspace), variables.end());
     
     //split on commas
     vector<string> splitVaraibles = split(variables, ",");
-    vector<p::pair<string,string>> variableValues;
+    vector<std::pair<string,string>> variableValues;
 
-    p::pair<string, string> pair;
+    std::pair<string, string> pair;
     size_t position;
     for(const auto& variable: splitVaraibles) {
         position = variable.find("=");
@@ -194,9 +194,8 @@ vector<p::pair<map<string, string>, vector<std::string>>> Pattern::getMatching(s
     }
 
     //vector<p::pair<string, int> variablesVec;
-    vector<p::pair<map<string, string>, vector<string>>> matching;
+    vector<p::pair> matching;
 
-    
     bool match;
 
     for(auto& file: this->validFiles){
@@ -233,7 +232,7 @@ void Pattern::printValidFiles() {
 }
 
 
-std::vector<p::pair<std::map<std::string, std::string>, std::vector<std::string>>> Pattern::getValidFiles(){
+std::vector<p::pair> Pattern::getValidFiles(){
     return this->validFiles;
 }
 

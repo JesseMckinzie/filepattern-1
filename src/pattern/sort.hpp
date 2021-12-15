@@ -17,7 +17,7 @@ namespace fs = std::filesystem;
 
 enum Structure {std_map, std_vector};
 
-typedef p::pair<std::map<std::string,std::string>, std::vector<std::string>> variableFileMap; 
+typedef p::pair variableFileMap; 
 typedef std::vector<std::string> vector_string;
 class ExternalMergeSort {
 

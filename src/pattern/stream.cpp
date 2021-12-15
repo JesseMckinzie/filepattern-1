@@ -36,7 +36,7 @@ void Stream::writeBlock(const vector<string>& vec){
     file.close();
 }
 
-void Stream::writeValidFiles(const p::pair<map<string, string>, vector<string>>& mapping){
+void Stream::writeValidFiles(const p::pair& mapping){
     counter++;
     ofstream file(validFiles, ios_base::app);
 
@@ -56,12 +56,12 @@ void Stream::writeValidFiles(const p::pair<map<string, string>, vector<string>>&
     }
 }
 
-vector<p::pair<map<string,string>, vector<string>>> Stream::getValidFilesBlock(){
+vector<p::pair> Stream::getValidFilesBlock(){
 
-    vector<p::pair<map<string,string>, vector<string>>> vec;
-    p::pair<map<string,string>, vector<string>> member;
+    vector<p::pair> vec;
+    p::pair member;
     
-    long size = sizeof(vector<p::pair<map<string, string>, vector<string>>>);
+    long size = sizeof(vector<p::pair>);
 
     map<string, string> map;
     string str;
@@ -74,7 +74,7 @@ vector<p::pair<map<string,string>, vector<string>>> Stream::getValidFilesBlock()
         if (map.size() == (this->mapSize)) {
             size += sizeof(map) + sizeof(vector<string>);
             
-            //sizeof(p::pair<map<string, string>, vector<string>>) +
+            //sizeof(p::pair) +
             for(const auto& item : map){
                 size += item.first.length() + item.second.length();
             }

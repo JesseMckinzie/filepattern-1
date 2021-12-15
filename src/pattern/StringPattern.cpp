@@ -37,7 +37,7 @@ void StringPattern::matchFiles(){
     string s;
     string filePath;
     string file;
-    p::pair<map<string, string>, vector<string>> member;
+    p::pair member;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
 

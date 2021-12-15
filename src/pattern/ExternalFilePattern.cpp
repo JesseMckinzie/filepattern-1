@@ -26,10 +26,10 @@ int ExternalFilePattern::getCounter(){
 }
 
 vector<variableFileMap> ExternalFilePattern::get(){
-    vector<p::pair<map<string,string>, vector<string>>> vec;
-    p::pair<map<string,string>, vector<string>> member;
+    vector<p::pair> vec;
+    p::pair member;
     
-    long size = sizeof(vector<p::pair<map<string, string>, vector<string>>>);
+    long size = sizeof(vector<p::pair>);
 
     map<string, string> map;
     string str;
@@ -81,7 +81,7 @@ vector<variableFileMap> ExternalFilePattern::get(){
 
 void ExternalFilePattern::printFiles(){
     bool after = false;
-    vector<p::pair<map<string,string>, vector<string>>> files;
+    vector<p::pair> files;
     while(true){
         files = stream.getValidFilesBlock();
         for(const auto& file: files){
@@ -141,7 +141,7 @@ void ExternalFilePattern::matchFilesOneDir(bool cutPath){
     string s;
     string filePath;
     string file;
-    p::pair<map<string, string>, vector<string>> member;
+    p::pair member;
 
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
@@ -288,7 +288,7 @@ void ExternalFilePattern::matchFiles(const bool& cutPath=true, const string& gro
 
 }
 
-vector<p::pair<map<string, string>, vector<string>>> ExternalFilePattern::getMatching(string variables){
+vector<p::pair> ExternalFilePattern::getMatching(string variables){
 
     //remove spaces if present
     //variables.erase(std::remove_if(variables.begin(), variables.end(), ::isspace), variables.end());
@@ -308,7 +308,7 @@ vector<p::pair<map<string, string>, vector<string>>> ExternalFilePattern::getMat
     }
     
     //vector<pair<string, int> variablesVec;
-    vector<p::pair<map<string, string>, vector<string>>> matching;
+    vector<p::pair> matching;
 
     bool match;
     if(!stream.endOfValidFiles()){
@@ -325,7 +325,7 @@ vector<p::pair<map<string, string>, vector<string>>> ExternalFilePattern::getMat
     return matching;
 }
 
-std::vector<p::pair<std::map<std::string, std::string>, std::vector<std::string>>> ExternalFilePattern::getValidFilesBlock(){
+std::vector<p::pair> ExternalFilePattern::getValidFilesBlock(){
     return stream.getValidFilesBlock();
 }
 

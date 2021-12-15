@@ -15,10 +15,11 @@ class ExternalFilePattern : public ExternalPattern {
          * Stores and prints the valid filenames from the target directory. 
          */
         void matchFiles(const bool&, const std::string&);
+
         void printFiles();
-        std::vector<p::pair<std::map<std::string, std::string>, std::vector<std::string>>> getMatching(std::string);
+        std::vector<p::pair> getMatching(std::string);
         int getCounter();
-        std::vector<p::pair<std::map<std::string, std::string>, std::vector<std::string>>> getValidFilesBlock();
+        std::vector<p::pair> getValidFilesBlock();
         void groupBy(const std::string& groupBy);
         std::vector<variableFileMap> get();
 

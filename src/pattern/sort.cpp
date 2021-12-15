@@ -89,9 +89,9 @@ void ExternalMergeSort::sortMapFile(){
 
 bool ExternalMergeSort::getMapBlock(ifstream& infile, vector<variableFileMap>& vec){
 
-    p::pair<map<string,string>, vector<string>> member;
+    p::pair member;
     
-    long size = sizeof(vector<p::pair<map<string, string>, vector<string>>>);
+    long size = sizeof(vector<p::pair>);
 
     map<string, string> map;
     string str;
@@ -104,7 +104,7 @@ bool ExternalMergeSort::getMapBlock(ifstream& infile, vector<variableFileMap>& v
         if (map.size() == (this->mapSize)) {
             size += sizeof(map) + sizeof(vector<string>);
             
-            //sizeof(p::pair<map<string, string>, vector<string>>) +
+            //sizeof(p::pair) +
             for(const auto& item : map){
                 size += item.first.length() + item.second.length();
             }
@@ -467,7 +467,7 @@ bool ExternalMergeSort::getMap(ifstream& infile, variableFileMap& member){
         if (map.size() == (this->mapSize)) {
             //size += sizeof(map) + sizeof(vector<string>);
             
-            //sizeof(p::pair<map<string, string>, vector<string>>) +
+            //sizeof(p::pair) +
             //for(const auto& item : map){
             //    size += item.first.length() + item.second.length();
             //}
@@ -510,9 +510,9 @@ void ExternalMergeSort::writeMap(ofstream& file, variableFileMap& mapping){
 
 bool ExternalMergeSort::getFilesBlock(ifstream& infile, vector<variableFileMap>& vec){
 
-    p::pair<map<string,string>, vector<string>> member;
+    p::pair member;
     
-    long size = sizeof(vector<p::pair<map<string, string>, vector<string>>>);
+    long size = sizeof(vector<p::pair>);
 
     map<string, string> map;
     string str;
@@ -526,7 +526,7 @@ bool ExternalMergeSort::getFilesBlock(ifstream& infile, vector<variableFileMap>&
         if (map.size() == (this->mapSize)) {
             size += sizeof(map) + sizeof(vector<string>);
             
-            //sizeof(p::pair<map<string, string>, vector<string>>) +
+            //sizeof(p::pair) +
             for(const auto& item : map){
                 size += item.first.length() + item.second.length();
             }

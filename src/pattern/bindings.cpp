@@ -9,14 +9,18 @@
 
 namespace py = pybind11;
 
-PYBIND11_MAKE_OPAQUE(std::vector<std::vector<std::map<std::string, std::string>>>);
+//PYBIND11_MAKE_OPAQUE(std::vector<std::vector<variableFileMap>>);
 
 PYBIND11_MODULE(backend, m){
 
-    py::class_<std::vector<std::vector<std::map<std::string, std::string>>>>(m, "VectorMap")
+    py::class_<p::pair>(m, "pair")
+        .def_readonly("first", &p::pair::first)
+        .def_readonly("second", &p::pair::second);
+
+    py::class_<std::vector<std::vector<variableFileMap>>>(m, "VectorMap")
         .def(py::init<>())
-        .def("__len__", [](const std::vector<std::vector<std::map<std::string, std::string>>> &v) { return v.size(); })
-        .def("__iter__", [](std::vector<std::vector<std::map<std::string, std::string>>> &v) {
+        .def("__len__", [](const std::vector<std::vector<variableFileMap>> &v) { return v.size(); })
+        .def("__iter__", [](std::vector<std::vector<variableFileMap>> &v) { 
             return py::make_iterator(v.begin(), v.end()); }, 
             py::keep_alive<0, 1>()); /* Keep vector alive while iterator is used */
 
@@ -30,7 +34,10 @@ PYBIND11_MODULE(backend, m){
         .def("getValidFiles", &Pattern::getValidFiles)
         .def("getPattern", &Pattern::getPattern)
         .def("getRegexPattern", &Pattern::getRegexPattern)
-        .def("getVariables", &Pattern::getVariables);
+        .def("getVariables", &Pattern::getVariables)
+        .def("__iter__", [](const Pattern &v){ 
+            return py::make_iterator(v.validFiles.begin(), v.validFiles.end());}, 
+            py::keep_alive<0, 1>()); /* Keep vector alive while iterator is used */
 
     py::class_<FilePattern, Pattern>(m, "FilePattern")
         .def(py::init<const std::string &, const std::string &, bool>())

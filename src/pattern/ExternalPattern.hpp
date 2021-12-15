@@ -9,7 +9,7 @@
 #include "Variables.hpp"
 //#include "sort.h"
 
-typedef p::pair<std::map<std::string,std::string>, std::vector<std::string>> variableFileMap;
+typedef p::pair variableFileMap;
 
 class ExternalPattern {
     
@@ -22,8 +22,8 @@ class ExternalPattern {
         long blockSize;
 
     public:
-        std::vector<p::pair<std::map<std::string, std::string>, std::vector<std::string>>> validFiles; // Store files that match given regex
-        std::vector<std::vector<p::pair<std::map<std::string, std::string>, std::vector<std::string>>>> validGroupedFiles;
+        std::vector<p::pair> validFiles; // Store files that match given regex
+        std::vector<std::vector<p::pair>> validGroupedFiles;
 
         bool invalidFilePath(const std::string&);
 

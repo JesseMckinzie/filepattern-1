@@ -1,10 +1,9 @@
 #pragma once
 
 namespace p {
-    template <typename T, typename S>
     struct pair{
-        T first;
-        S second;
+        std::map<std::string, std::string> first;
+        std::vector<std::string> second;
     };
 }
 
