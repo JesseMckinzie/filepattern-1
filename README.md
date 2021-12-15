@@ -15,7 +15,7 @@ After installation, use "import pattern" to import the module into Python. The m
 A test is included in the root directory in the file test.py.
   
 <h2>FilePattern</h2> <br/>
-FilePattern is normal version of filepattern. 
+FilePattern is the normal version of filepattern. 
   
   <h2>StringPattern</h2> <br/>
 StringPattern contains all the functionalility of FilePattern, except it takes in a txt file as an input rather than a directory.
