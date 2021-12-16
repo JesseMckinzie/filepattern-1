@@ -6,7 +6,7 @@ To install filepattern:
 
 <ol>
   <li>Clone repository with --recursive-submodules</li>
-  <li>cd to the folder and then "run pip install ." </li>
+  <li>cd to the folder and then run "pip install ." </li>
 </ol>
   
 After installation, use "import pattern" to import the module into Python. The module contains the following classes: FilePattern, StringPattern, and ExternalFilePattern.
