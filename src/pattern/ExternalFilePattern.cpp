@@ -54,7 +54,7 @@ vector<Tuple> ExternalFilePattern::get(){
             for(const auto& item : map){
                 size += item.first.length() + s::size(item.second);
             }
-            
+
             std::get<0>(member) = map;
             std::get<1>(member).push_back(str);
             vec.push_back(member);
@@ -77,11 +77,11 @@ vector<Tuple> ExternalFilePattern::get(){
     }
 
 
-    streampos ptr = infile.tellg();
+    //streampos ptr = infile.tellg();
     if(!(this->infile >> str)){
         this->endOfFile = true;
     }
-    infile.seekg(ptr, ios::beg);
+    //infile.seekg(ptr, ios::beg);
 
     return vec;
     
