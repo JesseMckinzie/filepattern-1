@@ -108,18 +108,19 @@ void ExternalPattern::printValidFiles() {
         cout << "No valid files." << endl; 
         return;
     }
-
+/*
     for(const auto & fileVector : this->validGroupedFiles) {
         cout << "[";
         for(const auto & file : fileVector) {
             cout << "{";
-            for(auto it = file.first.cbegin(); it != file.first.cend(); ++it) {
+            for(const auto m:) {
                 std::cout << it->first << ", " << it->second << "; ";
             }
             cout << "}" << endl;
         }
         cout << "]" << endl;
     }
+    */
 }
 
 string ExternalPattern::getPattern(){

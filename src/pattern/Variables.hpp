@@ -1,10 +1,13 @@
 #pragma once
+#include <tuple>
+#include "BaseObject.hpp"
 
-namespace p {
-    struct pair{
-        std::map<std::string, std::string> first;
-        std::vector<std::string> second;
-    };
+typedef std::variant<int, std::string> Types;
+typedef std::map<std::string, Types> Map;
+typedef std::tuple<Map , std::vector<std::string>> Tuple;
+
+bool is_number(const std::string &s) {
+  return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
 }
 
 struct Variables {

@@ -96,38 +96,31 @@ void Pattern::filePatternToRegex(){
 void Pattern::groupBy(const string& groupBy) {
 
     validGroupedFiles.clear();
-
-    /*
-    std::vector<std::p::pair<std::string, std::p::pair<std::string, int>>> var = variables.variables;
-    string groupBy;
-    for(const auto& v: var){
-        if(v.first != groupBy) groupBy = v.first;
-    }
-    */p::pair member;
+    Tuple member;
     
-    sort(validFiles.begin(), validFiles.end(), [&groupBy = as_const(groupBy)](p::pair& p1, p::pair& p2){
-        return p1.first[groupBy] < p2.first[groupBy];
+    sort(validFiles.begin(), validFiles.end(), [&groupBy = as_const(groupBy)](Tuple& p1, Tuple& p2){
+        return get<0>(p1)[groupBy] < get<0>(p2)[groupBy];
     });
 
-    string currentValue = validFiles[0].first[groupBy];
-    vector<p::pair> emptyVec;
+    string currentValue = get<0>(validFiles[0])[groupBy];
+    vector<Tuple> emptyVec;
     int i = 0;
     int group_ptr = 0;
 
     while(i < this->validFiles.size()){
         this->validGroupedFiles.push_back(emptyVec);
-        while(this->validFiles[i].first[groupBy] == currentValue) {
+        while(std::get<0>(this->validFiles[i])[groupBy] == currentValue) {
             this->validGroupedFiles[group_ptr].push_back(this->validFiles[i]);
 
-            sort(validGroupedFiles[group_ptr].begin(), validGroupedFiles[group_ptr].end(), [](p::pair& m1, p::pair& m2){
-                return m1.first["file"] < m2.first["file"];
+            sort(validGroupedFiles[group_ptr].begin(), validGroupedFiles[group_ptr].end(), [](Tuple& m1, Tuple& m2){
+                return get<0>(m1)["file"] < get<0>(m2)["file"];
             });
 
             ++i;
             if (i >= this->validFiles.size()) break;
         }
 
-        if (i < this->validFiles.size()) currentValue = this->validFiles[i].first[groupBy];
+        if (i < this->validFiles.size()) currentValue = get<0>(this->validFiles[i])[groupBy];
         ++group_ptr;
     }
 }
@@ -147,10 +140,11 @@ vector<string> Pattern::split (string& s, const string& delimiter) {
     return res;
 }
 
-map<string, string> Pattern::matchFilesLoop(map<string, string>& mapping, const string& file, const regex& patternRegex, vector<string>& parsedRegex){
+Map Pattern::matchFilesLoop(Map& mapping, const string& file, const regex& patternRegex, vector<string>& parsedRegex){
     int i = 0;
     string pattern;
     string s = "";
+
     for(int j = 0; j < variables.variables.size(); ++j){
         i += variables.getDistance(j);
         pattern = variables.getRegex(j);
@@ -171,10 +165,11 @@ map<string, string> Pattern::matchFilesLoop(map<string, string>& mapping, const 
             }
         }
     }
+
     return mapping;
 }
 
-vector<p::pair> Pattern::getMatching(string& variables){
+vector<Tuple> Pattern::getMatching(string& variables){
 
     //remove spaces if present
     variables.erase(std::remove_if(variables.begin(), variables.end(), ::isspace), variables.end());
@@ -189,19 +184,19 @@ vector<p::pair> Pattern::getMatching(string& variables){
         position = variable.find("=");
         pair.first = variable.substr(0, position);
         pair.second = variable.substr(position+1);
-        if(!validFiles[0].first.count(pair.first)) throw invalid_argument("Variable must be in file pattern.");
+        if(!get<0>(validFiles[0]).count(pair.first)) throw invalid_argument("Variable must be in file pattern.");
         variableValues.push_back(pair);
     }
 
-    //vector<p::pair<string, int> variablesVec;
-    vector<p::pair> matching;
+    //vector<Tuple<string, int> variablesVec;
+    vector<Tuple> matching;
 
     bool match;
 
     for(auto& file: this->validFiles){
         match = true;
         for(const auto& variable: variableValues) {
-            if(!(file.first[variable.first] == variable.second)) match = false; 
+            if(!(get<0>(file)[variable.first] == variable.second)) match = false; 
         }
         if(match) matching.push_back(file);
     }
@@ -222,7 +217,7 @@ void Pattern::printValidFiles() {
         cout << "[";
         for(const auto & file : fileVector) {
             cout << "{";
-            for(auto it = file.first.cbegin(); it != file.first.cend(); ++it) {
+            for(auto it = std::get<0>(file).cbegin(); it != std::get<0>(file).cend(); ++it) {
                 std::cout << it->first << ", " << it->second << "; ";
             }
             cout << "}" << endl;
@@ -232,7 +227,7 @@ void Pattern::printValidFiles() {
 }
 
 
-std::vector<p::pair> Pattern::getValidFiles(){
+std::vector<Tuple> Pattern::getValidFiles(){
     return this->validFiles;
 }
 
@@ -251,7 +246,7 @@ string Pattern::getRegexPattern(){
 void Pattern::printFilePaths(){
     for(const auto& vec: validGroupedFiles){
         for(const auto& pair: vec){
-            for(const auto& file: pair.second){
+            for(const auto& file: std::get<1>(pair)){
                 cout << file << ", " << endl;
             }
             cout << endl;
@@ -276,7 +271,7 @@ void Pattern::printVariables(){
 vector<vector<string>> Pattern::getValidFilePaths(){
     vector<vector<string>> vec;
     for (const auto& element: this->validFiles){
-        vec.push_back(element.second);
+        vec.push_back(std::get<1>(element));
     }
 
     return vec;

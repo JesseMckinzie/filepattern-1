@@ -31,10 +31,8 @@ for file in files():
 
 print("\nGrouped by r: ")
 for file in files(group_by='r'): 
-    #print(file.first)
-    print(file.second)
-    print()
+    print(file)
 
 print("File matching r=1 and c=2:")
 for file in files.get_matching("r=1, c=2"):
-    print(file.first)
+    print(file)

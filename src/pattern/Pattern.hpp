@@ -16,10 +16,10 @@ class Pattern {
         Variables variables;
         bool filesSorted;
     public:
-        std::vector<p::pair> validFiles; // Store files that match given regex
-        std::vector<std::vector<p::pair>> validGroupedFiles;
+        std::vector<Tuple> validFiles; // Store files that match given regex
+        std::vector<std::vector<Tuple>> validGroupedFiles;
 
-        //std::vector<p::pair> getVariables();
+        //std::vector<Tuple> getVariables();
     
         bool invalidFilePath(const std::string&);
 
@@ -29,11 +29,11 @@ class Pattern {
 
         std::vector<std::string> split (std::string&, const std::string&);
 
-        std::vector<p::pair> getMatching(std::string&);
+        std::vector<Tuple> getMatching(std::string&);
         
         void printValidFiles();
 
-        std::vector<p::pair> getValidFiles();
+        std::vector<Tuple> getValidFiles();
 
         std::string getPattern();
 
@@ -48,10 +48,10 @@ class Pattern {
         void printVariables();
 
         std::vector<std::vector<std::string>> getValidFilePaths();
-        std::map<std::string, std::string> matchFilesLoop(std::map<std::string, std::string>&, 
-                                                                    const std::string&,
-                                                                    const std::regex&, 
-                                                                    std::vector<std::string>&);
+        Map matchFilesLoop(Map&, 
+                           const std::string&,
+                           const std::regex&, 
+                           std::vector<std::string>&);
 
 };
 

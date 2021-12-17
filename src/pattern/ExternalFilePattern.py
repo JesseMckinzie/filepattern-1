@@ -1,7 +1,10 @@
 from . import backend
-import logging
 
 class FilePattern:
+    """
+    Filepattern iterates over a provided directory, matching filenames in the directory to a 
+    user specified pattern. 
+    """
 
     def __init__(self, path: str, pattern: str, block_size: str="50 MB", recursive: bool=False):
         """

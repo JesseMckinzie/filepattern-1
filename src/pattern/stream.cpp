@@ -36,37 +36,37 @@ void Stream::writeBlock(const vector<string>& vec){
     file.close();
 }
 
-void Stream::writeValidFiles(const p::pair& mapping){
+void Stream::writeValidFiles(const Tuple& mapping){
     counter++;
     ofstream file(validFiles, ios_base::app);
 
-    for(const auto& element: mapping.first){
+    for(const auto& element: get<0>(mapping)){
         file << element.first << ":" << element.second << '\n';
     }
 
-    for(const auto& element: mapping.second){
+    for(const auto& element: get<1>(mapping)){
         file << element << ",";
     } 
     file << '\n';
     file.close();
     validFilesEmpty = false;
     if(counter == 1){
-        this->mapSize = mapping.first.size();
+        this->mapSize = get<0>(mapping).size();
         this->infile.open(validFiles);
     }
 }
 
-vector<p::pair> Stream::getValidFilesBlock(){
+vector<Tuple> Stream::getValidFilesBlock(){
 
-    vector<p::pair> vec;
-    p::pair member;
+    vector<Tuple> vec;
+    Tuple member;
     
-    long size = sizeof(vector<p::pair>);
+    long size = sizeof(vector<Tuple>);
 
-    map<string, string> map;
+    Map map;
     string str;
     string key, value;
-    int valueLength;
+    int valueLength; 
     size_t pos;
 
     while(size < blockSize && this->infile >> str){
@@ -74,16 +74,16 @@ vector<p::pair> Stream::getValidFilesBlock(){
         if (map.size() == (this->mapSize)) {
             size += sizeof(map) + sizeof(vector<string>);
             
-            //sizeof(p::pair) +
+            //sizeof(Tuple) +
             for(const auto& item : map){
                 size += item.first.length() + item.second.length();
             }
-            member.first = map;
+            get<0>(member) = map;
 
-            member.second.push_back(str);
+            get<1>(member).push_back(str);
             vec.push_back(member);
             map.clear();
-            member.second.clear();
+            get<1>(member).clear();
             infile >> str;
         } 
 

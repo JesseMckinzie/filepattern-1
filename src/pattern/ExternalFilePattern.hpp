@@ -17,24 +17,24 @@ class ExternalFilePattern : public ExternalPattern {
         void matchFiles(const bool&, const std::string&);
 
         void printFiles();
-        std::vector<p::pair> getMatching(std::string);
+        std::vector<Tuple> getMatching(std::string);
         int getCounter();
-        std::vector<p::pair> getValidFilesBlock();
+        std::vector<Tuple> getValidFilesBlock();
         void groupBy(const std::string& groupBy);
-        std::vector<variableFileMap> get();
+        std::vector<Tuple> get();
 
     private: 
         std::string path;
         std::filesystem::directory_iterator iterator; // File iterator for given path
         std::filesystem::recursive_directory_iterator recursiveIterator;
         FilesystemStream stream;
-        bool getMap(std::ifstream&, variableFileMap&);
+        bool getMap(std::ifstream&, Tuple&);
 
         //std::string fileFromPath(const std::string&);
         
         bool recursive;
 
-        std::map<std::string, std::string> matchFilesLoop(std::map<std::string, std::string>&, const std::string&, const std::regex&, std::vector<std::string>&);
+        Map matchFilesLoop(Map&, const std::string&, const std::regex&, std::vector<std::string>&);
         void matchFilesOneDir(bool);
         void matchFilesMultDir(bool);
         int totalFiles;

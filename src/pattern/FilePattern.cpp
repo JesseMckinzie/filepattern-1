@@ -33,14 +33,14 @@ void FilePattern::printFiles(){
 }
 
 void FilePattern::matchFilesOneDir(bool cutPath){
-    map<string, string> mapping;
+    Map mapping;
     vector<string> parsedRegex;
 
     int i, j;
     string s;
     string filePath;
     string file;
-    p::pair member;
+    Tuple member;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
     for (const auto& entry : this->iterator) {
@@ -60,14 +60,14 @@ void FilePattern::matchFilesOneDir(bool cutPath){
         }
         // Check if filename matches filepattern
         mapping.clear();
-        member.second.clear();
+        get<1>(member).clear();
         if(regex_match(file, patternRegex)) {
             mapping["file"] = file;
             // loop over the variables in the file pattern, creating a mapping
             // between the variable name and value
             mapping = this->matchFilesLoop(mapping, file, patternRegex, parsedRegex);
-            member.first = mapping;
-            member.second.push_back(filePath);
+            get<0>(member) = mapping;
+            get<1>(member).push_back(filePath);
             validFiles.push_back(member);
         }
     }
@@ -76,7 +76,7 @@ void FilePattern::matchFilesOneDir(bool cutPath){
 
 void FilePattern::matchFilesMultDir(bool cutPath){
     string pattern;
-    map<string, string> mapping;
+    Map mapping;
     vector<string> parsedRegex;
 
     int i, j;
@@ -84,7 +84,7 @@ void FilePattern::matchFilesMultDir(bool cutPath){
     string filePath;
     string file;
     bool matched;
-    p::pair member;
+    Tuple member;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
     for (const auto& entry : this->recursiveIterator) {
@@ -105,13 +105,13 @@ void FilePattern::matchFilesMultDir(bool cutPath){
         }
         // Check if filename matches filepattern
         mapping.clear();
-        member.second.clear();
+        get<1>(member).clear();
         if(regex_match(file, patternRegex)) {
             matched = false;
             for(int i = 0; i < validFiles.size(); i++){ 
-                if(validFiles[i].first["file"] == file){
+                if(get<0>(validFiles[i])["file"] == file){
                     matched = true;
-                    validFiles[i].second.push_back(filePath);
+                    get<1>(validFiles[i]).push_back(filePath);
                     break;
                 } 
             }
@@ -119,32 +119,9 @@ void FilePattern::matchFilesMultDir(bool cutPath){
                 mapping["file"] = file;
                 //mapping["filePath"] = filePath;
             
-                i = 0; // pointer for filename string
-
-                // loop over the variables in the file pattern, creating a mapping
-                // between the variable name and value
-                for(j = 0; j < variables.variables.size(); ++j){
-                    i += variables.getDistance(j);
-                    pattern = variables.getRegex(j);
-                    if(pattern == "[0-9]+" || pattern == "[a-zA-Z]+"){
-                        s.push_back(file[i]); // char -> string
-                        while(regex_match(s, regex(pattern))) {
-                            mapping[variables.getVariable(j)] += file[i];
-                            i++;
-                            s = "";
-                            s.push_back(file[i]);
-                        }
-                        s = "";
-                    } else {
-                        parsedRegex = variables.parseRegex(j);
-                        for(const auto& expr: parsedRegex){
-                            mapping[variables.getVariable(j)] += file[i];
-                            i++;
-                        }
-                    }
-                }
-                member.first = mapping;
-                member.second.push_back(filePath);
+                mapping = this->matchFilesLoop(mapping, file, patternRegex, parsedRegex);
+                get<0>(member) = mapping;
+                get<1>(member).push_back(filePath);
                 validFiles.push_back(member);
             }
         }

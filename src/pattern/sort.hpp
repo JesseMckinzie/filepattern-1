@@ -17,7 +17,6 @@ namespace fs = std::filesystem;
 
 enum Structure {std_map, std_vector};
 
-typedef p::pair variableFileMap; 
 typedef std::vector<std::string> vector_string;
 class ExternalMergeSort {
 
@@ -56,15 +55,15 @@ class ExternalMergeSort {
         void merge();
 
         void writeMapTmpFile(std::ofstream&, 
-                             const std::vector<variableFileMap>& vec);
+                             const std::vector<Tuple>& vec);
 
-        bool getMapBlock(std::ifstream&, std::vector<variableFileMap>&);
+        bool getMapBlock(std::ifstream&, std::vector<Tuple>&);
 
-        bool getMap(std::ifstream&, variableFileMap&);
+        bool getMap(std::ifstream&, Tuple&);
 
-        void writeMap(std::ofstream&, variableFileMap&);
+        void writeMap(std::ofstream&, Tuple&);
 
-        bool getFilesBlock(std::ifstream&, std::vector<variableFileMap>&);
+        bool getFilesBlock(std::ifstream&, std::vector<Tuple>&);
 
         //void sort(const std::string&);
 

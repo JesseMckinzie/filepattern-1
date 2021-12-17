@@ -8,7 +8,6 @@ include_directories(${SOURCE_DIR})
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "-O3")
 
 add_subdirectory(lib/pybind11)
 

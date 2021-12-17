@@ -15,11 +15,11 @@ class Stream {
     
     public:
         void writeBlock(const std::vector<std::string>&);
-        void writeValidFiles(const p::pair& mapping);
+        void writeValidFiles(const Tuple& mapping);
         long double currentSize(const int&, const long double&);
         bool isEmpty();
         std::string getFilePath();
-        std::vector<p::pair> getValidFilesBlock();
+        std::vector<Tuple> getValidFilesBlock();
         bool endOfValidFiles();
         int counter;
         std::string getValidFilesPath();

@@ -30,14 +30,14 @@ void StringPattern::readFile(){
 
 void StringPattern::matchFiles(){
     filePatternToRegex();
-    map<string, string> mapping;
+    Map mapping;
     vector<string> parsedRegex;
 
     int i, j;
     string s;
     string filePath;
     string file;
-    p::pair member;
+    Tuple member;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
 
@@ -61,14 +61,14 @@ void StringPattern::matchFiles(){
         //cout << file << endl;
         // Check if filename matches filepattern
         mapping.clear();
-        member.second.clear();
+        std::get<1>(member).clear();
         if(regex_match(file, patternRegex)) {
             mapping["file"] = file;
             // loop over the variables in the file pattern, creating a mapping
             // between the variable name and value
             mapping = this->matchFilesLoop(mapping, file, patternRegex, parsedRegex);
-            member.first = mapping;
-            member.second.push_back(filePath);
+            get<0>(member)= mapping;
+            get<1>(member).push_back(filePath);
             validFiles.push_back(member);
         }
     }

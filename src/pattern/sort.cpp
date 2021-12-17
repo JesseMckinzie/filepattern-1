@@ -53,7 +53,7 @@ void ExternalMergeSort::sortMapFile(){
     //FileStream stream = FileStream(inputFileName, this->blockSizeStr);
     //this->mapSize = stream.mapSize;
     ifstream infile(inputFileName);
-    vector<variableFileMap> vec;
+    vector<Tuple> vec;
 
     while (true) {
         getMapBlock(infile, vec);
@@ -62,8 +62,8 @@ void ExternalMergeSort::sortMapFile(){
         }
         
         sort(vec.begin(), vec.end(), 
-            [&sortVariable = as_const(sortVariable)](variableFileMap& a, variableFileMap& b) {
-                return a.first[sortVariable] < b.first[sortVariable];
+            [&sortVariable = as_const(sortVariable)](Tuple& a, Tuple& b) {
+                return get<0>(a)[sortVariable] < get<0>(b)[sortVariable];
         });
 
         //write to file
@@ -87,13 +87,13 @@ void ExternalMergeSort::sortMapFile(){
 }
 
 
-bool ExternalMergeSort::getMapBlock(ifstream& infile, vector<variableFileMap>& vec){
+bool ExternalMergeSort::getMapBlock(ifstream& infile, vector<Tuple>& vec){
 
-    p::pair member;
+    Tuple member;
     
-    long size = sizeof(vector<p::pair>);
+    long size = sizeof(vector<Tuple>);
 
-    map<string, string> map;
+    Map map;
     string str;
     string key, value;
     int valueLength;
@@ -104,16 +104,16 @@ bool ExternalMergeSort::getMapBlock(ifstream& infile, vector<variableFileMap>& v
         if (map.size() == (this->mapSize)) {
             size += sizeof(map) + sizeof(vector<string>);
             
-            //sizeof(p::pair) +
+            //sizeof(Tuple) +
             for(const auto& item : map){
                 size += item.first.length() + item.second.length();
             }
-            member.first = map;
+            get<0>(member) = map;
 
-            member.second.push_back(str);
+            get<1>(member).push_back(str);
             vec.push_back(member);
             map.clear();
-            member.second.clear();
+            get<1>(member).clear();
             infile >> str;
         } 
 
@@ -209,14 +209,14 @@ void ExternalMergeSort::writeTmpFile(string& output){
 }
 
 void ExternalMergeSort::writeMapTmpFile(ofstream& file, 
-                                        const vector<variableFileMap>& vec){
+                                        const vector<Tuple>& vec){
 
     for(const auto& mapping: vec){
-        for(const auto& element: mapping.first){
+        for(const auto& element: get<0>(mapping)){
             file << element.first << ":" << element.second << '\n';
         }
 
-        for(const auto& element: mapping.second){
+        for(const auto& element: get<1>(mapping)){
             file << element << ",";
         } 
     }
@@ -346,7 +346,7 @@ void ExternalMergeSort::merge(){
 void ExternalMergeSort::mergeMaps(){
 
     // case of 1 file
-    variableFileMap map1, map2;
+    Tuple map1, map2;
     string str1, str2;
     string outFile;
     int length;
@@ -421,7 +421,7 @@ void ExternalMergeSort::mergeMaps(){
                     outfile.close();
                     break; 
 
-                } else if(map1.first[this->sortVariable] < map2.first[this->sortVariable]){
+                } else if(get<0>(map1)[this->sortVariable] < get<0>(map2)[this->sortVariable]){
                     //write str1 to output
                     writeMap(outfile, map1);
                     getMap(file1, map1); 
@@ -454,9 +454,9 @@ void ExternalMergeSort::mergeMaps(){
 /**
 * Modified method from Stream class
 */
-bool ExternalMergeSort::getMap(ifstream& infile, variableFileMap& member){
+bool ExternalMergeSort::getMap(ifstream& infile, Tuple& member){
     string str;
-    map<string, string> map;
+    Map map;
 
     string key, value;
     int valueLength;
@@ -467,13 +467,13 @@ bool ExternalMergeSort::getMap(ifstream& infile, variableFileMap& member){
         if (map.size() == (this->mapSize)) {
             //size += sizeof(map) + sizeof(vector<string>);
             
-            //sizeof(p::pair) +
+            //sizeof(Tuple) +
             //for(const auto& item : map){
             //    size += item.first.length() + item.second.length();
             //}
-            member.first = map;
+            get<0>(member) = map;
 
-            member.second.push_back(str);
+            get<1>(member).push_back(str);
             return true;
         } 
 
@@ -492,15 +492,15 @@ bool ExternalMergeSort::getMap(ifstream& infile, variableFileMap& member){
 /**
 * Modified method from Stream class
 */
-void ExternalMergeSort::writeMap(ofstream& file, variableFileMap& mapping){
+void ExternalMergeSort::writeMap(ofstream& file, Tuple& mapping){
     //counter++;
     //ofstream file(filename, ios_base::app);
 
-    for(const auto& element: mapping.first){
+    for(const auto& element: get<0>(mapping)){
         file << element.first << ":" << element.second << '\n';
     }
 
-    for(const auto& element: mapping.second){
+    for(const auto& element: get<1>(mapping)){
         file << element << ",";
     } 
     file << '\n';
@@ -508,13 +508,13 @@ void ExternalMergeSort::writeMap(ofstream& file, variableFileMap& mapping){
     //file.close();
 }
 
-bool ExternalMergeSort::getFilesBlock(ifstream& infile, vector<variableFileMap>& vec){
+bool ExternalMergeSort::getFilesBlock(ifstream& infile, vector<Tuple>& vec){
 
-    p::pair member;
+    Tuple member;
     
-    long size = sizeof(vector<p::pair>);
+    long size = sizeof(vector<Tuple>);
 
-    map<string, string> map;
+    Map map;
     string str;
     string key, value;
     int valueLength;
@@ -526,16 +526,16 @@ bool ExternalMergeSort::getFilesBlock(ifstream& infile, vector<variableFileMap>&
         if (map.size() == (this->mapSize)) {
             size += sizeof(map) + sizeof(vector<string>);
             
-            //sizeof(p::pair) +
+            //sizeof(Tuple) +
             for(const auto& item : map){
                 size += item.first.length() + item.second.length();
             }
-            member.first = map;
+            get<0>(member) = map;
 
-            member.second.push_back(str);
+            get<1>(member).push_back(str);
             vec.push_back(member);
             map.clear();
-            member.second.clear();
+            get<1>(member).clear();
             infile >> str;
             return true;
         } 

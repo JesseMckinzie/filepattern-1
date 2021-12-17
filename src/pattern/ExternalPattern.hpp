@@ -6,10 +6,9 @@
 #include <vector>
 #include <regex>
 #include <map>
+#include <tuple>
 #include "Variables.hpp"
 //#include "sort.h"
-
-typedef p::pair variableFileMap;
 
 class ExternalPattern {
     
@@ -22,8 +21,8 @@ class ExternalPattern {
         long blockSize;
 
     public:
-        std::vector<p::pair> validFiles; // Store files that match given regex
-        std::vector<std::vector<p::pair>> validGroupedFiles;
+        std::vector<Tuple> validFiles; // Store files that match given regex
+        std::vector<std::vector<Tuple>> validGroupedFiles;
 
         bool invalidFilePath(const std::string&);
 
