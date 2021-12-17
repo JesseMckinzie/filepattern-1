@@ -37,6 +37,9 @@ class FilePattern:
 
         self._file_pattern.printFiles()
     
+    def get_valid_files_block(self) -> list:
+        return self._file_pattern.getValidFilesBlock()
+
     def match_files(self, group_by: str="") -> None:
         """
         Comapres files to file pattern and stores file names that match
@@ -51,7 +54,6 @@ class FilePattern:
             print(e)
 
     def get(self):
-    
        return self._file_pattern.get()
             
     def __call__(self, group_by=None):

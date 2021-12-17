@@ -57,6 +57,11 @@ void Stream::writeValidFiles(const Tuple& mapping){
 
 vector<Tuple> Stream::getValidFilesBlock(){
 
+    if(this->validFilesEmpty){
+        vector<Tuple> empty;
+        return empty; 
+    }
+
     vector<Tuple> vec;
     Tuple member;
     

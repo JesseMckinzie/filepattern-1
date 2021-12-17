@@ -18,6 +18,7 @@ stream(FilesystemStream(path, true, blockSize)) {
     this->validFilesPath = stream.getValidFilesPath();
     this->matchFiles(true, "");
     this->infile.open(validFilesPath);
+    this->endOfFile = false;
 
 }
 
@@ -30,6 +31,11 @@ vector<Tuple> ExternalFilePattern::get(){
     Tuple member;
     
     long size = sizeof(vector<Tuple>);
+
+    if(this->endOfFile){
+        vector<Tuple> empty;
+        return empty;
+    }
 
     Map map;
     string str;
@@ -48,6 +54,7 @@ vector<Tuple> ExternalFilePattern::get(){
             for(const auto& item : map){
                 size += item.first.length() + s::size(item.second);
             }
+            
             std::get<0>(member) = map;
             std::get<1>(member).push_back(str);
             vec.push_back(member);
@@ -65,17 +72,17 @@ vector<Tuple> ExternalFilePattern::get(){
         } else {
             result = value;
         }
-        map[key] = value;
+        map[key] = result;
         size += valueLength + pos;
     }
 
-/*
+
     streampos ptr = infile.tellg();
     if(!(this->infile >> str)){
-        validFilesEmpty = true;
+        this->endOfFile = true;
     }
     infile.seekg(ptr, ios::beg);
-*/
+
     return vec;
     
 }
@@ -120,7 +127,7 @@ Map ExternalFilePattern::matchFilesLoop(Map& mapping, const string& file, const 
                 temp += file[i];
                 i++;
                 s = "";
-                //s.push_back(file[i]);
+                s.push_back(file[i]);
             }
             if(s::is_number(temp)){
                 mapping[variables.getVariable(j)] = stoi(temp);
@@ -342,6 +349,10 @@ vector<Tuple> ExternalFilePattern::getMatching(string variables){
 }
 
 std::vector<Tuple> ExternalFilePattern::getValidFilesBlock(){
+    if(stream.endOfValidFiles()){
+        std::vector<Tuple> empty;
+        return empty;
+    }
     return stream.getValidFilesBlock();
 }
 
