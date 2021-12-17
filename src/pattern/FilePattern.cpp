@@ -87,6 +87,8 @@ void FilePattern::matchFilesMultDir(bool cutPath){
     Tuple member;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
+    Types temp;
+    string val;
     for (const auto& entry : this->recursiveIterator) {
         //cout << entry.path() << endl;
         // Get the current file
@@ -109,7 +111,9 @@ void FilePattern::matchFilesMultDir(bool cutPath){
         if(regex_match(file, patternRegex)) {
             matched = false;
             for(int i = 0; i < validFiles.size(); i++){ 
-                if(get<0>(validFiles[i])["file"] == file){
+                temp = get<0>(validFiles[0])["file"];
+                val = s::to_string(temp);
+                if(val == file){
                     matched = true;
                     get<1>(validFiles[i]).push_back(filePath);
                     break;

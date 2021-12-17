@@ -19,7 +19,7 @@ with zipfile.ZipFile(PATH/FILENAME, 'r') as zip_ref:
 
 filepath = "data/Small_Fluorescent_Test_Dataset/image-tiles"
 
-pattern = "img_r00{r:d}_c00{c:d}.tif"
+pattern = "{i:c+}_r00{r:d}_c00{c:d}.tif"
 
 files = fp.FilePattern(filepath, pattern)
 

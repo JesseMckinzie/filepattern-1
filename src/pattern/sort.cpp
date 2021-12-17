@@ -106,7 +106,7 @@ bool ExternalMergeSort::getMapBlock(ifstream& infile, vector<Tuple>& vec){
             
             //sizeof(Tuple) +
             for(const auto& item : map){
-                size += item.first.length() + item.second.length();
+                size += item.first.length() + s::size(item.second);
             }
             get<0>(member) = map;
 
@@ -213,7 +213,7 @@ void ExternalMergeSort::writeMapTmpFile(ofstream& file,
 
     for(const auto& mapping: vec){
         for(const auto& element: get<0>(mapping)){
-            file << element.first << ":" << element.second << '\n';
+            file << element.first << ":" << s::to_string(element.second) << '\n';
         }
 
         for(const auto& element: get<1>(mapping)){
@@ -497,7 +497,7 @@ void ExternalMergeSort::writeMap(ofstream& file, Tuple& mapping){
     //ofstream file(filename, ios_base::app);
 
     for(const auto& element: get<0>(mapping)){
-        file << element.first << ":" << element.second << '\n';
+        file << element.first << ":" << s::size(element.second) << '\n';
     }
 
     for(const auto& element: get<1>(mapping)){
@@ -528,7 +528,7 @@ bool ExternalMergeSort::getFilesBlock(ifstream& infile, vector<Tuple>& vec){
             
             //sizeof(Tuple) +
             for(const auto& item : map){
-                size += item.first.length() + item.second.length();
+                size += item.first.length() + s::size(item.second);
             }
             get<0>(member) = map;
 

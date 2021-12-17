@@ -1,14 +1,32 @@
 #pragma once
 #include <tuple>
+#include <variant>
+#include <algorithm>
 #include "BaseObject.hpp"
 
 typedef std::variant<int, std::string> Types;
 typedef std::map<std::string, Types> Map;
 typedef std::tuple<Map , std::vector<std::string>> Tuple;
 
-bool is_number(const std::string &s) {
-  return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
-}
+struct AnyGet {
+    std::string operator()(int value) { return std::to_string(value); }
+    std::string operator()(const std::string& value) { return value; }
+};
+
+namespace s {
+        inline bool is_number(const std::string &s) {
+                return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
+        }
+        
+        inline std::string to_string(const Types& input) {
+                return std::visit(AnyGet{}, input);
+        }
+
+        inline int size(const Types& input){
+                return input.index() == 0 ? sizeof(int) : sizeof(std::string) + s::to_string(input).length();
+        }       
+};
+
 
 struct Variables {
         std::vector<std::pair<std::string, std::pair<std::string, int>>> variables;

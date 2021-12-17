@@ -34,7 +34,7 @@ vector<Tuple> ExternalFilePattern::get(){
     Map map;
     string str;
     string key, value;
-    Type result;
+    Types result;
     int valueLength;
     size_t pos;
 
@@ -46,7 +46,7 @@ vector<Tuple> ExternalFilePattern::get(){
             
             //sizeof(Tuple<map<string, BaseObject>, vector<string>>) +
             for(const auto& item : map){
-                size += item.first.length() + item.second.length();
+                size += item.first.length() + s::size(item.second);
             }
             std::get<0>(member) = map;
             std::get<1>(member).push_back(str);
@@ -60,7 +60,7 @@ vector<Tuple> ExternalFilePattern::get(){
         key = str.substr(0, pos);
         valueLength = str.length() - pos;
         value = str.substr(pos+1, valueLength);
-        if(is_number(value)){
+        if(s::is_number(value)){
             result = stoi(value);
         } else {
             result = value;
@@ -90,7 +90,7 @@ void ExternalFilePattern::printFiles(){
             if(std::get<0>(file).size() < stream.mapSize) continue;
             
             for(const auto& element: std::get<0>(file)){
-               cout << element.first << ":" << element.second << endl;
+               cout << element.first << ":" << s::to_string(element.second) << endl;
             }
             for(const auto& element: std::get<1>(file)){
                 cout << "file: " << element << endl;
@@ -105,37 +105,43 @@ void ExternalFilePattern::printFiles(){
 }
 
 Map ExternalFilePattern::matchFilesLoop(Map& mapping, const string& file, const regex& patternRegex, vector<string>& parsedRegex){
-    
     int i = 0;
     string pattern;
     string s = "";
+    string temp = "";
 
     for(int j = 0; j < variables.variables.size(); ++j){
         i += variables.getDistance(j);
         pattern = variables.getRegex(j);
+        temp = "";
         if(pattern == "[0-9]+" || pattern == "[a-zA-Z]+"){
             s.push_back(file[i]); // char -> string
             while(regex_match(s, regex(pattern))) {
-                mapping[variables.getVariable(j)] += file[i];
+                temp += file[i];
                 i++;
                 s = "";
-                s.push_back(file[i]);
+                //s.push_back(file[i]);
             }
-            if(is_number(mapping[variables.getVariable(j)]){ 
-                mapping[variables.getVariable(j)] = stoi(mapping[variables.getVariable(j)]);
+            if(s::is_number(temp)){
+                mapping[variables.getVariable(j)] = stoi(temp);
+            } else {
+                mapping[variables.getVariable(j)] = temp;
             }
             s = "";
         } else {
             parsedRegex = variables.parseRegex(j);
             for(const auto& expr: parsedRegex){
-                mapping[variables.getVariable(j)] += file[i];
+                temp += file[i];
                 i++;
             }
-            if(is_number(mapping[variables.getVariable(j)])){ 
-                mapping[variables.getVariable(j)] = stoi(mapping[variables.getVariable(j)]);
+            if(s::is_number(temp)){
+                mapping[variables.getVariable(j)] = stoi(temp);
+            } else {
+                mapping[variables.getVariable(j)] = temp;
             }
         }
     }
+
     return mapping;
 }
 
@@ -212,6 +218,7 @@ void ExternalFilePattern::matchFilesMultDir(bool cutPath){
     cout << validFilesPath << endl;
     ifstream validin(validFilesPath);
     Tuple current;
+    Types temp;
     while(!this->stream.isEmpty()){
         block = stream.getBlock();
         for (const auto& entry : block) {
@@ -235,7 +242,8 @@ void ExternalFilePattern::matchFilesMultDir(bool cutPath){
 
                 infile.open(stream.getValidFilesPath());
                 while(getMap(validin, current)) {
-                    if(std::get<0>(current)["file"] == entry){
+                    temp = std::get<0>(current)["file"];
+                    if(s::to_string(temp) == entry){
                         streampos ptr = infile.tellg();
                         matched = true;
                         ofstream outfile(stream.getValidFilesPath());
@@ -305,6 +313,7 @@ vector<Tuple> ExternalFilePattern::getMatching(string variables){
 
     std::pair<string, string> pair;
     size_t position;
+    Types temp;
     for(const auto& variable: splitVaraibles) {
         position = variable.find("=");
         pair.first = variable.substr(0, position);
@@ -322,7 +331,8 @@ vector<Tuple> ExternalFilePattern::getMatching(string variables){
         for(auto& file: this->validFiles){
             match = true;
             for(const auto& variable: variableValues) {
-                if(!(std::get<0>(file)[variable.first] == variable.second)) match = false; 
+                temp = std::get<0>(file)[variable.first];
+                if(!(s::to_string(temp) == variable.second)) match = false; 
             }
             if(match) matching.push_back(file);
         }
@@ -355,7 +365,7 @@ void ExternalFilePattern::groupBy(const string& groupBy) {
         return m1.first[groupBy] < m2.first[groupBy];
     });
     */
-    string currentValue = std::get<0>(validFiles[0])[groupBy];
+    Types currentValue = std::get<0>(validFiles[0])[groupBy];
     vector<Tuple> emptyVec;
     int i = 0;
     int group_ptr = 0;
@@ -376,7 +386,7 @@ void ExternalFilePattern::groupBy(const string& groupBy) {
             }
             size += sizeof(validFiles[i]);
             for(const auto map: std::get<0>(validFiles[i])){
-                size += 2*sizeof(string) + map.first.length() + map.second.length();
+                size += 2*sizeof(string) + map.first.length() + s::size(map.second);
             }
         }
         if (i < this->validFiles.size()) currentValue = std::get<0>(this->validFiles[i])[groupBy];

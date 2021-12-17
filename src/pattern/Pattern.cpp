@@ -102,7 +102,7 @@ void Pattern::groupBy(const string& groupBy) {
         return get<0>(p1)[groupBy] < get<0>(p2)[groupBy];
     });
 
-    string currentValue = get<0>(validFiles[0])[groupBy];
+    Types currentValue = get<0>(validFiles[0])[groupBy];
     vector<Tuple> emptyVec;
     int i = 0;
     int group_ptr = 0;
@@ -144,24 +144,36 @@ Map Pattern::matchFilesLoop(Map& mapping, const string& file, const regex& patte
     int i = 0;
     string pattern;
     string s = "";
+    string temp = "";
 
     for(int j = 0; j < variables.variables.size(); ++j){
         i += variables.getDistance(j);
         pattern = variables.getRegex(j);
+        temp = "";
         if(pattern == "[0-9]+" || pattern == "[a-zA-Z]+"){
             s.push_back(file[i]); // char -> string
             while(regex_match(s, regex(pattern))) {
-                mapping[variables.getVariable(j)] += file[i];
+                temp += file[i];
                 i++;
                 s = "";
                 s.push_back(file[i]);
+            }
+            if(s::is_number(temp)){
+                mapping[variables.getVariable(j)] = stoi(temp);
+            } else {
+                mapping[variables.getVariable(j)] = temp;
             }
             s = "";
         } else {
             parsedRegex = variables.parseRegex(j);
             for(const auto& expr: parsedRegex){
-                mapping[variables.getVariable(j)] += file[i];
+                temp += file[i];
                 i++;
+            }
+            if(s::is_number(temp)){
+                mapping[variables.getVariable(j)] = stoi(temp);
+            } else {
+                mapping[variables.getVariable(j)] = temp;
             }
         }
     }
@@ -192,11 +204,12 @@ vector<Tuple> Pattern::getMatching(string& variables){
     vector<Tuple> matching;
 
     bool match;
-
+    Types temp;
     for(auto& file: this->validFiles){
         match = true;
         for(const auto& variable: variableValues) {
-            if(!(get<0>(file)[variable.first] == variable.second)) match = false; 
+            temp = get<0>(file)[variable.first];
+            if(!(s::to_string(temp) == variable.second)) match = false; 
         }
         if(match) matching.push_back(file);
     }
@@ -212,13 +225,14 @@ void Pattern::printValidFiles() {
         cout << "No valid files." << endl; 
         return;
     }
-
+    Types temp;
     for(const auto & fileVector : this->validGroupedFiles) {
         cout << "[";
         for(const auto & file : fileVector) {
             cout << "{";
             for(auto it = std::get<0>(file).cbegin(); it != std::get<0>(file).cend(); ++it) {
-                std::cout << it->first << ", " << it->second << "; ";
+                temp = it->second;
+                std::cout << it->first << ", " << s::to_string(temp) << "; ";
             }
             cout << "}" << endl;
         }

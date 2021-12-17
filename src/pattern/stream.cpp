@@ -39,9 +39,8 @@ void Stream::writeBlock(const vector<string>& vec){
 void Stream::writeValidFiles(const Tuple& mapping){
     counter++;
     ofstream file(validFiles, ios_base::app);
-
     for(const auto& element: get<0>(mapping)){
-        file << element.first << ":" << element.second << '\n';
+        file << element.first << ":" << s::to_string(element.second) << '\n';
     }
 
     for(const auto& element: get<1>(mapping)){
@@ -76,7 +75,7 @@ vector<Tuple> Stream::getValidFilesBlock(){
             
             //sizeof(Tuple) +
             for(const auto& item : map){
-                size += item.first.length() + item.second.length();
+                size += item.first.length() + s::size(item.second);
             }
             get<0>(member) = map;
 
