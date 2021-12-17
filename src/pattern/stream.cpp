@@ -83,7 +83,7 @@ vector<Tuple> Stream::getValidFilesBlock(){
                 size += item.first.length() + s::size(item.second);
             }
             get<0>(member) = map;
-
+            str.pop_back(); // remove trailing comma
             get<1>(member).push_back(str);
             vec.push_back(member);
             map.clear();
@@ -113,6 +113,7 @@ vector<Tuple> Stream::getValidFilesBlock(){
     if(!(this->infile >> str)){
         validFilesEmpty = true;
     }
+    ptr +=1;
     infile.seekg(ptr, ios::beg);
         
     return vec;

@@ -13,12 +13,6 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(backend, m){
 
-    /*
-    py::class_<p::pair>(m, "pair")
-        .def_readonly("first", &p::pair::first)
-        .def_readonly("second", &p::pair::second);
-    */
-
     py::class_<std::vector<std::vector<Tuple>>>(m, "VectorMap")
         .def(py::init<>())
         .def("__len__", [](const std::vector<std::vector<Tuple>> &v) { return v.size(); })
@@ -64,7 +58,6 @@ PYBIND11_MODULE(backend, m){
         .def("matchFiles", &ExternalFilePattern::matchFiles)
         .def("printFiles", &ExternalFilePattern::printFiles)
         .def("getMatching", &ExternalFilePattern::getMatching)
-        //.def("getCounter", &ExternalFilePattern::getCounter)
         .def("getValidFilesBlock", &ExternalFilePattern::getValidFilesBlock)
         .def("groupBy", &ExternalFilePattern::groupBy)
         .def("get", &ExternalFilePattern::get)
