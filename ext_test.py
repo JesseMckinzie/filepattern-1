@@ -1,17 +1,29 @@
 from pattern import ExternalFilePattern as fp 
 
-filepath = "data/Small_Fluorescent_Test_Dataset/image-tiles"
+filepath = "/home/ec2-user/Dev/PolusData/polus-data/polus/images/TissueNet/standard/train/intensity"
 
-pattern = "img_r00{r:d}_c00{c:d}.tif"
+#pattern = "img_r00{r:d}_c00{c:d}.tif"
 
-files = fp.FilePattern(filepath, pattern)
+pattern = "p{p:d}_y{y:d}_r{r:ddd}_c{c:d}.ome.tif"
+
+files = fp.FilePattern(filepath, pattern, block_size="50 KB")
+block = files.get_valid_files_block()
+print(len(block))
+"""
+print('---------------------------------')
+for file in block:
+    print(file)
+print('---------------------------------')
+"""
+while (len(block) != 0):
+    
+    print('---------------------------------')
+    for file in block:
+        print(file)
+    print('---------------------------------')
+    block = files.get_valid_files_block()
 
 #print(files.get())
-
-
-for file in files.get():
-    print(file.first)
-
 
 """
 i = 0
