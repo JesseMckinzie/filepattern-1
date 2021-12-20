@@ -37,5 +37,6 @@ class Stream {
         std::string validFiles;
         std::ifstream infile;
         std::string blockSizeStr;
+        Map tempMap;
 
 };

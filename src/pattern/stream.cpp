@@ -21,7 +21,6 @@ Stream::Stream(const string& blockSize) {
     if (!created) {
         throw runtime_error("Could not create temporary file.");
     }
-
     this->outName = tmpdir + "/temp.txt";
     this->infile.open(validFiles);
 }
@@ -72,7 +71,9 @@ vector<Tuple> Stream::getValidFilesBlock(){
     string key, value;
     int valueLength; 
     size_t pos;
-
+    Types result;
+    map = this->tempMap;
+    
     while(size < blockSize && this->infile >> str){
         
         if (map.size() == (this->mapSize)) {
@@ -89,33 +90,30 @@ vector<Tuple> Stream::getValidFilesBlock(){
             map.clear();
             get<1>(member).clear();
             infile >> str;
-        } 
+        }
 
         pos = str.find(":");
         key = str.substr(0, pos);
         valueLength = str.length() - pos;
         value = str.substr(pos+1, valueLength);
 
-        map[key] = value;
+        if(s::is_number(value)){
+            result = stoi(value);
+        } else {
+            result = value;
+        }
+
+        map[key] = result;
         size += valueLength + pos;
     }
-    /*
-    pos = str.find(":");
-    key = str.substr(0, pos);
-    valueLength = str.length() - pos;
-    value = str.substr(pos+1, valueLength);
     
-
-    map[key] = value;
-    vec.push_back(member);
-    */
     streampos ptr = infile.tellg();
     if(!(this->infile >> str)){
         validFilesEmpty = true;
     }
-    ptr +=1;
+    //ptr +=1;
     infile.seekg(ptr, ios::beg);
-        
+    this->tempMap = map;
     return vec;
 }
 

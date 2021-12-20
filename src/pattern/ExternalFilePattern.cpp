@@ -45,7 +45,7 @@ vector<Tuple> ExternalFilePattern::get(){
     size_t pos;
 
     while(size < blockSize && this->infile >> str){
-        
+        cout << "Start at line: " << str << endl;
         if (map.size() == (this->mapSize)) {
             
             size += sizeof(map) + sizeof(vector<string>);
@@ -61,21 +61,21 @@ vector<Tuple> ExternalFilePattern::get(){
             map.clear();
             std::get<1>(member).clear();
             //infile >> str;
-        } 
-
-        pos = str.find(":");
-        key = str.substr(0, pos);
-        valueLength = str.length() - pos;
-        value = str.substr(pos+1, valueLength);
-        if(s::is_number(value)){
-            result = stoi(value);
         } else {
-            result = value;
-        }
-        map[key] = result;
-        size += valueLength + pos;
-    }
 
+            pos = str.find(":");
+            key = str.substr(0, pos);
+            valueLength = str.length() - pos;
+            value = str.substr(pos+1, valueLength);
+            if(s::is_number(value)){
+                result = stoi(value);
+            } else {
+                result = value;
+            }
+            map[key] = result;
+            size += valueLength + pos;
+        }
+    }
 
     //streampos ptr = infile.tellg();
     if(!(this->infile >> str)){
@@ -283,8 +283,12 @@ void ExternalFilePattern::matchFilesMultDir(bool cutPath){
     
 }
 
+void groupBy(string& group){
 
-void ExternalFilePattern::matchFiles(const bool& cutPath=true, const string& groupBy="") {
+    
+}
+
+void ExternalFilePattern::matchFiles() {
     
     filePatternToRegex(); // Get regex of filepattern
     this->mapSize = variables.variables.size();
