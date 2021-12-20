@@ -7,7 +7,7 @@ vector<string> Pattern::getVariables(){
     vector<string> vars;
 
     for(const auto& variable: this->variables.variables){
-        vars.push_back(variable.first);
+        vars.push_back(get<0>(variable));
     }
     
     return vars;
@@ -145,36 +145,34 @@ Map Pattern::matchFilesLoop(Map& mapping, const string& file, const regex& patte
     string pattern;
     string s = "";
     string temp = "";
-
+    regex expr;
     for(int j = 0; j < variables.variables.size(); ++j){
         i += variables.getDistance(j);
-        pattern = variables.getRegex(j);
+        pattern = variables.getStringRegex(j);
         temp = "";
         if(pattern == "[0-9]+" || pattern == "[a-zA-Z]+"){
+            expr = variables.getRegex(j);
             s.push_back(file[i]); // char -> string
-            while(regex_match(s, regex(pattern))) {
+            while(regex_match(s, expr)) {
                 temp += file[i];
                 i++;
                 s = "";
                 s.push_back(file[i]);
             }
-            if(s::is_number(temp)){
-                mapping[variables.getVariable(j)] = stoi(temp);
-            } else {
-                mapping[variables.getVariable(j)] = temp;
-            }
+
             s = "";
         } else {
-            parsedRegex = variables.parseRegex(j);
-            for(const auto& expr: parsedRegex){
+            //parsedRegex = variables.parseRegex(j);
+            for(int k = 0; k < variables.length(j); ++k){
                 temp += file[i];
                 i++;
             }
-            if(s::is_number(temp)){
-                mapping[variables.getVariable(j)] = stoi(temp);
-            } else {
-                mapping[variables.getVariable(j)] = temp;
-            }
+        }
+
+        if(s::is_number(temp)){
+            mapping[variables.getVariable(j)] = stoi(temp);
+        } else {
+            mapping[variables.getVariable(j)] = temp;
         }
     }
 

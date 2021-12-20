@@ -60,16 +60,9 @@ PYBIND11_MODULE(backend, m){
         .def("getMatching", &ExternalFilePattern::getMatching)
         .def("getValidFilesBlock", &ExternalFilePattern::getValidFilesBlock)
         .def("groupBy", &ExternalFilePattern::groupBy)
-        .def("get", &ExternalFilePattern::get)
         .def("currentBlockLength", &ExternalFilePattern::currentBlockLength)
         .def("__iter__", [](ExternalFilePattern &v){ 
             v.next();
             return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());}, 
             py::keep_alive<0, 1>());
 }
-
-/*
-.def("getFilesGreaterThan", &FilePattern::getFilesGreaterThan)
-.def("getFilesGreaterThanSort", &FilePattern::getFilesGreaterThanSort)
-.def("sortFiles", &FilePattern::sortFiles)
-*/

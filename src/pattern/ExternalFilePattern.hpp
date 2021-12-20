@@ -21,7 +21,6 @@ class ExternalFilePattern : public ExternalPattern {
         int getCounter();
         std::vector<Tuple> getValidFilesBlock();
         void groupBy(const std::string& groupBy);
-        std::vector<Tuple> get();
         std::vector<Tuple> currentBlock;
         int currentBlockLength();
 

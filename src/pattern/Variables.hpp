@@ -1,4 +1,5 @@
 #pragma once
+#include <regex>
 #include <tuple>
 #include <variant>
 #include <algorithm>
@@ -27,10 +28,12 @@ namespace s {
 };
 
 struct Variables {
-        std::vector<std::pair<std::string, std::pair<std::string, int>>> variables;
+        //std::vector<std::pair<std::string, std::pair<std::string, int>>> variables;
+        std::vector<std::tuple<std::string, std::string, int, std::regex>> variables;
 
-        void addNode(const std::string& variable, const std::string& regex, const int& dist) {
-                variables.push_back(std::make_pair(variable, std::make_pair(regex, dist)));
+        void addNode(const std::string& variable, const std::string regex, const int& dist) {
+                //variables.push_back(std::make_pair(variable, std::make_pair(regex, dist)));
+                variables.push_back(std::make_tuple(variable, regex, dist, std::regex(regex)));
         }
 
         int getNumberOfVariables(){return variables.size();}
@@ -39,26 +42,40 @@ struct Variables {
                 if(index >= variables.size()){
                         std::cout << "Out of bounds error in Variables::getVariables()" << std::endl;
                 }
-                return variables[index].first;
+                return std::get<0>(variables[index]);
         }
-        std::string getRegex(const int& index){
+        std::string getStringRegex(const int& index){
                 if(index >= variables.size()){
                         std::cout << "Out of bounds error in Variables::getRegex()" << std::endl;
                 }
-                return variables[index].second.first;
+                return std::get<1>(variables[index]);
         }
         int getDistance(const int& index){
                 if(index >= variables.size()){
                         std::cout << "Out of bounds error in Variables::getDistance()" << std::endl;
                 }
-                return variables[index].second.second;
+                return std::get<2>(variables[index]);
+        }
+        int length(const int& index){
+                if(index >= variables.size()){
+                        std::cout << "Out of bounds error in Variables::length()" << std::endl;
+                }
+                std::string reg = std::get<1>(variables[index]);
+                return std::count(reg.begin(), reg.end(), '[');
         }
 
-        std::vector<std::string> parseRegex(const int& index){
-                std::vector<std::string> parsedRegex;
+        std::regex getRegex(const int& index){
+                if(index >= variables.size()){
+                        std::cout << "Out of bounds error in Variables::length()" << std::endl;
+                }
+                return std::get<3>(variables[index]);
+        }
+        /*
+        std::vector<std::regex> parseRegex(const int& index){
+                std::vector<std::regex> parsedRegex;
                 std::string thisRegex = getRegex(index);
 
-                std::string expression = "";
+                std::regex expression = "";
                 for(const auto& c : thisRegex){
                         if(c == '[' || isdigit(c) || isalpha(c) || c == '-'){
                                 expression += c;
@@ -72,6 +89,7 @@ struct Variables {
                 }
                 return parsedRegex;
         }
+        */
 
         int getLength(){
                 return variables.size();

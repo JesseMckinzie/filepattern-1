@@ -28,68 +28,6 @@ int ExternalFilePattern::getCounter(){
     return stream.counter;
 }
 
-
-vector<Tuple> ExternalFilePattern::get(){
-    vector<Tuple> vec;
-    Tuple member;
-    
-    long size = sizeof(vector<Tuple>);
-
-    if(this->endOfFile){
-        vector<Tuple> empty;
-        return empty;
-    }
-
-    Map map;
-    string str;
-    string key, value;
-    Types result;
-    int valueLength;
-    size_t pos;
-
-    while(size < blockSize && this->infile >> str){
-        cout << "Start at line: " << str << endl;
-        if (map.size() == (this->mapSize)) {
-            
-            size += sizeof(map) + sizeof(vector<string>);
-            
-            //sizeof(Tuple<map<string, BaseObject>, vector<string>>) +
-            for(const auto& item : map){
-                size += item.first.length() + s::size(item.second);
-            }
-
-            std::get<0>(member) = map;
-            std::get<1>(member).push_back(str);
-            vec.push_back(member);
-            map.clear();
-            std::get<1>(member).clear();
-            //infile >> str;
-        } else {
-
-            pos = str.find(":");
-            key = str.substr(0, pos);
-            valueLength = str.length() - pos;
-            value = str.substr(pos+1, valueLength);
-            if(s::is_number(value)){
-                result = stoi(value);
-            } else {
-                result = value;
-            }
-            map[key] = result;
-            size += valueLength + pos;
-        }
-    }
-
-    //streampos ptr = infile.tellg();
-    if(!(this->infile >> str)){
-        this->endOfFile = true;
-    }
-    //infile.seekg(ptr, ios::beg);
-
-    return vec;
-    
-}
-
 void ExternalFilePattern::printFiles(){
     bool after = false;
     vector<Tuple> files;
@@ -122,7 +60,7 @@ Map ExternalFilePattern::matchFilesLoop(Map& mapping, const string& file, const 
 
     for(int j = 0; j < variables.variables.size(); ++j){
         i += variables.getDistance(j);
-        pattern = variables.getRegex(j);
+        pattern = variables.getStringRegex(j);
         temp = "";
         if(pattern == "[0-9]+" || pattern == "[a-zA-Z]+"){
             s.push_back(file[i]); // char -> string
@@ -139,8 +77,8 @@ Map ExternalFilePattern::matchFilesLoop(Map& mapping, const string& file, const 
             }
             s = "";
         } else {
-            parsedRegex = variables.parseRegex(j);
-            for(const auto& expr: parsedRegex){
+            //parsedRegex = variables.parseRegex(j);
+            for(int k = 0; k < variables.length(j); ++k){
                 temp += file[i];
                 i++;
             }
@@ -349,7 +287,11 @@ vector<Tuple> ExternalFilePattern::getMatching(string variables){
     return matching;
 }
 
+//const string& group=""
 void ExternalFilePattern::next(){
+    //if(firstCall && group != ""){
+    //    this->groupBy(group);
+    //}
     this->firstCall = false;
     this->currentBlock = this->getValidFilesBlock();
 }

@@ -60,7 +60,7 @@ void FilePattern::matchFilesOneDir(){
         mapping.clear();
         get<1>(member).clear();
         if(regex_match(file, patternRegex)) {
-            mapping["file"] = file;
+            //mapping["file"] = file;
             // loop over the variables in the file pattern, creating a mapping
             // between the variable name and value
             mapping = this->matchFilesLoop(mapping, file, patternRegex, parsedRegex);
