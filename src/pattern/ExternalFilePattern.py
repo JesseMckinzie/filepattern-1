@@ -61,7 +61,7 @@ class FilePattern:
             
     def __call__(self, group_by=None):
         if(group_by is not None):
-            self._file_pattern.groupBy(group_by)
+            self._file_pattern.setGroup(group_by)
 
         return self
 

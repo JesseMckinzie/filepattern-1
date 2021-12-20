@@ -51,7 +51,8 @@ PYBIND11_MODULE(backend, m){
         .def("split", &ExternalPattern::split)
         .def("printValidFiles", &ExternalPattern::printValidFiles)
         .def("getPattern", &ExternalPattern::getPattern)
-        .def("getRegexPattern", &ExternalPattern::getRegexPattern);
+        .def("getRegexPattern", &ExternalPattern::getRegexPattern)
+        .def("setGroup", &ExternalPattern::setGroup);
 
     py::class_<ExternalFilePattern, ExternalPattern>(m, "ExternalFilePattern")
         .def(py::init<const std::string&, const std::string&, const std::string&, bool>())
