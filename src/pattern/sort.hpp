@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -39,6 +38,7 @@ class ExternalMergeSort {
         std::string sortVariable;
         std::string blockSizeStr;
         int mapSize;
+        Map tempMap;
 
         double currentSize(const vector_string&, const int&, const double&);
 
@@ -62,9 +62,8 @@ class ExternalMergeSort {
         bool getMap(std::ifstream&, Tuple&);
 
         void writeMap(std::ofstream&, Tuple&);
-
-        bool getFilesBlock(std::ifstream&, std::vector<Tuple>&);
-
+        
+        void twoWayMergeMaps(const std::string&, const std::string&, const std::string&);
         //void sort(const std::string&);
 
 };

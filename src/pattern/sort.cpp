@@ -98,7 +98,9 @@ bool ExternalMergeSort::getMapBlock(ifstream& infile, vector<Tuple>& vec){
     string key, value;
     int valueLength;
     size_t pos;
-
+    Types result;
+    map = this->tempMap;
+    
     while(size < blockSize && infile >> str){
         
         if (map.size() == (this->mapSize)) {
@@ -109,32 +111,29 @@ bool ExternalMergeSort::getMapBlock(ifstream& infile, vector<Tuple>& vec){
                 size += item.first.length() + s::size(item.second);
             }
             get<0>(member) = map;
-
+            str.pop_back(); // remove trailing comma
             get<1>(member).push_back(str);
             vec.push_back(member);
             map.clear();
             get<1>(member).clear();
             infile >> str;
-        } 
+        }
 
         pos = str.find(":");
         key = str.substr(0, pos);
         valueLength = str.length() - pos;
         value = str.substr(pos+1, valueLength);
 
-        map[key] = value;
+        if(s::is_number(value)){
+            result = stoi(value);
+        } else {
+            result = value;
+        }
+
+        map[key] = result;
         size += valueLength + pos;
     }
-    /*
-    pos = str.find(":");
-    key = str.substr(0, pos);
-    valueLength = str.length() - pos;
-    value = str.substr(pos+1, valueLength);
-    
-
-    map[key] = value;
-    vec.push_back(member);
-    */
+    this->tempMap = map;
     streampos ptr = infile.tellg();
     if(!(infile >> str)){
         return false;
@@ -217,7 +216,7 @@ void ExternalMergeSort::writeMapTmpFile(ofstream& file,
         }
 
         for(const auto& element: get<1>(mapping)){
-            file << element << ",";
+            file << element << "," << '\n';
         } 
     }
 }
@@ -346,94 +345,29 @@ void ExternalMergeSort::merge(){
 void ExternalMergeSort::mergeMaps(){
 
     // case of 1 file
-    Tuple map1, map2;
-    string str1, str2;
     string outFile;
     int length;
-    int count;
-    int filesWritten = 0;
     int iter = 0;
    
     while(filesToMerge.size() > 1){
 
         length = filesToMerge.size();
         for(int i = 0; i < (length - (length%2)); i+=2){
-
-            ifstream file1(filesToMerge[i]);
-            ifstream file2(filesToMerge[i+1]);
-
-            if(!file1.is_open()) {
-                string error = "Cannot open file " + filesToMerge[i];
-                throw runtime_error(error);
-            }
-
-            if(!file2.is_open()) {
-                string error = "Cannot open file " + filesToMerge[i+1];
-                throw runtime_error(error);
-            }
-
-            outFile = this->tmpdir + to_string(iter) + "_" + to_string(i) + "_" + to_string(i+1) + ".txt"; 
+            outFile = this->tmpdir + to_string(iter) + "_" + to_string(i) + "_" + to_string(i+1) + ".txt";
+            this->twoWayMergeMaps(filesToMerge[i], filesToMerge[i+1], outFile);
             newFiles.push_back(outFile);
-            ofstream outfile(outFile);
-
-            if(filesWritten > 100){
-                throw runtime_error("Creating over 100 text files. Ending program");
-            }
-
-            count = 0;
-            while(true){
-                if(count == 0) {
-                    getMap(file1, map1); 
-                    getMap(file2, map2);
-                    count++;
-                }
-
-                // if file1 empty
-                if(file1.eof()){
-                    if(file2.eof()){
-                        file2.close();
-                        outfile.close();
-                        break;
-                    }
-
-                    // write the rest of file2
-                    //getMap(file2, map2);
-                    //writeMap(outfile, map2);
-                    while(getMap(file2, map2)) {
-                        writeMap(outfile, map2);
-                    }
-
-                    file1.close();
-                    file2.close();
-                    outfile.close();
-                    break;
-
-                } else if(file2.eof()){
-
-                    // write the rest of file1
-                    //outfile << str1 << '\n';
-                    while(getMap(file1, map1)) {
-                        writeMap(outfile, map1);
-                    }
-
-                    file1.close();
-                    file2.close();
-                    outfile.close();
-                    break; 
-
-                } else if(get<0>(map1)[this->sortVariable] < get<0>(map2)[this->sortVariable]){
-                    //write str1 to output
-                    writeMap(outfile, map1);
-                    getMap(file1, map1); 
-                } else {
-                    writeMap(outfile, map2);
-                    getline(file2, str2);
-                    //write str2 to output
-                }
-            }
-            outfile.close();
-            
         }
+
+        if(length%2 == 1){
+            outFile = outFile = this->tmpdir + to_string(iter) + "_" + to_string(length-1) + "_" + to_string(length-1) + ".txt";
+            this->twoWayMergeMaps(filesToMerge[filesToMerge.size()-1], newFiles[0], outFile);
+            newFiles[0] = outFile;
+        }
+        for(const auto& f: filesToMerge){
+            cout << f <<", " ;
+        }
+        cout << endl;
+
         iter++;
         filesToMerge = newFiles;
         newFiles.clear();
@@ -445,11 +379,86 @@ void ExternalMergeSort::mergeMaps(){
         throw runtime_error(error);
     }
 
+    Tuple map1, map2;
     ofstream outfile(this->outputFileName);
     while(getMap(file, map1)){
         writeMap(outfile, map1);
+        get<1>(map1).clear();
     }
 }  
+
+void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& fileName2, const string& outFile){
+
+    ifstream file1(fileName1);
+    ifstream file2(fileName2);
+
+    if(!file1.is_open()) {
+        string error = "Cannot open file " + fileName1;
+        throw runtime_error(error);
+    }
+
+    if(!file2.is_open()) {
+        string error = "Cannot open file " + fileName2;
+        throw runtime_error(error);
+    }
+ 
+    ofstream outfile(outFile);
+
+    int count = 0;
+    Tuple map1, map2;
+    while(true){
+        if(count == 0) {
+            getMap(file1, map1); 
+            getMap(file2, map2);
+            count++;
+        }
+
+        // if file1 empty
+        if(file1.eof()){
+            if(file2.eof()){
+                file1.close();
+                file2.close();
+                outfile.close();
+                break;
+            }
+
+            // write the rest of file2
+            //getMap(file2, map2);
+            //writeMap(outfile, map2);
+            while(getMap(file2, map2)) {
+                writeMap(outfile, map2);
+            }
+
+            file1.close();
+            file2.close();
+            outfile.close();
+            break;
+
+        } else if(file2.eof()){
+
+            // write the rest of file1
+            //outfile << str1 << '\n';
+            while(getMap(file1, map1)) {
+                writeMap(outfile, map1);
+            }
+
+            file1.close();
+            file2.close();
+            outfile.close();
+            break; 
+
+        } else if(get<0>(map1)[this->sortVariable] < get<0>(map2)[this->sortVariable]){
+            //write str1 to output
+            writeMap(outfile, map1);
+            getMap(file1, map1); 
+        } else {
+            writeMap(outfile, map2);
+            getMap(file2, map2);
+            //write str2 to output
+        }
+    }
+    outfile.close();
+}
 
 /**
 * Modified method from Stream class
@@ -462,6 +471,7 @@ bool ExternalMergeSort::getMap(ifstream& infile, Tuple& member){
     int valueLength;
     size_t pos;
 
+    get<1>(member).clear();
     while(getline(infile, str)){
 
         if (map.size() == (this->mapSize)) {
@@ -472,7 +482,7 @@ bool ExternalMergeSort::getMap(ifstream& infile, Tuple& member){
             //    size += item.first.length() + item.second.length();
             //}
             get<0>(member) = map;
-
+            str.pop_back();
             get<1>(member).push_back(str);
             return true;
         } 
@@ -497,58 +507,15 @@ void ExternalMergeSort::writeMap(ofstream& file, Tuple& mapping){
     //ofstream file(filename, ios_base::app);
 
     for(const auto& element: get<0>(mapping)){
-        file << element.first << ":" << s::size(element.second) << '\n';
+        file << element.first << ":" << s::to_string(element.second) << '\n';
     }
 
     for(const auto& element: get<1>(mapping)){
-        file << element << ",";
+        file << element << "," << '\n';
     } 
-    file << '\n';
+    //file << '\n';
 
     //file.close();
-}
-
-bool ExternalMergeSort::getFilesBlock(ifstream& infile, vector<Tuple>& vec){
-
-    Tuple member;
-    
-    long size = sizeof(vector<Tuple>);
-
-    Map map;
-    string str;
-    string key, value;
-    int valueLength;
-    size_t pos;
-    cout << endl; 
-
-    while(size < blockSize && infile >> str){
-    
-        if (map.size() == (this->mapSize)) {
-            size += sizeof(map) + sizeof(vector<string>);
-            
-            //sizeof(Tuple) +
-            for(const auto& item : map){
-                size += item.first.length() + s::size(item.second);
-            }
-            get<0>(member) = map;
-
-            get<1>(member).push_back(str);
-            vec.push_back(member);
-            map.clear();
-            get<1>(member).clear();
-            infile >> str;
-            return true;
-        } 
-
-        pos = str.find(":");
-        key = str.substr(0, pos);
-        valueLength = str.length() - pos;
-        value = str.substr(pos+1, valueLength);
-
-        map[key] = value;
-        size += valueLength + pos;
-    }
-    return false;
 }
 
 
