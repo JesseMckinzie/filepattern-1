@@ -2,7 +2,6 @@
 #include <tuple>
 #include <variant>
 #include <algorithm>
-#include "BaseObject.hpp"
 
 typedef std::variant<int, std::string> Types;
 typedef std::map<std::string, Types> Map;
@@ -26,7 +25,6 @@ namespace s {
                 return input.index() == 0 ? sizeof(int) : sizeof(std::string) + s::to_string(input).length();
         }       
 };
-
 
 struct Variables {
         std::vector<std::pair<std::string, std::pair<std::string, int>>> variables;

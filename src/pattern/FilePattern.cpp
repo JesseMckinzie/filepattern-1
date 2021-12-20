@@ -23,7 +23,7 @@ FilePattern::FilePattern(const string& path, const string& filePattern, bool rec
     this->regexFilePattern = "";
     this->recursive = recursive;
 
-    this->matchFiles(true, "");
+    this->matchFiles();
 }
 
 void FilePattern::printFiles(){
@@ -32,7 +32,7 @@ void FilePattern::printFiles(){
     }
 }
 
-void FilePattern::matchFilesOneDir(bool cutPath){
+void FilePattern::matchFilesOneDir(){
     Map mapping;
     vector<string> parsedRegex;
 
@@ -50,14 +50,12 @@ void FilePattern::matchFilesOneDir(bool cutPath){
 
         // cut off path to leave just the filename
         i = 0;
-        if(cutPath) {
             i = filePath.size()-1;
 
-            while(filePath[i] != '/'){
-                file.insert(0, 1, filePath[i]); 
-                --i;
-            }     
-        }
+        while(filePath[i] != '/'){
+            file.insert(0, 1, filePath[i]); 
+            --i;
+        }     
         // Check if filename matches filepattern
         mapping.clear();
         get<1>(member).clear();
@@ -74,7 +72,7 @@ void FilePattern::matchFilesOneDir(bool cutPath){
 
 }
 
-void FilePattern::matchFilesMultDir(bool cutPath){
+void FilePattern::matchFilesMultDir(){
     string pattern;
     Map mapping;
     vector<string> parsedRegex;
@@ -96,15 +94,14 @@ void FilePattern::matchFilesMultDir(bool cutPath){
         file = "";
 
         // cut off path to leave just the filename
-        i = 0;
-        if(cutPath) {
-            i = filePath.size()-1;
 
-            while(filePath[i] != '/'){
-                file.insert(0, 1, filePath[i]); 
-                --i;
-            }     
-        }
+        i = filePath.size()-1;
+
+        while(filePath[i] != '/'){
+            file.insert(0, 1, filePath[i]); 
+            --i;
+        }     
+        
         // Check if filename matches filepattern
         mapping.clear();
         get<1>(member).clear();
@@ -133,11 +130,12 @@ void FilePattern::matchFilesMultDir(bool cutPath){
 }
 
 
-void FilePattern::matchFiles(const bool& cutPath=true, const string& groupBy="") {
+void FilePattern::matchFiles() {
     
     filePatternToRegex(); // Get regex of filepattern
 
     //Check if valid groupBy variable
+    /*
     bool validGroup = false;
     for(int i = 0; i < variables.getNumberOfVariables(); i++){
         if(variables.getVariable(i) == groupBy) {
@@ -148,11 +146,11 @@ void FilePattern::matchFiles(const bool& cutPath=true, const string& groupBy="")
     if(!(groupBy == "" || validGroup)) { 
         throw invalid_argument("groupBy must be a variable that appears in the file pattern");
     }
-
+    */
     if(recursive){
-        this->matchFilesMultDir(cutPath);
+        this->matchFilesMultDir();
     } else {
-        this->matchFilesOneDir(cutPath);
+        this->matchFilesOneDir();
     }
     
     this->validGroupedFiles.push_back(validFiles);

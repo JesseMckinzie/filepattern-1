@@ -61,9 +61,10 @@ PYBIND11_MODULE(backend, m){
         .def("getValidFilesBlock", &ExternalFilePattern::getValidFilesBlock)
         .def("groupBy", &ExternalFilePattern::groupBy)
         .def("get", &ExternalFilePattern::get)
+        .def("currentBlockLength", &ExternalFilePattern::currentBlockLength)
         .def("__iter__", [](ExternalFilePattern &v){ 
-            std::vector<Tuple> vec = v.get();
-            return py::make_iterator(vec.begin(), vec.end());}, 
+            v.next();
+            return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());}, 
             py::keep_alive<0, 1>());
 }
 

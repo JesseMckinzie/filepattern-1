@@ -16,15 +16,18 @@ stream(FilesystemStream(path, true, blockSize)) {
     this->totalFiles = 0;
     this->mapSize = 0; //To be updated later in program, set for compiling
     this->validFilesPath = stream.getValidFilesPath();
-    this->matchFiles(true, "");
+    this->firstCall = true;
+    this->matchFiles();
     this->infile.open(validFilesPath);
     this->endOfFile = false;
+    
 
 }
 
 int ExternalFilePattern::getCounter(){
     return stream.counter;
 }
+
 
 vector<Tuple> ExternalFilePattern::get(){
     vector<Tuple> vec;
@@ -152,7 +155,7 @@ Map ExternalFilePattern::matchFilesLoop(Map& mapping, const string& file, const 
     return mapping;
 }
 
-void ExternalFilePattern::matchFilesOneDir(bool cutPath){
+void ExternalFilePattern::matchFilesOneDir(){
     Map mapping;
     vector<string> parsedRegex;
     vector<string> block;
@@ -175,15 +178,13 @@ void ExternalFilePattern::matchFilesOneDir(bool cutPath){
             file = "";
 
             // cut off path to leave just the filename
-            i = 0;
-            if(cutPath) {
-                i = filePath.size()-1;
 
-                while(filePath[i] != '/'){
-                    file.insert(0, 1, filePath[i]); 
-                    --i;
-                }     
-            }
+            i = filePath.size()-1;
+
+            while(filePath[i] != '/'){
+                file.insert(0, 1, filePath[i]); 
+                --i;
+            }     
             // Check if filename matches filepattern
             mapping.clear();
             std::get<1>(member).clear();
@@ -203,7 +204,7 @@ void ExternalFilePattern::matchFilesOneDir(bool cutPath){
     }
 }
 
-void ExternalFilePattern::matchFilesMultDir(bool cutPath){
+void ExternalFilePattern::matchFilesMultDir(){
     
     string pattern;
     Map mapping;
@@ -283,16 +284,12 @@ void ExternalFilePattern::matchFilesMultDir(bool cutPath){
     
 }
 
-void groupBy(string& group){
-
-    
-}
-
 void ExternalFilePattern::matchFiles() {
     
     filePatternToRegex(); // Get regex of filepattern
     this->mapSize = variables.variables.size();
     //Check if valid groupBy variable
+    /*
     bool validGroup = false;
     for(int i = 0; i < variables.getNumberOfVariables(); i++){
         if(variables.getVariable(i) == groupBy) {
@@ -303,11 +300,11 @@ void ExternalFilePattern::matchFiles() {
     if(!(groupBy == "" || validGroup)) { 
         throw invalid_argument("groupBy must be a variable that appears in the file pattern");
     }
-
+    */
     if(recursive){
-        this->matchFilesMultDir(cutPath);
+        this->matchFilesMultDir();
     } else {
-        this->matchFilesOneDir(cutPath);
+        this->matchFilesOneDir();
     }
     
     this->validGroupedFiles.push_back(validFiles);
@@ -352,6 +349,16 @@ vector<Tuple> ExternalFilePattern::getMatching(string variables){
     return matching;
 }
 
+void ExternalFilePattern::next(){
+    this->firstCall = false;
+    this->currentBlock = this->getValidFilesBlock();
+}
+
+int ExternalFilePattern::currentBlockLength(){
+    if(firstCall) return 1;
+    return this->currentBlock.size();
+}
+
 std::vector<Tuple> ExternalFilePattern::getValidFilesBlock(){
     if(stream.endOfValidFiles()){
         std::vector<Tuple> empty;
@@ -369,7 +376,7 @@ void ExternalFilePattern::groupBy(const string& groupBy) {
                                                stream.getBlockSizeStr(),
                                                groupBy,
                                                stream.mapSize);
-    
+    /*
     vector<Tuple> validFiles;
 
     validFiles = stream.getValidFilesBlock();
@@ -380,6 +387,8 @@ void ExternalFilePattern::groupBy(const string& groupBy) {
         return m1.first[groupBy] < m2.first[groupBy];
     });
     */
+
+    /*
     Types currentValue = std::get<0>(validFiles[0])[groupBy];
     vector<Tuple> emptyVec;
     int i = 0;
@@ -407,7 +416,7 @@ void ExternalFilePattern::groupBy(const string& groupBy) {
         if (i < this->validFiles.size()) currentValue = std::get<0>(this->validFiles[i])[groupBy];
         ++group_ptr;
     }
-
+    */
 }
 
 bool ExternalFilePattern::getMap(ifstream& infile, Tuple& member){

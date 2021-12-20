@@ -55,12 +55,18 @@ class FilePattern:
 
     def get(self):
        return self._file_pattern.get()
+
+    def length(self):
+        return self._file_pattern.currentBlockLength()
             
     def __call__(self, group_by=None):
         if(group_by is not None):
             self._file_pattern.groupBy(group_by)
-        
+
         return self
+
+    def __len__(self):
+        return self._file_pattern.currentBlockLength()
 
     def __iter__(self):
         """
@@ -70,5 +76,6 @@ class FilePattern:
         The variables mapped to values are in file.first
         The filepath is in file.second
         """
+            
         return self._file_pattern.__iter__()
  

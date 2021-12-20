@@ -10,7 +10,7 @@ class FilePattern : public Pattern {
         /**
          * Stores and prints the valid filenames from the target directory. 
          */
-        void matchFiles(const bool&, const std::string&);
+        void matchFiles();
         void printFiles();
     private: 
         std::string path;
@@ -19,6 +19,6 @@ class FilePattern : public Pattern {
         bool recursive;
 
         //std::map<std::string, std::string> matchFilesLoop(std::map<std::string, std::string>&, const std::string&, const std::regex&, std::vector<std::string>&);
-        void matchFilesOneDir(bool);
-        void matchFilesMultDir(bool);
+        void matchFilesOneDir();
+        void matchFilesMultDir();
 };

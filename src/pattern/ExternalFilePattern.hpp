@@ -14,14 +14,16 @@ class ExternalFilePattern : public ExternalPattern {
         /**
          * Stores and prints the valid filenames from the target directory. 
          */
-        void matchFiles(const bool&, const std::string&);
-
+        void matchFiles();
+        void next();
         void printFiles();
         std::vector<Tuple> getMatching(std::string);
         int getCounter();
         std::vector<Tuple> getValidFilesBlock();
         void groupBy(const std::string& groupBy);
         std::vector<Tuple> get();
+        std::vector<Tuple> currentBlock;
+        int currentBlockLength();
 
     private: 
         std::string path;
@@ -36,11 +38,12 @@ class ExternalFilePattern : public ExternalPattern {
         bool recursive;
 
         Map matchFilesLoop(Map&, const std::string&, const std::regex&, std::vector<std::string>&);
-        void matchFilesOneDir(bool);
-        void matchFilesMultDir(bool);
+        void matchFilesOneDir();
+        void matchFilesMultDir();
         int totalFiles;
         int mapSize;
         std::ifstream infile;
         std::string validFilesPath;
+        bool firstCall;
 };
 #endif
