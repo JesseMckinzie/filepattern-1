@@ -19,6 +19,7 @@ class ExternalPattern {
         Variables variables;
         bool filesSorted;
         long blockSize;
+        std::string group;
 
     public:
         std::vector<Tuple> validFiles; // Store files that match given regex
@@ -40,6 +41,7 @@ class ExternalPattern {
 
         std::string getRegexPattern();
 
+        void setGroup(const std::string& group);
 };
 
 #endif

@@ -287,17 +287,17 @@ vector<Tuple> ExternalFilePattern::getMatching(string variables){
     return matching;
 }
 
-//const string& group=""
+
 void ExternalFilePattern::next(){
-    //if(firstCall && group != ""){
-    //    this->groupBy(group);
-    //}
+    if(firstCall && this->group != ""){
+        this->groupBy(this->group);
+    }
     this->firstCall = false;
     this->currentBlock = this->getValidFilesBlock();
 }
 
 int ExternalFilePattern::currentBlockLength(){
-    if(firstCall) return 1;
+    if(firstCall) return INT_MAX;
     return this->currentBlock.size();
 }
 

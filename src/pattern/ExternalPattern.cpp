@@ -134,3 +134,7 @@ void ExternalPattern::setPattern(const string& pattern){
 string ExternalPattern::getRegexPattern(){
     return this->regexFilePattern;
 }
+
+void ExternalPattern::setGroup(const string& group){
+    this->group = group;
+}
