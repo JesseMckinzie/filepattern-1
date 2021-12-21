@@ -2,6 +2,16 @@
 
 using namespace std;
 
+inline string getBaseName(string& filePath){
+    int i = filePath.size()-1;
+    string file;
+    while(filePath[i] != '/'){
+        file.insert(0, 1, filePath[i]); 
+        --i;
+    }     
+    return file;
+}
+
 ExternalFilePattern::ExternalFilePattern(const string& path, const string& filePattern, const string& blockSize="50 MB", bool recursive=false):
 stream(FilesystemStream(path, true, blockSize)) {
 
@@ -113,16 +123,18 @@ void ExternalFilePattern::matchFilesOneDir(){
             
             // Get the current file
             filePath = entry;
-            file = "";
+            file = getBaseName(filePath);
 
             // cut off path to leave just the filename
 
+            /*
             i = filePath.size()-1;
 
             while(filePath[i] != '/'){
                 file.insert(0, 1, filePath[i]); 
                 --i;
             }     
+            */
             // Check if filename matches filepattern
             mapping.clear();
             std::get<1>(member).clear();
@@ -158,63 +170,70 @@ void ExternalFilePattern::matchFilesMultDir(){
     vector<string> block;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
-    ifstream infile;
-    string str;
+    string str = "";
     this->validFilesPath = stream.getValidFilesPath();
-    cout << validFilesPath << endl;
-    ifstream validin(validFilesPath);
+    fstream infile(validFilesPath);
     Tuple current;
-    Types temp;
+    string temp;
+
     while(!this->stream.isEmpty()){
         block = stream.getBlock();
         for (const auto& entry : block) {
             // Get the current file
             filePath = entry;
-            file = "";
+            file = getBaseName(filePath);
 
             // cut off path to leave just the filename
             //i = 0;
+            /*
             i = filePath.size()-1;
 
             while(filePath[i] != '/'){
                 file.insert(0, 1, filePath[i]); 
                 --i;
             }     
-
+            */
             // Check if filename matches filepattern
             mapping.clear();
             if(regex_match(file, patternRegex)) {
                 matched = false;
-
+                
                 infile.open(stream.getValidFilesPath());
-                while(getMap(validin, current)) {
-                    temp = std::get<0>(current)["file"];
-                    if(s::to_string(temp) == entry){
+
+                while(getMap(infile, current)) {
+                    temp = getBaseName(std::get<1>(current)[0]);
+                    if(temp == file){
+                    
                         streampos ptr = infile.tellg();
                         matched = true;
-                        ofstream outfile(stream.getValidFilesPath());
-                        outfile.seekp(ptr, ios::beg);
+                        //ofstream outfile(stream.getValidFilesPath());
+                        ptr -= 1;
+                        infile.seekp(ptr, ios::beg);
                         
-                        str += ", " + filePath;
-                        outfile << str <<'\n';
-                        outfile.close();
+                        //cout << filePath << endl;
+                        str = ' ' + filePath;
+                        cout << str << endl;
+                        cout << endl;
+                        infile << str << endl;
+                        //outfile.close();
                         break;
                     } 
                 }
                 
+                infile.close();
                 if(!matched){
-                    //mapping["file"] = file;
+                    mapping["file"] = file;
                     std::get<1>(member).push_back(filePath);
                 
                     i = 0; // pointer for filename string
                     // loop over the variables in the file pattern, creating a mapping
                     // between the variable name and value
-                    std::get<0>(member)["file"] = file;
+                    //std::get<0>(member)["file"] = file;
                     std::get<0>(member) = this->matchFilesLoop(mapping, file, patternRegex, parsedRegex);
                     this->mapSize = std::get<0>(member).size();
                     //validFiles.push_back(mapping);
                     stream.writeValidFiles(member);
-
+                    std::get<1>(member).clear();
                 }
             }
         }
@@ -361,26 +380,27 @@ void ExternalFilePattern::groupBy(const string& groupBy) {
     */
 }
 
-bool ExternalFilePattern::getMap(ifstream& infile, Tuple& member){
-    string str;
+bool ExternalFilePattern::getMap(fstream& infile, Tuple& member){
+     string str;
     Map map;
 
     string key, value;
     int valueLength;
     size_t pos;
 
+    get<1>(member).clear();
     while(getline(infile, str)){
 
         if (map.size() == (this->mapSize)) {
             //size += sizeof(map) + sizeof(vector<string>);
             
-            //sizeof(Tuple<map<string, BaseObject>, vector<string>>) +
+            //sizeof(Tuple) +
             //for(const auto& item : map){
             //    size += item.first.length() + item.second.length();
             //}
-            std::get<0>(member) = map;
-
-            std::get<1>(member).push_back(str);
+            get<0>(member) = map;
+            str.pop_back();
+            get<1>(member).push_back(str);
             return true;
         } 
 

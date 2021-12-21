@@ -30,7 +30,7 @@ class ExternalFilePattern : public ExternalPattern {
         std::filesystem::directory_iterator iterator; // File iterator for given path
         std::filesystem::recursive_directory_iterator recursiveIterator;
         FilesystemStream stream;
-        bool getMap(std::ifstream&, Tuple&);
+        bool getMap(std::fstream&, Tuple&);
         bool endOfFile;
 
         //std::string fileFromPath(const std::string&);

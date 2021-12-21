@@ -415,7 +415,10 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
 
         // if file1 empty
         if(file1.eof()){
+            cout << "eof1" << endl;
+            //writeMap(outfile, map1); // write remaining map
             if(file2.eof()){
+                cout << "both" << endl;
                 file1.close();
                 file2.close();
                 outfile.close();
@@ -424,8 +427,12 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
 
             // write the rest of file2
             //getMap(file2, map2);
-            //writeMap(outfile, map2);
+            writeMap(outfile, map2);
             while(getMap(file2, map2)) {
+                for(const auto& e: get<0>(map2)){
+                    cout << e.first << ":" << s::to_string(e.second) << endl;
+                }
+                cout << endl;
                 writeMap(outfile, map2);
             }
 
@@ -435,9 +442,10 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
             break;
 
         } else if(file2.eof()){
-
+            cout << "eof2" << endl;
             // write the rest of file1
             //outfile << str1 << '\n';
+            writeMap(outfile, map2);
             while(getMap(file1, map1)) {
                 writeMap(outfile, map1);
             }
@@ -447,14 +455,14 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
             outfile.close();
             break; 
 
-        } else if(get<0>(map1)[this->sortVariable] < get<0>(map2)[this->sortVariable]){
+        } else if(get<0>(map1)[this->sortVariable] <= get<0>(map2)[this->sortVariable]){
             //write str1 to output
             writeMap(outfile, map1);
             getMap(file1, map1); 
         } else {
+            //write str2 to output
             writeMap(outfile, map2);
             getMap(file2, map2);
-            //write str2 to output
         }
     }
     outfile.close();
