@@ -1,7 +1,0 @@
-var searchData=
-[
-  ['unchecked_5freference',['unchecked_reference',['../classunchecked__reference.html#ae5522c90828ed6a7c58687e6969ef97c',1,'unchecked_reference::unchecked_reference(const void *data, const ssize_t *shape, const ssize_t *strides, enable_if_t&lt;!Dyn, ssize_t &gt;)'],['../classunchecked__reference.html#a6872fd3f36835f14b6e943aebdbc0ae4',1,'unchecked_reference::unchecked_reference(const void *data, const ssize_t *shape, const ssize_t *strides, enable_if_t&lt; Dyn, ssize_t &gt; dims)']]],
-  ['unlucky_5fnumber',['unlucky_number',['../classPyA__Repeat.html#ab5d023f398b7042b61f372d1df259b51',1,'PyA_Repeat::unlucky_number()'],['../classPyB__Repeat.html#a83d9f51319d6475a83c72dcef4049bd9',1,'PyB_Repeat::unlucky_number()'],['../classPyC__Repeat.html#a3d8a581eb064d1900dce749193960a02',1,'PyC_Repeat::unlucky_number()'],['../classPyD__Repeat.html#adcceabf90f371185b70cc1d81286b127',1,'PyD_Repeat::unlucky_number()'],['../classPyA__Tpl.html#ab1e973a0599fb37d199c7d9f598b56e2',1,'PyA_Tpl::unlucky_number()'],['../classPyB__Tpl.html#a2bd1a6cc651f095b0ef6d2fc88a1650a',1,'PyB_Tpl::unlucky_number()']]],
-  ['unordered',['unordered',['../classconftest_1_1Capture.html#a3ca5311da21eebd378c2d633b27d8196',1,'conftest::Capture']]],
-  ['usertype',['UserType',['../classUserType.html#a07d95c5b9030ed58983e95b53d3cfbc1',1,'UserType::UserType()=default'],['../classUserType.html#aa61d8a4462ac6fe39a0cfc85ee93b19a',1,'UserType::UserType(int i)']]]
-];
