@@ -36,6 +36,8 @@ void ExternalPattern::filePatternToRegex(){
             }
             inBrackets = false;
             afterColon = false;
+
+            // store variable information in variable structure
             variables.addNode(str, regexPattern, stringLength);
 
             regexPattern = "";
@@ -45,37 +47,36 @@ void ExternalPattern::filePatternToRegex(){
         } else if (c == ':') {
 
             afterColon = true;
-            //variables[str];
 
         } else if (inBrackets) { 
 
             if(afterColon) {
                 // check if the character is a valid key (c, d, or +)
                 if(patternMap.find(c) == patternMap.end()){
-                    error = "Invalid pattern \"";
-                    error.push_back(c);
-                    error += "\" found in filepattern. Patterns must be \"d\", \"c\", or \"+\".";
+                    error = "Invalid pattern \"" + c + "\" found in filepattern. Patterns must be \"d\", \"c\", or \"+\".";
                     throw invalid_argument(error);
                 }
                 regexFilePattern += patternMap[c]; // Add corresponding regex 
                 regexPattern += patternMap[c];
-            } else str += c;
+            } else {
+                // character is a part of the variable name
+                str += c;
+            }
             
 
         } else { // Add character without modifications if not in brackets
-
+            // check if character is valid
             if(isalpha(c) || isdigit(c) || c == '.' || c == '-' || c == '_'){
                 regexFilePattern += c;
                 ++stringLength;
             } else {
-                error = "Invalid character \"";
-                error.push_back(c);
-                error += "\" in filepattern.";
+                error = "Invalid character \"" + c + "\" in filepattern.";
                 throw std::invalid_argument(error);
             }
         } 
     }
-    
+
+    // iteration finished inside of the brackets
     if (inBrackets) {
         cout << "Missing closing bracket in file pattern" << endl;
         exit(1);
@@ -83,7 +84,9 @@ void ExternalPattern::filePatternToRegex(){
 
 }
 
-
+/*
+ * From https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
+ */
 vector<string> ExternalPattern::split (string& s, const string& delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
     string token;
