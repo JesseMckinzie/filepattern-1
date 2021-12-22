@@ -13,13 +13,6 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(backend, m){
 
-    py::class_<std::vector<std::vector<Tuple>>>(m, "VectorMap")
-        .def(py::init<>())
-        .def("__len__", [](const std::vector<std::vector<Tuple>> &v) { return v.size(); })
-        .def("__iter__", [](std::vector<std::vector<Tuple>> &v) {
-            return py::make_iterator(v.begin(), v.end()); }, 
-            py::keep_alive<0, 1>()); /* Keep vector alive while iterator is used */
-
     py::class_<Pattern>(m, "Pattern")
         .def("printValidFiles", &Pattern::printValidFiles)
         .def("filePatternToRegex", &Pattern::filePatternToRegex)
@@ -58,7 +51,7 @@ PYBIND11_MODULE(backend, m){
         .def(py::init<const std::string&, const std::string&, const std::string&, bool>())
         .def("matchFiles", &ExternalFilePattern::matchFiles)
         .def("printFiles", &ExternalFilePattern::printFiles)
-        .def("getMatching", &ExternalFilePattern::getMatching)
+        //.def("getMatching", &ExternalFilePattern::getMatching)
         .def("getValidFilesBlock", &ExternalFilePattern::getValidFilesBlock)
         .def("groupBy", &ExternalFilePattern::groupBy)
         .def("currentBlockLength", &ExternalFilePattern::currentBlockLength)

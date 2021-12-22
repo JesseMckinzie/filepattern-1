@@ -19,9 +19,9 @@ FilePattern::FilePattern(const string& path, const string& filePattern, bool rec
     }
     
     this->filePattern = filePattern; // cast input string to regex
-    this->filesSorted = false;
-    this->regexFilePattern = "";
-    this->recursive = recursive;
+    this->filesSorted = false; // To be removed
+    this->regexFilePattern = ""; // Regex version of pattern
+    this->recursive = recursive; // Iterate over subdirectories
 
     this->matchFiles();
 }
@@ -49,20 +49,17 @@ void FilePattern::matchFilesOneDir(){
         file = "";
 
         // cut off path to leave just the filename
-        i = 0;
-            i = filePath.size()-1;
+        file = s::getBaseName(filePath);   
 
-        while(filePath[i] != '/'){
-            file.insert(0, 1, filePath[i]); 
-            --i;
-        }     
         // Check if filename matches filepattern
         mapping.clear();
         get<1>(member).clear();
+
+        // Check if basename matches the pattern
         if(regex_match(file, patternRegex)) {
-            //mapping["file"] = file;
+            //mapping["file"] = file; // Add basename to mapping
+
             // loop over the variables in the file pattern, creating a mapping
-            // between the variable name and value
             mapping = this->matchFilesLoop(mapping, file, patternRegex, parsedRegex);
             get<0>(member) = mapping;
             get<1>(member).push_back(filePath);
@@ -85,40 +82,38 @@ void FilePattern::matchFilesMultDir(){
     Tuple member;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
-    Types temp;
+    string temp;
     string val;
+
+    // Iterate over directories and subdirectories
     for (const auto& entry : this->recursiveIterator) {
-        //cout << entry.path() << endl;
+
         // Get the current file
         filePath = entry.path();
         file = "";
 
-        // cut off path to leave just the filename
+        // Get basename
+        file = s::getBaseName(filePath);
 
-        i = filePath.size()-1;
-
-        while(filePath[i] != '/'){
-            file.insert(0, 1, filePath[i]); 
-            --i;
-        }     
-        
-        // Check if filename matches filepattern
         mapping.clear();
         get<1>(member).clear();
+
+        // Check if basename matches pattern
         if(regex_match(file, patternRegex)) {
             matched = false;
+
             for(int i = 0; i < validFiles.size(); i++){ 
-                temp = get<0>(validFiles[0])["file"];
-                val = s::to_string(temp);
-                if(val == file){
+                //temp = get<1>(validFiles[0])["file"]; // to be removed
+                temp = s::getBaseName(s::to_string(get<1>(validFiles[0])[0]));
+               // val = s::to_string(temp); to be removed
+                if(temp == file){
                     matched = true;
                     get<1>(validFiles[i]).push_back(filePath);
                     break;
                 } 
             }
             if(!matched){
-                mapping["file"] = file;
-                //mapping["filePath"] = filePath;
+                //mapping["file"] = file; // Add basename to mapping
             
                 mapping = this->matchFilesLoop(mapping, file, patternRegex, parsedRegex);
                 get<0>(member) = mapping;

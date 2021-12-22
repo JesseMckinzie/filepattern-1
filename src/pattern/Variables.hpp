@@ -13,6 +13,10 @@ struct AnyGet {
     std::string operator()(const std::string& value) { return value; }
 };
 
+/**
+ * @brief String methods
+ * 
+ */
 namespace s {
         inline bool is_number(const std::string &s) {
                 return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
@@ -25,6 +29,22 @@ namespace s {
         inline int size(const Types& input){
                 return input.index() == 0 ? sizeof(int) : sizeof(std::string) + s::to_string(input).length();
         }       
+
+        /**
+        * @brief Get the basename of a filepath.
+        * 
+        * @param filePath Filepath to find the basename of.
+        * @return string The basename of the filepath.
+        */
+        inline std::string getBaseName(const std::string& filePath){
+                int i = filePath.size()-1;
+                std::string file;
+                while(filePath[i] != '/'){
+                        file.insert(0, 1, filePath[i]); 
+                        --i;
+                }     
+                return file;
+        }
 };
 
 struct Variables {

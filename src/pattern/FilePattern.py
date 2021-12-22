@@ -1,6 +1,12 @@
 from . import backend
 
 class FilePattern:
+    """
+    In memory version of filepattern.
+
+    FilePattern iterates over a directory, matching filenames to a pattern. 
+    """
+
 
     def __init__(self, path: str, pattern: str, recursive: bool=False):
         """
