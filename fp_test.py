@@ -1,6 +1,8 @@
 from pathlib import Path
 import requests, zipfile
 from pattern import FilePattern as fp
+import filepattern as FP
+import pprint
 
 """ Get an example image """
 # Set up the directories
@@ -19,8 +21,9 @@ with zipfile.ZipFile(PATH/FILENAME, 'r') as zip_ref:
 
 filepath = "data/Small_Fluorescent_Test_Dataset/image-tiles"
 
-pattern = "img_r00{r:d}_c00{c:d}.tif"
+pattern = "img_r00{r}_c00{y}.tif"
 
+"""
 files = fp.FilePattern(filepath, pattern)
 
 for file in files(): 
@@ -33,3 +36,10 @@ for file in files(group_by='r'):
 print("File matching r=1 and c=2:")
 for file in files.get_matching("r=1, c=2"):
     print(file)
+"""
+
+FILES = FP.FilePattern(filepath, pattern)
+for f in FILES:
+    print(f)
+
+pprint.pprint(FILES.get_matching(R=[1,2], Y=[1]))
