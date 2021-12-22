@@ -14,11 +14,13 @@ vector<string> FileStream::getBlock(){
     vector<string> vec;
     long double size = sizeof(vector<string>);
     string str;
-
+    // get string while less than block size
     while(size < this->blockSize && this->infile >> str){
         size = Stream::currentSize(str.length(), size);
         vec.push_back(str);
     }
+    
+    //check if end of file
     streampos ptr = infile.tellg();
     if(!(this->infile >> str)){
         this->empty = true;
