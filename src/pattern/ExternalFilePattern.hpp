@@ -112,24 +112,57 @@ class ExternalFilePattern : public ExternalPattern {
         int currentBlockLength();
 
     private: 
-        std::string path;
+        std::string path; // path to directory
         std::filesystem::directory_iterator iterator; // File iterator for given path
-        std::filesystem::recursive_directory_iterator recursiveIterator;
-        FilesystemStream stream;
-        bool endOfFile;
-        bool recursive;
-        int totalFiles;
-        int mapSize;
-        std::ifstream infile;
-        std::string validFilesPath;
-        bool firstCall;
+        std::filesystem::recursive_directory_iterator recursiveIterator; // Recursive iterator
+        FilesystemStream stream; // I/O stream from temporary file
+        bool endOfFile; // True if end of temp file is reached
+        bool recursive; // True if recursive iterator through subdirectories
+        int totalFiles; // Total number of matched files (will be deleted)
+        int mapSize; // Number of variables in mapping
+        std::ifstream infile; // Input stream used throughout methods
+        std::string validFilesPath; // Path to temporary txt file containing valid files
+        bool firstCall; // True if first call has not been made to next() 
 
-        bool getMap(std::fstream&, Tuple&);
+        /**
+         * @brief Get a map from a .txt file 
+         * 
+         * Gets a map from a txt file that contains variables mapped to values.
+         *
+         * @param infile Input stream
+         * @param mapping Map to be modified
+         * @return true The end of the file has not been reached and the map is modified
+         * @return false The end of the file has been reached and the mao is not modified
+         */
+        bool getMap(std::fstream& infile, Tuple& mapping);
 
+        /**
+         * @brief Finds values of variables given a file that matches the pattern.
+         *
+         * Finds the value of variables given a matching filepath and returns a map of the 
+         * variables to the respective value. The type of the variable is preserved.
+         * 
+         * @return A map of variables to values from the basename of the filepath.  
+         */
         Map matchFilesLoop(Map&, const std::string&, const std::regex&, std::vector<std::string>&);
 
+        /**
+         * @brief Matches files from a directory iterator. 
+         * 
+         * Iterates over directory using a filesystem directory iterator and finds 
+         * all files in the directory that match the filepattern. matchFilesLoop is
+         * called to generate a mapping between the variables and values. The mapping is
+         * stored in the first member of the resulting tuple. The filepath is stored in the second 
+         * member of the tuple.
+         */
         void matchFilesOneDir();
 
+        /**
+         * @brief Iterates over a directory and its subdirectories, matching files 
+         * to the pattern. If two files in different subdirectories have the same name, 
+         * the filepath to both files is stored in the array in the second member of the tuple.
+         * 
+         */
         void matchFilesMultDir();
 };
 #endif

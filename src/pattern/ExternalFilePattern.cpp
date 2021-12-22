@@ -267,30 +267,63 @@ void ExternalFilePattern::matchFiles() {
     this->validGroupedFiles.push_back(validFiles);
 }
 
-vector<Tuple> ExternalFilePattern::getMatching(string variables){
-
+template <typename... Args>
+vector<Tuple> ExternalFilePattern::getMatching(string& t, Args... args){
     //remove spaces if present
-    //variables.erase(std::remove_if(variables.begin(), variables.end(), ::isspace), variables.end());
-    
-    //split on commas
-    vector<string> splitVaraibles = split(variables, ",");
-    vector<pair<string,string>> variableValues;
+    //"x=[1,2]"
+    vector<string> vec;
+    for(const auto& arg: args...){
+        vec.push_back(arg);
+    }
 
-    std::pair<string, string> pair;
-    size_t position;
-    Types temp;
+    for(const auto& v: vec){
+        v.erase(std::remove_if(variables.begin(), variables.end(), ::isspace), variables.end());
+    }
+
+    //split on commas
+    std::pair<string,string> splitVaraibles = split(variables, "=");
+
+    bool validVariable = false;
+    for(const auto& var: variables.varaibles){
+        if(splitVaraibles.first == std::get<0>(var)) {
+            validVariable = true;
+        }
+    }
+    if(!validVariable) throw std::invalid_argument("\"" + splitVaraibles.first + "\" is not a variable.")
+
+
+    //vector<pair<string,string>> variableValues;
+
+    //std::pair<string, string> pair;
+    //size_t position;
+
+    /*
     for(const auto& variable: splitVaraibles) {
         position = variable.find("=");
         pair.first = variable.substr(0, position);
         pair.second = variable.substr(position+1);
-        //if(!validFiles[0].count(pair.first)) throw invalid_argument("Variable must be in file pattern.");
+        if(!validFiles[0].count(pair.first)) throw invalid_argument("Variable must be in file pattern.");
         variableValues.push_back(pair);
     }
+    */
+
+    ifstream infile(this->validFilesPath, ios_base::app);
+
+    string out = tmpdir + "matched";
+    ofstream outfile(out);
+
+    Tuple mapping;
+    while(getMap(infile, mapping)){
+        if(get<0>(mapping)[variable] == value){
+            writeMap(outfile, mapping);
+        }
+    }
     
+    /*
     //vector<pair<string, int> variablesVec;
     vector<Tuple> matching;
-
-    bool match;
+    Types temp;
+    bool match; 
     if(!stream.endOfValidFiles()){
         this->validFiles = stream.getValidFilesBlock();
         for(auto& file: this->validFiles){
@@ -304,6 +337,7 @@ vector<Tuple> ExternalFilePattern::getMatching(string variables){
     }
 
     return matching;
+    */
 }
 
 
