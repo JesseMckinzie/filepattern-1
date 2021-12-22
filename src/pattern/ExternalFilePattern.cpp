@@ -2,6 +2,12 @@
 
 using namespace std;
 
+/**
+ * @brief Get the basename of a filepath.
+ * 
+ * @param filePath Filepath to find the basename of.
+ * @return string The basename of the filepath.
+ */
 inline string getBaseName(string& filePath){
     int i = filePath.size()-1;
     string file;
@@ -16,20 +22,18 @@ ExternalFilePattern::ExternalFilePattern(const string& path, const string& fileP
 stream(FilesystemStream(path, true, blockSize)) {
 
     this->path = path; // store path to target directory
-    //this->iterator = fs::directory_iterator(path);
-    //FilesystemStream stream = FilesystemStream(this->iterator, blockSize);   
     
     this->filePattern = filePattern; // cast input string to regex
-    this->filesSorted = false;
-    this->regexFilePattern = "";
-    this->recursive = recursive;
-    this->totalFiles = 0;
+    this->filesSorted = false; // To be removed
+    this->regexFilePattern = ""; // Regex equivalent of the pattern
+    this->recursive = recursive; // Recursive directory iteration
+    this->totalFiles = 0; // Number of files matched (to be removed)
     this->mapSize = 0; //To be updated later in program, set for compiling
-    this->validFilesPath = stream.getValidFilesPath();
-    this->firstCall = true;
-    this->matchFiles();
-    this->infile.open(validFilesPath);
-    this->endOfFile = false;
+    this->validFilesPath = stream.getValidFilesPath(); // Store path to valid files txt file
+    this->firstCall = true; // first call to next() has not occured
+    this->matchFiles(); // match files to pattern
+    this->infile.open(validFilesPath); // open temp file for the valid files
+    this->endOfFile = false; // end of valid files 
     
 
 }
@@ -68,35 +72,37 @@ Map ExternalFilePattern::matchFilesLoop(Map& mapping, const string& file, const 
     string s = "";
     string temp = "";
 
+    // iterate for number of variables
     for(int j = 0; j < variables.variables.size(); ++j){
-        i += variables.getDistance(j);
-        pattern = variables.getStringRegex(j);
-        temp = "";
+
+        i += variables.getDistance(j); // skip to variable location in string
+        pattern = variables.getStringRegex(j); // get variable regex
+        temp = ""; 
+        
         if(pattern == "[0-9]+" || pattern == "[a-zA-Z]+"){
+
             s.push_back(file[i]); // char -> string
-            while(regex_match(s, regex(pattern))) {
+            while(regex_match(s, regex(pattern))) { // while the filename matches, push back the value
                 temp += file[i];
                 i++;
                 s = "";
                 s.push_back(file[i]);
             }
-            if(s::is_number(temp)){
-                mapping[variables.getVariable(j)] = stoi(temp);
-            } else {
-                mapping[variables.getVariable(j)] = temp;
-            }
             s = "";
-        } else {
-            //parsedRegex = variables.parseRegex(j);
+
+        } else { // known number of values in filename
+            
             for(int k = 0; k < variables.length(j); ++k){
                 temp += file[i];
                 i++;
             }
-            if(s::is_number(temp)){
-                mapping[variables.getVariable(j)] = stoi(temp);
-            } else {
-                mapping[variables.getVariable(j)] = temp;
-            }
+        }
+
+        // preserve type of variable
+        if(s::is_number(temp)){
+            mapping[variables.getVariable(j)] = stoi(temp);
+        } else {
+            mapping[variables.getVariable(j)] = temp;
         }
     }
 
@@ -117,37 +123,28 @@ void ExternalFilePattern::matchFilesOneDir(){
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
     int number = 0;
+
+    // iterate over files
     while(!this->stream.isEmpty()){
         block = stream.getBlock();
-        for (const auto& entry : block) {
+        for (const auto& filePath : block) {
             
             // Get the current file
-            filePath = entry;
             file = getBaseName(filePath);
 
-            // cut off path to leave just the filename
-
-            /*
-            i = filePath.size()-1;
-
-            while(filePath[i] != '/'){
-                file.insert(0, 1, filePath[i]); 
-                --i;
-            }     
-            */
-            // Check if filename matches filepattern
             mapping.clear();
             std::get<1>(member).clear();
+
+            // filename matches the pattern
             if(regex_match(file, patternRegex)) {
-                //mapping["file"] = filePath;
+                //mapping["file"] = filePath; // store basename in mapping
+
                 // loop over the variables in the file pattern, creating a mapping
-                // between the variable name and value
                 mapping = this->matchFilesLoop(mapping, file, patternRegex, parsedRegex);
                 std::get<0>(member) = mapping;
                 std::get<1>(member).push_back(filePath);
-                //validFiles.push_back(mapping);
 
-                stream.writeValidFiles(member);
+                stream.writeValidFiles(member); // write valid files to txt file
                 number++;
             }
         }
@@ -176,62 +173,50 @@ void ExternalFilePattern::matchFilesMultDir(){
     Tuple current;
     string temp;
 
+    // iterate over directory and subdirectory in blockSize chunks
     while(!this->stream.isEmpty()){
-        block = stream.getBlock();
-        for (const auto& entry : block) {
+        block = stream.getBlock(); // get block of files from directory iterator
+        for (const auto& filePath : block) {
             // Get the current file
-            filePath = entry;
+
             file = getBaseName(filePath);
 
-            // cut off path to leave just the filename
-            //i = 0;
-            /*
-            i = filePath.size()-1;
-
-            while(filePath[i] != '/'){
-                file.insert(0, 1, filePath[i]); 
-                --i;
-            }     
-            */
             // Check if filename matches filepattern
             mapping.clear();
             if(regex_match(file, patternRegex)) {
                 matched = false;
                 
-                infile.open(stream.getValidFilesPath());
+                infile.open(stream.getValidFilesPath());  // open another stream to check if filename exists
 
                 while(getMap(infile, current)) {
                     temp = getBaseName(std::get<1>(current)[0]);
+
+                    // filename has already been found in another subdirectory
                     if(temp == file){
                     
                         streampos ptr = infile.tellg();
-                        matched = true;
-                        //ofstream outfile(stream.getValidFilesPath());
-                        ptr -= 1;
+                        matched = true; // found match
+
+                        ptr -= 1; // move back one line in file
                         infile.seekp(ptr, ios::beg);
                         
-                        //cout << filePath << endl;
                         str = ' ' + filePath;
-                        cout << str << endl;
-                        cout << endl;
                         infile << str << endl;
-                        //outfile.close();
                         break;
                     } 
                 }
-                
                 infile.close();
+
+                // If file was not found in another subdirectory
                 if(!matched){
-                    mapping["file"] = file;
+                    //mapping["file"] = file;
                     std::get<1>(member).push_back(filePath);
-                
-                    i = 0; // pointer for filename string
+
+                    //std::get<0>(member)["file"] = file; // Add basename to mapping
                     // loop over the variables in the file pattern, creating a mapping
-                    // between the variable name and value
-                    //std::get<0>(member)["file"] = file;
                     std::get<0>(member) = this->matchFilesLoop(mapping, file, patternRegex, parsedRegex);
                     this->mapSize = std::get<0>(member).size();
-                    //validFiles.push_back(mapping);
+
                     stream.writeValidFiles(member);
                     std::get<1>(member).clear();
                 }
@@ -241,23 +226,13 @@ void ExternalFilePattern::matchFilesMultDir(){
     
 }
 
+
 void ExternalFilePattern::matchFiles() {
     
     filePatternToRegex(); // Get regex of filepattern
-    this->mapSize = variables.variables.size();
-    //Check if valid groupBy variable
-    /*
-    bool validGroup = false;
-    for(int i = 0; i < variables.getNumberOfVariables(); i++){
-        if(variables.getVariable(i) == groupBy) {
-            validGroup = true;
-        }
-    }
 
-    if(!(groupBy == "" || validGroup)) { 
-        throw invalid_argument("groupBy must be a variable that appears in the file pattern");
-    }
-    */
+    this->mapSize = variables.variables.size();
+    
     if(recursive){
         this->matchFilesMultDir();
     } else {
@@ -267,6 +242,14 @@ void ExternalFilePattern::matchFiles() {
     this->validGroupedFiles.push_back(validFiles);
 }
 
+/**
+ * @brief In progress
+ * 
+ * @tparam Args 
+ * @param t 
+ * @param args 
+ * @return vector<Tuple> 
+ */
 template <typename... Args>
 vector<Tuple> ExternalFilePattern::getMatching(string& t, Args... args){
     //remove spaces if present
@@ -342,17 +325,20 @@ vector<Tuple> ExternalFilePattern::getMatching(string& t, Args... args){
 
 
 void ExternalFilePattern::next(){
+    // If first call, call groupby if supplied
     if(firstCall && this->group != ""){
         this->groupBy(this->group);
     }
-    this->firstCall = false;
-    this->currentBlock = this->getValidFilesBlock();
+
+    this->firstCall = false; // first call was made
+    this->currentBlock = this->getValidFilesBlock(); // get block of valid files
 }
 
 int ExternalFilePattern::currentBlockLength(){
-    if(firstCall) return INT_MAX;
+    if(firstCall) return INT_MAX; // return max int if call has not been made (may change)
     return this->currentBlock.size();
 }
+
 
 std::vector<Tuple> ExternalFilePattern::getValidFilesBlock(){
     if(stream.endOfValidFiles()){
@@ -364,6 +350,7 @@ std::vector<Tuple> ExternalFilePattern::getValidFilesBlock(){
 
 void ExternalFilePattern::groupBy(const string& groupBy) {
 
+    // sort valid files
     string path = stream.getValidFilesPath();
     ExternalMergeSort sort = ExternalMergeSort(std_map, 
                                                path, 
@@ -371,47 +358,6 @@ void ExternalFilePattern::groupBy(const string& groupBy) {
                                                stream.getBlockSizeStr(),
                                                groupBy,
                                                stream.mapSize);
-    /*
-    vector<Tuple> validFiles;
-
-    validFiles = stream.getValidFilesBlock();
-
-    /*
-    sort(validFiles.begin(), validFiles.end(), [&groupBy = as_const(groupBy)]
-     (Tuple& m1, Tuple& m2){
-        return m1.first[groupBy] < m2.first[groupBy];
-    });
-    */
-
-    /*
-    Types currentValue = std::get<0>(validFiles[0])[groupBy];
-    vector<Tuple> emptyVec;
-    int i = 0;
-    int group_ptr = 0;
-
-    long size = sizeof(vector<vector<Tuple>>);
-
-    //string out = tmpdir + "validGroupedFiles";
-    //ofstream outfile(validGroupedFiles);
-    while(i < this->validFiles.size()){
-        this->validGroupedFiles.push_back(emptyVec);
-        size += sizeof(emptyVec);
-        while(std::get<0>(this->validFiles[i])[groupBy] == currentValue && size < this->blockSize) {
-            this->validGroupedFiles[group_ptr].push_back(this->validFiles[i]);
-            ++i;
-            if (i >= this->validFiles.size()){ 
-                // some empty condition becomes true
-                break;
-            }
-            size += sizeof(validFiles[i]);
-            for(const auto map: std::get<0>(validFiles[i])){
-                size += 2*sizeof(string) + map.first.length() + s::size(map.second);
-            }
-        }
-        if (i < this->validFiles.size()) currentValue = std::get<0>(this->validFiles[i])[groupBy];
-        ++group_ptr;
-    }
-    */
 }
 
 bool ExternalFilePattern::getMap(fstream& infile, Tuple& member){
@@ -425,19 +371,15 @@ bool ExternalFilePattern::getMap(fstream& infile, Tuple& member){
     get<1>(member).clear();
     while(getline(infile, str)){
 
+        // if map is correct size, return 
         if (map.size() == (this->mapSize)) {
-            //size += sizeof(map) + sizeof(vector<string>);
-            
-            //sizeof(Tuple) +
-            //for(const auto& item : map){
-            //    size += item.first.length() + item.second.length();
-            //}
             get<0>(member) = map;
             str.pop_back();
             get<1>(member).push_back(str);
             return true;
         } 
 
+        // map variable to value 
         pos = str.find(":");
         key = str.substr(0, pos);
         valueLength = str.length() - pos;
