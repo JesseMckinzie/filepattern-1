@@ -2,22 +2,6 @@
 
 using namespace std;
 
-/**
- * @brief Get the basename of a filepath.
- * 
- * @param filePath Filepath to find the basename of.
- * @return string The basename of the filepath.
- */
-inline string getBaseName(string& filePath){
-    int i = filePath.size()-1;
-    string file;
-    while(filePath[i] != '/'){
-        file.insert(0, 1, filePath[i]); 
-        --i;
-    }     
-    return file;
-}
-
 ExternalFilePattern::ExternalFilePattern(const string& path, const string& filePattern, const string& blockSize="50 MB", bool recursive=false):
 stream(FilesystemStream(path, true, blockSize)) {
 
@@ -130,7 +114,7 @@ void ExternalFilePattern::matchFilesOneDir(){
         for (const auto& filePath : block) {
             
             // Get the current file
-            file = getBaseName(filePath);
+            file = s::getBaseName(filePath);
 
             mapping.clear();
             std::get<1>(member).clear();
@@ -179,7 +163,7 @@ void ExternalFilePattern::matchFilesMultDir(){
         for (const auto& filePath : block) {
             // Get the current file
 
-            file = getBaseName(filePath);
+            file = s::getBaseName(filePath);
 
             // Check if filename matches filepattern
             mapping.clear();
@@ -189,7 +173,7 @@ void ExternalFilePattern::matchFilesMultDir(){
                 infile.open(stream.getValidFilesPath());  // open another stream to check if filename exists
 
                 while(getMap(infile, current)) {
-                    temp = getBaseName(std::get<1>(current)[0]);
+                    temp = s::getBaseName(std::get<1>(current)[0]);
 
                     // filename has already been found in another subdirectory
                     if(temp == file){
@@ -250,6 +234,8 @@ void ExternalFilePattern::matchFiles() {
  * @param args 
  * @return vector<Tuple> 
  */
+ 
+ /*
 template <typename... Args>
 vector<Tuple> ExternalFilePattern::getMatching(string& t, Args... args){
     //remove spaces if present
@@ -289,7 +275,7 @@ vector<Tuple> ExternalFilePattern::getMatching(string& t, Args... args){
         variableValues.push_back(pair);
     }
     */
-
+/*
     ifstream infile(this->validFilesPath, ios_base::app);
 
     string out = tmpdir + "matched";
@@ -320,10 +306,9 @@ vector<Tuple> ExternalFilePattern::getMatching(string& t, Args... args){
     }
 
     return matching;
-    */
+    
 }
-
-
+*/
 void ExternalFilePattern::next(){
     // If first call, call groupby if supplied
     if(firstCall && this->group != ""){

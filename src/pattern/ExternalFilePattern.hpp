@@ -72,7 +72,7 @@ class ExternalFilePattern : public ExternalPattern {
          * 
          * @return std::vector<Tuple> Matched files.  
          */
-        std::vector<Tuple> getMatching(std::string&);
+        //std::vector<Tuple> getMatching(std::string&);
 
         /**
          * @brief To be removed

@@ -53,7 +53,9 @@ void ExternalPattern::filePatternToRegex(){
             if(afterColon) {
                 // check if the character is a valid key (c, d, or +)
                 if(patternMap.find(c) == patternMap.end()){
-                    error = "Invalid pattern \"" + c + "\" found in filepattern. Patterns must be \"d\", \"c\", or \"+\".";
+                    error = "Invalid pattern \"";
+                    error.push_back(c);
+                    error += "\" found in filepattern. Patterns must be \"d\", \"c\", or \"+\".";
                     throw invalid_argument(error);
                 }
                 regexFilePattern += patternMap[c]; // Add corresponding regex 
@@ -70,7 +72,9 @@ void ExternalPattern::filePatternToRegex(){
                 regexFilePattern += c;
                 ++stringLength;
             } else {
-                error = "Invalid character \"" + c + "\" in filepattern.";
+                error = "Invalid character \"";
+                error.push_back(c);
+                error += "\" in filepattern.";
                 throw std::invalid_argument(error);
             }
         } 

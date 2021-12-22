@@ -2,8 +2,11 @@ from . import backend
 
 class FilePattern:
     """
-    Filepattern iterates over a provided directory, matching filenames in the directory to a 
-    user specified pattern. 
+    External memory version of filepattern. 
+
+    FilePattern iterates over a provided directory, matching filenames in the directory to a 
+    user specified pattern only utilizing the amount of memory specifed in the the block_size 
+    parameter of the constructor. 
     """
 
     def __init__(self, path: str, pattern: str, block_size: str="50 MB", recursive: bool=False):
@@ -38,25 +41,25 @@ class FilePattern:
         self._file_pattern.printFiles()
     
     def get_valid_files_block(self) -> list:
+        """
+        Returns a list of tuples that contain the matched files that is the size of block_size.
+        """
         return self._file_pattern.getValidFilesBlock()
 
     def match_files(self, group_by: str="") -> None:
         """
         Comapres files to file pattern and stores file names that match
         the file pattern.
-
-        :param bool cut_path: Cuts the path off of the filename, leaving only the filename (otional, defaults to true)
-        e.g. /home/usr/file.txt -> file.txt when true
         """
         try: 
-            self._file_pattern.matchFiles(True)
+            self._file_pattern.matchFiles()
         except ValueError as e: 
             print(e)
 
-    def get(self):
-       return self._file_pattern.get()
-
-    def length(self):
+    def length(self) -> int:
+        """
+        Returns the length of the current file block.
+        """
         return self._file_pattern.currentBlockLength()
             
     def __call__(self, group_by=None):
