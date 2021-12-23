@@ -15,28 +15,32 @@ ExternalMergeSort::ExternalMergeSort(const Structure& structure,
     this->blockSizeStr = blockSize;
     this->blockSize = Block::parseblockSize(blockSize);
     this->mapSize = mapSize;
-    tmpdir = fs::temp_directory_path();
+    tmpdir = fs::temp_directory_path(); // Find temporary directory
 
-    this->tmpdir += "/extern_sort_tmp/";
+    this->tmpdir += "/extern_sort_tmp/"; // temp directory
+    // remove files from directory if already exits
     if(fs::exists(tmpdir)){ 
-        uintmax_t n = fs::remove_all(tmpdir);
+        uintmax_t n = fs::remove_all(tmpdir); 
     }
-
+    // Create temp directory
     bool created = fs::create_directory(tmpdir);
     if(!created) {
             throw invalid_argument("Error creating tmp directory");
     }
 
+    // Call function based on data type
     if(structure == std_map){
         this->sortMapFile();
     } else {
         this->sortFile();
     }
-    //uintmax_t n2 = fs::remove_all(tmpdir);
+
+    uintmax_t n2 = fs::remove_all(tmpdir); // Remove temp directory 
 }
 
 
-double ExternalMergeSort::currentSize(const vector_string& vec, const int& stringSize, const double& previousSize){
+double ExternalMergeSort::currentSize(const int& stringSize, 
+                                      const double& previousSize){
     return sizeof(string) + stringSize + previousSize;
 }
     
@@ -50,17 +54,16 @@ void ExternalMergeSort::sortMapFile(){
     string blockName;
     int count = 0;
 
-    //FileStream stream = FileStream(inputFileName, this->blockSizeStr);
-    //this->mapSize = stream.mapSize;
     ifstream infile(inputFileName);
     vector<Tuple> vec;
 
+    // Get blocks of files and sort while not end of file
     while (true) {
-        getMapBlock(infile, vec);
+        getMapBlock(infile, vec); 
         if(vec.size() == 0){
             break;
         }
-        
+        // sort block
         sort(vec.begin(), vec.end(), 
             [&sortVariable = as_const(sortVariable)](Tuple& a, Tuple& b) {
                 return get<0>(a)[sortVariable] < get<0>(b)[sortVariable];
@@ -71,18 +74,13 @@ void ExternalMergeSort::sortMapFile(){
         ofstream out(blockName, ios_base::app);
         this->writeMapTmpFile(out, vec);
 
-        count++;
-        if(count > 100){
-            throw runtime_error("Creating over 100 text files. Ending program");
-        }
-
         filesToMerge.push_back(blockName);
         //clear vec and continue reading file   
         vec.clear();
         blockNum++;
     }
+
     //merge sorted files 
-    
     this->mergeMaps();
 }
 
@@ -163,12 +161,12 @@ void ExternalMergeSort::sortFile(){
     while (getline(file, str)) {
 
         this->vec.push_back(str);
-        previousSize = currentSize(vec, str.length(), previousSize);
+        previousSize = currentSize(str.length(), previousSize);
 
         while(previousSize < this->blockSize && !file.eof()){
             getline(file,str);
             this->vec.push_back(str);
-            previousSize = currentSize(vec, str.length(), previousSize);
+            previousSize = currentSize(str.length(), previousSize);
         } 
 
         sort(this->vec.begin(), this->vec.end(), 

@@ -1,14 +1,3 @@
-/**
- * @file fs_stream.cpp
- * @author Jesse McKinzie (Jesse.McKinzie@axleinfo.com)
- * @brief Creates a data stream from a filesystem directory iterator that returns filepaths in a vector that consumes
- * less than or equal to the amount of memory specified in the blockSize parameter.
- * @version 0.1
- * @date 2021-12-22
- * 
- * 
- */
-
 #include "fs_stream.hpp"
 
 using namespace std;
@@ -26,10 +15,11 @@ FilesystemStream::FilesystemStream(const string& path, bool recursive=false, con
     this->recurisve = true;
 
     try {
+        // create recursive iterator 
         if(recursive){
             this->recursive_directory_iterator = fs::recursive_directory_iterator(path);
             this->rec_end = fs::end(recursive_directory_iterator);
-        } else{ 
+        } else{ // create directory iterator
             this->directory_iterator = fs::directory_iterator(path); // store iterator for target directory
             this->end = fs::end(directory_iterator);
         }

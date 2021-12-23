@@ -38,9 +38,9 @@ class ExternalPattern : public Pattern {
         void printValidFiles();
 
         /**
-         * @brief To be removed
+         * @brief Sets the variable to be grouped in groupBy()
          * 
-         * @param group 
+         * @param group Variable to group the matched files by 
          */
         void setGroup(const std::string& group);
 };

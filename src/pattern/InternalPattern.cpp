@@ -7,15 +7,17 @@ void InternalPattern::groupBy(const string& groupBy) {
     validGroupedFiles.clear();
     Tuple member;
     
+    // Sort the matched files by the groupBy parameter 
     sort(validFiles.begin(), validFiles.end(), [&groupBy = as_const(groupBy)](Tuple& p1, Tuple& p2){
         return get<0>(p1)[groupBy] < get<0>(p2)[groupBy];
     });
 
-    Types currentValue = get<0>(validFiles[0])[groupBy];
+    Types currentValue = get<0>(validFiles[0])[groupBy]; // get the value of variable
     vector<Tuple> emptyVec;
     int i = 0;
     int group_ptr = 0;
 
+    //group files into vectors based on groupBy variable (to be removed)
     while(i < this->validFiles.size()){
         this->validGroupedFiles.push_back(emptyVec);
         while(std::get<0>(this->validFiles[i])[groupBy] == currentValue) {
@@ -46,6 +48,7 @@ vector<Tuple> InternalPattern::getMatching(string& variables){
 
     std::pair<string, string> pair;
     size_t position;
+    // Parse input into variables and values (to be updated)
     for(const auto& variable: splitVaraibles) {
         position = variable.find("=");
         pair.first = variable.substr(0, position);
@@ -54,11 +57,11 @@ vector<Tuple> InternalPattern::getMatching(string& variables){
         variableValues.push_back(pair);
     }
 
-    //vector<Tuple<string, int> variablesVec;
     vector<Tuple> matching;
 
     bool match;
     Types temp;
+    //Iterate over files, pushing to return vector if the variable matches the input
     for(auto& file: this->validFiles){
         match = true;
         for(const auto& variable: variableValues) {

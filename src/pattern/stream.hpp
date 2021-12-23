@@ -14,21 +14,45 @@ namespace fs = std::filesystem;
 class Stream {
     
     public:
-        void writeBlock(const std::vector<std::string>&);
+        int counter; // for debugging (to be removed) 
+        int mapSize; // size of maps in stream
+
+        /**
+         * @brief Write a block of strings to the output file.
+         * 
+         * @param vec Vector to write to output file.
+         */
+        void writeBlock(const std::vector<std::string>& vec);
+
+        /**
+         * @brief Write valid files maps to output file. 
+         * 
+         * @param mapping Mapping to write to the output file.
+         */
         void writeValidFiles(const Tuple& mapping);
+
+        /**
+         * @brief Curent size of 
+         * 
+         * @param double 
+         * @return long double 
+         */
         long double currentSize(const int&, const long double&);
+
         bool isEmpty();
+
         std::string getFilePath();
+
         std::vector<Tuple> getValidFilesBlock();
+
         bool endOfValidFiles();
-        int counter;
+
         std::string getValidFilesPath();
-        int mapSize;
+        
         std::string getBlockSizeStr();
-        //void sort(const std::string&);
 
     protected:
-        Stream(const std::string&);
+        
         std::string tmpdir;
         long double blockSize;
         std::string outName;
@@ -38,5 +62,7 @@ class Stream {
         std::ifstream infile;
         std::string blockSizeStr;
         Map tempMap;
+
+        Stream(const std::string&);
 
 };
