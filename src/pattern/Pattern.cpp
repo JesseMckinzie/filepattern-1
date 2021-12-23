@@ -56,9 +56,7 @@ Tuple Pattern::getVariableMapMultDir(const string& filePath, const smatch& sm){
     string temp;
     string file = s::getBaseName(filePath);
     for(int i = 0; i < validFiles.size(); i++){ 
-        //temp = get<1>(validFiles[0])["file"]; // to be removed
         temp = s::getBaseName(s::to_string(get<1>(validFiles[i])[0]));
-        // val = s::to_string(temp); to be removed
         if(temp == file){
             matched = true;
             get<1>(validFiles[i]).push_back(filePath);
