@@ -21,16 +21,16 @@ with zipfile.ZipFile(PATH/FILENAME, 'r') as zip_ref:
 
 filepath = "data/Small_Fluorescent_Test_Dataset/image-tiles"
 
-pattern = "img_r00{r}_c00{y}.tif"
+pattern = "img_r00{r:d}_c00{c:d}.tif"
 
-"""
+
 files = fp.FilePattern(filepath, pattern)
 
 for file in files(): 
     print(file)
 
-print("\nGrouped by r: ")
-for file in files(group_by='r'): 
+print("\nGrouped by c: ")
+for file in files(group_by='c'): 
     print(file)
 
 print("File matching r=1 and c=2:")
@@ -43,3 +43,4 @@ for f in FILES:
     print(f)
 
 pprint.pprint(FILES.get_matching(R=[1,2], Y=[1]))
+"""
