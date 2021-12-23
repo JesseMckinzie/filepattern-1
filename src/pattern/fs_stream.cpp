@@ -1,7 +1,26 @@
+/**
+ * @file fs_stream.cpp
+ * @author Jesse McKinzie (Jesse.McKinzie@axleinfo.com)
+ * @brief Creates a data stream from a filesystem directory iterator that returns filepaths in a vector that consumes
+ * less than or equal to the amount of memory specified in the blockSize parameter.
+ * @version 0.1
+ * @date 2021-12-22
+ * 
+ * 
+ */
+
 #include "fs_stream.hpp"
 
 using namespace std;
-
+/**
+ * @brief Construct a new Filesystem Stream object
+ * 
+ * Creates a data stream from a filesystem directory iterator or recursive
+ *
+ * @param path 
+ * @param recursive 
+ * @param blockSize 
+ */
 FilesystemStream::FilesystemStream(const string& path, bool recursive=false, const string& blockSize="50 MB")
 :Stream(blockSize){
     this->recurisve = true;
@@ -32,7 +51,6 @@ vector<string> FilesystemStream::getBlock(){
             current = (*recursive_directory_iterator).path().string();
             //cout << "current: " << current << endl;
         } catch (exception& e){
-            cout << "Error on line 52" << endl;
             cout << e.what() << endl;
         }
         while(this->currentSize(current.length(), previousSize) < blockSize){
@@ -58,7 +76,6 @@ vector<string> FilesystemStream::getBlock(){
         try {
             current = (*directory_iterator).path().string();
         } catch (exception& e){
-            cout << "Error on line 52" << endl;
             cout << e.what() << endl;
         }
         while(this->currentSize(current.length(), previousSize) < blockSize){
