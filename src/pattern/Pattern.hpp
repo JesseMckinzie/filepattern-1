@@ -1,5 +1,4 @@
-#ifndef Pattern_H
-#define Pattern_H
+#pragma once
 #include <string>
 #include <iostream>
 #include <filesystem>
@@ -9,31 +8,29 @@
 #include "Variables.hpp"
 
 class Pattern {
+    
     protected:
         std::regex regexExpression; // Regex expression
         std::string filePattern;
         std::string regexFilePattern;
-        Variables variables;
-        bool filesSorted;
+        std::vector<std::string> variables;
+
+
     public:
         std::vector<Tuple> validFiles; // Store files that match given regex
         std::vector<std::vector<Tuple>> validGroupedFiles;
 
-        //std::vector<Tuple> getVariables();
-    
-        bool invalidFilePath(const std::string&);
-
+        /**
+         * @brief Convert to pattern to regex.
+         * 
+         * Creates a version of the pattern with regex to match files to. For example, 
+         * if the pattern contains {variable:d}, this is changed to [0-9] in the regex pattern.
+         */
         void filePatternToRegex();
 
-        void groupBy(const std::string&);
+        Tuple getVariableMapMultDir(const std::string& filePattern, const std::smatch& sm);
 
-        std::vector<std::string> split (std::string&, const std::string&);
-
-        std::vector<Tuple> getMatching(std::string&);
-        
-        void printValidFiles();
-
-        std::vector<Tuple> getValidFiles();
+        Tuple getVariableMap(const std::string& filePath, const std::smatch& sm);
 
         std::string getPattern();
 
@@ -43,16 +40,5 @@ class Pattern {
         
         std::vector<std::string> getVariables();
 
-        void printFilePaths();
-
         void printVariables();
-
-        std::vector<std::vector<std::string>> getValidFilePaths();
-        Map matchFilesLoop(Map&, 
-                           const std::string&,
-                           const std::regex&, 
-                           std::vector<std::string>&);
-
 };
-
-#endif

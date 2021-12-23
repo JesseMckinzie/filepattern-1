@@ -171,15 +171,8 @@ void ExternalMergeSort::sortFile(){
             previousSize = currentSize(vec, str.length(), previousSize);
         } 
 
-        //sort vec
-        auto start = chrono::high_resolution_clock::now();
-
         sort(this->vec.begin(), this->vec.end(), 
             [](const string& a, const string& b) {return a < b;});
-
-        auto stop = chrono::high_resolution_clock::now();
-        auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
-        cout << "Sort time: " << duration.count() << endl;
 
         //write to file
         blockName = to_string(blockNum) + ".txt";;
@@ -363,10 +356,6 @@ void ExternalMergeSort::mergeMaps(){
             this->twoWayMergeMaps(filesToMerge[filesToMerge.size()-1], newFiles[0], outFile);
             newFiles[0] = outFile;
         }
-        for(const auto& f: filesToMerge){
-            cout << f <<", " ;
-        }
-        cout << endl;
 
         iter++;
         filesToMerge = newFiles;
@@ -381,7 +370,7 @@ void ExternalMergeSort::mergeMaps(){
 
     Tuple map1, map2;
     ofstream outfile(this->outputFileName);
-    while(getMap(file, map1)){
+    while(m::getMap(file, map1, this->mapSize)){
         writeMap(outfile, map1);
         get<1>(map1).clear();
     }
@@ -408,17 +397,15 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
     Tuple map1, map2;
     while(true){
         if(count == 0) {
-            getMap(file1, map1); 
-            getMap(file2, map2);
+            m::getMap(file1, map1, this->mapSize); 
+            m::getMap(file2, map2, this->mapSize);
             count++;
         }
 
         // if file1 empty
         if(file1.eof()){
-            cout << "eof1" << endl;
             //writeMap(outfile, map1); // write remaining map
             if(file2.eof()){
-                cout << "both" << endl;
                 file1.close();
                 file2.close();
                 outfile.close();
@@ -426,13 +413,9 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
             }
 
             // write the rest of file2
-            //getMap(file2, map2);
+            //m::getMap(file2, map2, this->mapSize);
             writeMap(outfile, map2);
-            while(getMap(file2, map2)) {
-                for(const auto& e: get<0>(map2)){
-                    cout << e.first << ":" << s::to_string(e.second) << endl;
-                }
-                cout << endl;
+            while(m::getMap(file2, map2, this->mapSize)) {
                 writeMap(outfile, map2);
             }
 
@@ -442,11 +425,10 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
             break;
 
         } else if(file2.eof()){
-            cout << "eof2" << endl;
             // write the rest of file1
             //outfile << str1 << '\n';
             writeMap(outfile, map2);
-            while(getMap(file1, map1)) {
+            while(m::getMap(file1, map1, this->mapSize)) {
                 writeMap(outfile, map1);
             }
 
@@ -458,53 +440,14 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
         } else if(get<0>(map1)[this->sortVariable] <= get<0>(map2)[this->sortVariable]){
             //write str1 to output
             writeMap(outfile, map1);
-            getMap(file1, map1); 
+            m::getMap(file1, map1, this->mapSize); 
         } else {
             //write str2 to output
             writeMap(outfile, map2);
-            getMap(file2, map2);
+            m::getMap(file2, map2, this->mapSize);
         }
     }
     outfile.close();
-}
-
-/**
-* Modified method from Stream class
-*/
-bool ExternalMergeSort::getMap(ifstream& infile, Tuple& member){
-    string str;
-    Map map;
-
-    string key, value;
-    int valueLength;
-    size_t pos;
-
-    get<1>(member).clear();
-    while(getline(infile, str)){
-
-        if (map.size() == (this->mapSize)) {
-            //size += sizeof(map) + sizeof(vector<string>);
-            
-            //sizeof(Tuple) +
-            //for(const auto& item : map){
-            //    size += item.first.length() + item.second.length();
-            //}
-            get<0>(member) = map;
-            str.pop_back();
-            get<1>(member).push_back(str);
-            return true;
-        } 
-
-        pos = str.find(":");
-        key = str.substr(0, pos);
-        valueLength = str.length() - pos;
-        value = str.substr(pos+1, valueLength);
-
-        map[key] = value;
-        //size += valueLength + pos;
-    }
-
-    return false;
 }
 
 /**

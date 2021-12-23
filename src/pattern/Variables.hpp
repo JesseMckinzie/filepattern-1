@@ -3,6 +3,8 @@
 #include <tuple>
 #include <variant>
 #include <algorithm>
+#include <iostream>
+#include <fstream>
 
 typedef std::variant<int, std::string> Types;
 typedef std::map<std::string, Types> Map;
@@ -45,73 +47,82 @@ namespace s {
                 }     
                 return file;
         }
+
+        /**
+         * @brief Split a string on a character
+         *
+         * Splits a string into a vector of strings along a character. 
+         * From https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
+         *
+         * @param s String to be split
+         * @param delimiter Character to split string on
+         * @return std::vector<std::string> Vector of split strings
+         */
+        inline std::vector<std::string> split (std::string& s, const std::string& delimiter) {
+                size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+                std::string token;
+                std::vector<std::string> res;
+
+                while ((pos_end = s.find (delimiter, pos_start)) != std::string::npos) {
+                        token = s.substr (pos_start, pos_end - pos_start);
+                        pos_start = pos_end + delim_len;
+                        res.push_back (token);
+                }
+
+                res.push_back (s.substr (pos_start));
+                return res;
+        }
+
+        inline bool replace(std::string& str, const std::string& from, const std::string& to) {
+                size_t start_pos = str.find(from);
+                if(start_pos == std::string::npos)
+                        return false;
+                str.replace(start_pos, from.length(), to);
+                return true;
+        }
 };
 
-struct Variables {
-        //std::vector<std::pair<std::string, std::pair<std::string, int>>> variables;
-        std::vector<std::tuple<std::string, std::string, int, std::regex>> variables;
+namespace m {
 
-        void addNode(const std::string& variable, const std::string regex, const int& dist) {
-                //variables.push_back(std::make_pair(variable, std::make_pair(regex, dist)));
-                variables.push_back(std::make_tuple(variable, regex, dist, std::regex(regex)));
-        }
+        /**
+         * @brief Get a map from a .txt file 
+         * 
+         * Gets a map from a txt file that contains variables mapped to values.
+         *
+         * @param infile Input stream
+         * @param mapping Map to be modified
+         * @return true The end of the file has not been reached and the map is modified
+         * @return false The end of the file has been reached and the mao is not modified
+         */
+        inline bool getMap(std::ifstream& infile, Tuple& member, int mapSize){
+                std::string str;
+                Map map;
 
-        int getNumberOfVariables(){return variables.size();}
+                std::string key, value;
+                int valueLength;
+                size_t pos;
 
-        std::string getVariable(const int& index){
-                if(index >= variables.size()){
-                        std::cout << "Out of bounds error in Variables::getVariables()" << std::endl;
-                }
-                return std::get<0>(variables[index]);
-        }
-        std::string getStringRegex(const int& index){
-                if(index >= variables.size()){
-                        std::cout << "Out of bounds error in Variables::getRegex()" << std::endl;
-                }
-                return std::get<1>(variables[index]);
-        }
-        int getDistance(const int& index){
-                if(index >= variables.size()){
-                        std::cout << "Out of bounds error in Variables::getDistance()" << std::endl;
-                }
-                return std::get<2>(variables[index]);
-        }
-        int length(const int& index){
-                if(index >= variables.size()){
-                        std::cout << "Out of bounds error in Variables::length()" << std::endl;
-                }
-                std::string reg = std::get<1>(variables[index]);
-                return std::count(reg.begin(), reg.end(), '[');
-        }
+                std::get<1>(member).clear();
+                while(std::getline(infile, str)){
 
-        std::regex getRegex(const int& index){
-                if(index >= variables.size()){
-                        std::cout << "Out of bounds error in Variables::length()" << std::endl;
-                }
-                return std::get<3>(variables[index]);
-        }
-        /*
-        std::vector<std::regex> parseRegex(const int& index){
-                std::vector<std::regex> parsedRegex;
-                std::string thisRegex = getRegex(index);
+                        // if map is correct size, return 
+                        if (map.size() == (mapSize)) {
+                        std::get<0>(member) = map;
+                        str.pop_back();
+                        std::get<1>(member).push_back(str);
+                        return true;
+                        } 
 
-                std::regex expression = "";
-                for(const auto& c : thisRegex){
-                        if(c == '[' || isdigit(c) || isalpha(c) || c == '-'){
-                                expression += c;
-                        } else if (c == ']') {
-                                expression += c;
-                                parsedRegex.push_back(expression);
-                                expression = "";
-                        } else {
-                                throw std::invalid_argument("Invlaid regular expression in file pattern");
-                        }
-                }
-                return parsedRegex;
-        }
-        */
+                        // map variable to value 
+                        pos = str.find(":");
+                        key = str.substr(0, pos);
+                        valueLength = str.length() - pos;
+                        value = str.substr(pos+1, valueLength);
 
-        int getLength(){
-                return variables.size();
+                        map[key] = value;
+                        //size += valueLength + pos;
+                }
+
+                return false;
         }
-};
+}

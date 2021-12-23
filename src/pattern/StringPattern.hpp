@@ -1,10 +1,9 @@
 #pragma once
-#include "Pattern.hpp"
+#include "InternalPattern.hpp"
 
-class StringPattern : public Pattern {
+class StringPattern : public InternalPattern {
     public:
         StringPattern(const std::string&, const std::string&);
-
         /**
          * Stores and prints the valid filenames from the target directory. 
          */

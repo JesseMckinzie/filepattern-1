@@ -19,7 +19,6 @@ FilePattern::FilePattern(const string& path, const string& filePattern, bool rec
     }
     
     this->filePattern = filePattern; // cast input string to regex
-    this->filesSorted = false; // To be removed
     this->regexFilePattern = ""; // Regex version of pattern
     this->recursive = recursive; // Iterate over subdirectories
 
@@ -38,92 +37,45 @@ void FilePattern::matchFilesOneDir(){
 
     int i, j;
     string s;
-    string filePath;
-    string file;
+    string file, filePath;
     Tuple member;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
+    smatch sm;
     for (const auto& entry : this->iterator) {
         // Get the current file
         filePath = entry.path();
-        file = "";
-
-        // cut off path to leave just the filename
-        file = s::getBaseName(filePath);   
-
-        // Check if filename matches filepattern
-        mapping.clear();
-        get<1>(member).clear();
-
-        // Check if basename matches the pattern
-        if(regex_match(file, patternRegex)) {
-            //mapping["file"] = file; // Add basename to mapping
-
-            // loop over the variables in the file pattern, creating a mapping
-            mapping = this->matchFilesLoop(mapping, file, patternRegex, parsedRegex);
-            get<0>(member) = mapping;
-            get<1>(member).push_back(filePath);
-            validFiles.push_back(member);
+        file = s::getBaseName(filePath);
+        if(regex_match(file, sm, patternRegex)){
+            validFiles.push_back(getVariableMap(filePath, sm)); // write to txt file
         }
     }
-
+    if(validFiles.size() == 0){
+        throw std::runtime_error("No files matched. Check that the pattern is correct.");
+    }
 }
 
 void FilePattern::matchFilesMultDir(){
-    string pattern;
-    Map mapping;
-    vector<string> parsedRegex;
-
-    int i, j;
-    string s;
-    string filePath;
-    string file;
-    bool matched;
-    Tuple member;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
-    string temp;
-    string val;
-
+    Tuple tup;
+    smatch sm;
+    string file, filePath;
     // Iterate over directories and subdirectories
     for (const auto& entry : this->recursiveIterator) {
-
-        // Get the current file
         filePath = entry.path();
-        file = "";
-
-        // Get basename
         file = s::getBaseName(filePath);
-
-        mapping.clear();
-        get<1>(member).clear();
-
-        // Check if basename matches pattern
-        if(regex_match(file, patternRegex)) {
-            matched = false;
-
-            for(int i = 0; i < validFiles.size(); i++){ 
-                //temp = get<1>(validFiles[0])["file"]; // to be removed
-                temp = s::getBaseName(s::to_string(get<1>(validFiles[0])[0]));
-               // val = s::to_string(temp); to be removed
-                if(temp == file){
-                    matched = true;
-                    get<1>(validFiles[i]).push_back(filePath);
-                    break;
-                } 
-            }
-            if(!matched){
-                //mapping["file"] = file; // Add basename to mapping
-            
-                mapping = this->matchFilesLoop(mapping, file, patternRegex, parsedRegex);
-                get<0>(member) = mapping;
-                get<1>(member).push_back(filePath);
-                validFiles.push_back(member);
+        if(regex_match(file, sm, patternRegex)){
+            tup = getVariableMapMultDir(filePath, sm);
+            if(get<0>(tup).size() > 0){
+            validFiles.push_back(tup); // write to txt file
             }
         }
     }
+    if(validFiles.size() == 0){
+        throw std::runtime_error("No files matched. Check that the pattern is correct.");
+    }
 }
-
 
 void FilePattern::matchFiles() {
     

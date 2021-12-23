@@ -9,11 +9,11 @@
  */
 
 #pragma once 
-#include "Pattern.hpp"
+#include "InternalPattern.hpp"
 
 namespace fs = std::filesystem;
 
-class FilePattern : public Pattern {
+class FilePattern : public InternalPattern {
     public:
         FilePattern(const std::string&, const std::string&, bool);
 
@@ -32,6 +32,7 @@ class FilePattern : public Pattern {
          * 
          */
         void printFiles();
+        
     private: 
         std::string path; // path to directory
         fs::directory_iterator iterator; // File iterator for given path

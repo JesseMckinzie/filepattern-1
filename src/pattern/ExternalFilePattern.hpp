@@ -74,12 +74,6 @@ class ExternalFilePattern : public ExternalPattern {
          */
         //std::vector<Tuple> getMatching(std::string&);
 
-        /**
-         * @brief To be removed
-         * 
-         * @return int 
-         */
-        int getCounter();
 
         /**
          * @brief Returns a block of valid files that consumes at most the user specified
@@ -134,7 +128,7 @@ class ExternalFilePattern : public ExternalPattern {
          * @return true The end of the file has not been reached and the map is modified
          * @return false The end of the file has been reached and the mao is not modified
          */
-        bool getMap(std::fstream& infile, Tuple& mapping);
+        //bool getMap(std::fstream& infile, Tuple& mapping);
 
         /**
          * @brief Finds values of variables given a file that matches the pattern.
@@ -144,7 +138,7 @@ class ExternalFilePattern : public ExternalPattern {
          * 
          * @return A map of variables to values from the basename of the filepath.  
          */
-        Map matchFilesLoop(Map&, const std::string&, const std::regex&, std::vector<std::string>&);
+        //Map matchFilesLoop(Map&, const std::string&, const std::regex&, std::vector<std::string>&);
 
         /**
          * @brief Matches files from a directory iterator. 

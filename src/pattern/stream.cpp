@@ -140,17 +140,3 @@ string Stream::getValidFilesPath(){
 string Stream::getBlockSizeStr(){
     return this->blockSizeStr;
 }
-
-/*
-string Stream::copyValidFiles(const string& newFileName){
-    ifstream infile(this->validFiles);
-
-    string filePath = tmpdir + newFileName;
-    ofstream outfile(filePath);
-
-    outfile << infile.rdbuf();
-
-    return filePath;
-
-}
-*/
