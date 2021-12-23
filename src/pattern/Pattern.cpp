@@ -8,20 +8,22 @@ vector<string> Pattern::getVariables(){
 
 void Pattern::filePatternToRegex(){
 
+    // regex to match variables
     std::regex e("\\{(\\w+):([dc+]+)\\}");
 
-    map<char, string> patternMap;
+    map<char, string> patternMap; // map of variable types to regex equivalent 
     patternMap['d'] = "[0-9]"; 
     patternMap['c'] = "[a-zA-Z]";
     patternMap['+'] = "+";
     
-    string str;
-    string rgx;
-    vector<pair<string,string>> matches;
-    vector<string> variables;
-    string patternCopy = this->filePattern;
-    std::smatch m;
+    string str; // temp string
+    string rgx; // temp regex
+    vector<pair<string,string>> matches; // map between bracket expression and regex
+    vector<string> variables; // store variable names
+    string patternCopy = this->filePattern; // get a copy of pattern since regex_search is inplace
+    std::smatch m; // regex matches
 
+    // extract bracket expressions from pattern and store regex
     while (regex_search(patternCopy, m, e)){
         str = m[2];
         rgx = "";
@@ -37,12 +39,10 @@ void Pattern::filePatternToRegex(){
 
     this->regexFilePattern = filePattern;
 
+    // Replace bracket groups with regex capture groups
     for(const auto& match: matches){
-
         // Create capture group
-        str = "(";
-        str += match.second;
-        str += ")";
+        str = "(" + match.second + ")";
 
         s::replace(this->regexFilePattern, match.first, str);
     }
@@ -53,32 +53,33 @@ Tuple Pattern::getVariableMapMultDir(const string& filePath, const smatch& sm){
     Tuple tup;
     
     bool matched = false;
-    string temp;
+    string basename;
     string file = s::getBaseName(filePath);
     for(int i = 0; i < validFiles.size(); i++){ 
-        temp = s::getBaseName(s::to_string(get<1>(validFiles[i])[0]));
-        if(temp == file){
+        basename = s::getBaseName(s::to_string(get<1>(validFiles[i])[0])); // store the basename
+        if(basename == file){
             matched = true;
-            get<1>(validFiles[i]).push_back(filePath);
+            get<1>(validFiles[i]).push_back(filePath); // Add path to existing mapping
             break;
         } 
     }
 
+    // Create new mapping if not already present
     if(!matched){
         tup = getVariableMap(filePath, sm);
     }
-
 
     return tup;
 }
 
 Tuple Pattern::getVariableMap(const string& filePath, const smatch& sm){
-    
     Tuple tup;
     // filename matches the pattern
     std::get<1>(tup).push_back(filePath);
 
+    
     string str;
+    // Extract capture groups from filename and store in mapping
     for(int i = 1; i < sm.size(); ++i){
         str = sm[i];
         s::is_number(str) ? get<0>(tup)[variables[i-1]] = stoi(str) : 
