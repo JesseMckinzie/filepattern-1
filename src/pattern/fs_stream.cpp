@@ -1,4 +1,4 @@
-#include "fs_stream.hpp"
+ #include "fs_stream.hpp"
 
 using namespace std;
 /**
@@ -10,7 +10,7 @@ using namespace std;
  * @param recursive 
  * @param blockSize 
  */
-FilesystemStream::FilesystemStream(const string& path, bool recursive=false, const string& blockSize="50 MB")
+FilesystemStream::FilesystemStream(const string& path, bool recursive, const string& blockSize)
 :Stream(blockSize){
     this->recurisve = true;
 
