@@ -50,11 +50,11 @@ class ExternalMergeSort {
          * @param mapSize Size of map if std_map is used
          */
         ExternalMergeSort(const Structure& structure, 
-                          const string& inputFileName, 
-                          const string& outputFileName, 
-                          const string& blockSize, 
-                          const string& variable="",
-                          const int mapSize=0);
+                          const std::string& inputFileName, 
+                          const std::string& outputFileName, 
+                          const std::string& blockSize, 
+                          const std::string& variable,
+                          const int mapSize);
 
     private:
         vector_string vec; // Vector to store blocks of files
@@ -148,6 +148,6 @@ class ExternalMergeSort {
          * @param fileName2 Second file to merge
          * @param outFile Output file with merged files
          */
-        void twoWayMergeMaps(const string& fileName1, const string& fileName2, const string& outFile);
+        void twoWayMergeMaps(const std::string& fileName1, const std::string& fileName2, const std::string& outFile);
 
 };
