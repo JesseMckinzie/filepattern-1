@@ -10,6 +10,10 @@
 
 class InternalPattern : public Pattern {
 
+    private:
+        std::vector<Tuple> matching;
+        std::vector<std::pair<std::string, std::vector<Types>>> variableMapping;
+
     public:
         /**
          * @brief Group matched files by a variable.
@@ -28,5 +32,10 @@ class InternalPattern : public Pattern {
          * @return std::vector<Tuple> Vector of files where the variable(s) match the value.
          */
         std::vector<Tuple> getMatching(std::string& variables);
+        //template<typename... Args>
+        //std::vector<Tuple> getMatching(std::string t, std::string... args);
+
+        //template<typename... Args>
+        //void getMatchingHelper(std::string t, std::string... args);
 
 };

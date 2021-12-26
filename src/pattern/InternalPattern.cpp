@@ -36,6 +36,47 @@ void InternalPattern::groupBy(const string& groupBy) {
     }
 }
 
+// "x=[1,2,3]"
+/*
+void InternalPattern::getMatchingHelper(string t, string... args){
+    t.erase(remove(t.begin(), t.end(), ' '), t.end());
+    vector<string> parsed = s::split(t, "=");
+    vector<string> values;
+
+    if(parsed.size() > 2) throw invalid_argument("Input string must be in format \"<variable>=[<value1>, <value2>, ..., <valuen>]");
+
+    string current;
+    for(const auto& c: parsed[1]){
+        if(c == '[' || c == ']') continue;
+        else if(c == ',') {
+            values.push_back(current);
+            current = "";
+        }
+        else current.push_back(c);
+    }
+
+    for(const auto& file: this->validfiles){
+        for(const auto& value: values){  
+            if(s::to_string(get<0>(file)[parsed[0]]) == value){
+                this->matching.push_back(file);
+            }
+        }
+    }
+
+    getMatchingHelper(args...);
+}
+
+vector<Tuple> InternalPattern::getMatching(string t, string... args){
+
+    this->matching.clear();
+    this->variableMapping.clear();
+
+    this->getMatchingHelper(t, args...);
+
+    return matching;
+    
+}
+*/
 
 vector<Tuple> InternalPattern::getMatching(string& variables){
 
