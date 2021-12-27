@@ -226,9 +226,9 @@ files = efp.FilePattern(filepath, pattern, block_size="125 B")
 </ol>
   
 After installation, use "import pattern" to import the module into Python. The pattern module contains the following classes: 
-  *[FilePattern](#FilePattern);
-  *[StringPattern](#StringPattern);
-  *[ExternalFilePattern](#ExternalFilePattern);
+*[FilePattern](#FilePattern);
+*[StringPattern](#StringPattern);
+*[ExternalFilePattern](#ExternalFilePattern);
 
 ## FilePattern
 File pattern
