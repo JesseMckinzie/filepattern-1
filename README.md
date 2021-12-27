@@ -227,7 +227,7 @@ files = efp.FilePattern(filepath, pattern, block_size="125 B")
   
 After installation, use "import pattern" to import the module into Python. The pattern module contains the following classes: 
   <ul>
-    <li>[FilePattern](#filepattern</li> 
+    <li>[FilePattern](#filepattern)</li> 
     <li>[StringPattern](#stringpattern) </li> 
     <li>[ExternalFilePattern](#externalfilepattern) </li> 
   </ul>
@@ -235,10 +235,10 @@ A test is included in the root directory in the file test.py.
 
 
   
-##FilePattern
+## FilePattern
   
-##StringPattern
+## StringPattern
 StringPattern contains all the functionalility of FilePattern, except it takes in a txt file as an input rather than a directory.
   
-##ExternalFilePattern
+## ExternalFilePattern
 ExternalFilePattern has the same functionality as FilePattern, however it processes the input in a specified block size for when the input is too large to store in main memory, or for when the memory use of FilePattern must be restricted.
