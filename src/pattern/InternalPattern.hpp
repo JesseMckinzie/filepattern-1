@@ -39,10 +39,5 @@ class InternalPattern : public Pattern {
          * @return std::vector<Tuple> Vector of files where the variable(s) match the value.
          */
         std::vector<Tuple> getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables);
-        //template<typename... Args>
-        //std::vector<Tuple> getMatching(std::string t, std::string... args);
-
-        //template<typename... Args>
-        //void getMatchingHelper(std::string t, std::string... args);
 
 };

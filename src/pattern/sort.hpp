@@ -132,14 +132,6 @@ class ExternalMergeSort {
          * @return false If end of file.
          */
         bool getMapBlock(std::ifstream&, std::vector<Tuple>&);
-
-        /**
-         * @brief Write map to output file. 
-         * 
-         * @param file Output file 
-         * @param mapping Map to write to output file
-         */
-        void writeMap(std::ofstream& file, Tuple& mapping);
         
         /**
          * @brief Merge two files of maps together.

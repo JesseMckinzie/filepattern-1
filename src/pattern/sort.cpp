@@ -369,7 +369,7 @@ void ExternalMergeSort::mergeMaps(){
     Tuple map1, map2;
     ofstream outfile(this->outputFileName);
     while(m::getMap(file, map1, this->mapSize)){
-        writeMap(outfile, map1);
+        m::writeMap(outfile, map1);
         get<1>(map1).clear();
     }
 }  
@@ -402,7 +402,7 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
 
         // if file1 empty
         if(file1.eof()){
-            //writeMap(outfile, map1); // write remaining map
+            //m::writeMap(outfile, map1); // write remaining map
             if(file2.eof()){
                 file1.close();
                 file2.close();
@@ -412,9 +412,9 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
 
             // write the rest of file2
             //m::getMap(file2, map2, this->mapSize);
-            writeMap(outfile, map2);
+            m::writeMap(outfile, map2);
             while(m::getMap(file2, map2, this->mapSize)) {
-                writeMap(outfile, map2);
+                m::writeMap(outfile, map2);
             }
 
             file1.close();
@@ -425,9 +425,9 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
         } else if(file2.eof()){
             // write the rest of file1
             //outfile << str1 << '\n';
-            writeMap(outfile, map2);
+            m::writeMap(outfile, map2);
             while(m::getMap(file1, map1, this->mapSize)) {
-                writeMap(outfile, map1);
+                m::writeMap(outfile, map1);
             }
 
             file1.close();
@@ -437,34 +437,15 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
 
         } else if(get<0>(map1)[this->sortVariable] <= get<0>(map2)[this->sortVariable]){
             //write str1 to output
-            writeMap(outfile, map1);
+            m::writeMap(outfile, map1);
             m::getMap(file1, map1, this->mapSize); 
         } else {
             //write str2 to output
-            writeMap(outfile, map2);
+            m::writeMap(outfile, map2);
             m::getMap(file2, map2, this->mapSize);
         }
     }
     outfile.close();
-}
-
-/**
-* Modified method from Stream class
-*/
-void ExternalMergeSort::writeMap(ofstream& file, Tuple& mapping){
-    //counter++;
-    //ofstream file(filename, ios_base::app);
-
-    for(const auto& element: get<0>(mapping)){
-        file << element.first << ":" << s::to_string(element.second) << '\n';
-    }
-
-    for(const auto& element: get<1>(mapping)){
-        file << element << "," << '\n';
-    } 
-    //file << '\n';
-
-    //file.close();
 }
 
 

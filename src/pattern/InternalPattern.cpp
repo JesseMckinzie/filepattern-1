@@ -73,8 +73,7 @@ void InternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
 
 vector<Tuple> InternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
 
-    // clear vector to store matching files incase it was called previously
-    this->matching.clear();
+    
 
     // match files for each argument
     for(const auto& variableMap: variables){

@@ -125,4 +125,22 @@ namespace m {
 
                 return false;
         }
+
+        /**
+         * @brief Write map to output file. 
+         * 
+         * @param file Output file 
+         * @param mapping Map to write to output file
+         */
+        inline void writeMap(std::ofstream& file, Tuple& mapping){
+
+                for(const auto& element: std::get<0>(mapping)){
+                        file << element.first << ":" << s::to_string(element.second) << '\n';
+                }
+
+                for(const auto& element: std::get<1>(mapping)){
+                        file << element << "," << '\n';
+                } 
+
+        }
 }
