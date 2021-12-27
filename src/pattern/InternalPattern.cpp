@@ -17,12 +17,13 @@ void InternalPattern::groupBy(const string& groupBy) {
     int i = 0;
     int group_ptr = 0;
 
-    //group files into vectors based on groupBy variable (to be removed)
+    //group files into vectors based on groupBy variable 
     while(i < this->validFiles.size()){
         this->validGroupedFiles.push_back(emptyVec);
         while(std::get<0>(this->validFiles[i])[groupBy] == currentValue) {
             this->validGroupedFiles[group_ptr].push_back(this->validFiles[i]);
 
+            // sort group of variables
             sort(validGroupedFiles[group_ptr].begin(), validGroupedFiles[group_ptr].end(), [](Tuple& m1, Tuple& m2){
                 return get<0>(m1)["file"] < get<0>(m2)["file"];
             });

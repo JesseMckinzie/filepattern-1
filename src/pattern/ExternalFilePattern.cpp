@@ -277,5 +277,7 @@ void ExternalFilePattern::groupBy(const string& groupBy) {
                                                stream.getBlockSizeStr(),
                                                groupBy,
                                                stream.mapSize);
+
+    
 }
 

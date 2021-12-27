@@ -24,7 +24,7 @@ PYBIND11_MODULE(backend, m){
         .def("__iter__", [](const Pattern &v){ 
             if(v.group != "") return py::make_iterator(v.validGroupedFiles.begin(), v.validGroupedFiles.end());
             else return py::make_iterator(v.validFiles.begin(), v.validFiles.end());}, 
-            py::keep_alive<0, 1>()); /* Keep vector alive while iterator is used */
+            py::keep_alive<0, 1>()); // Keep vector alive while iterator is used 
 
     py::class_<InternalPattern, Pattern>(m, "InternalPattern")
         .def("groupBy", &InternalPattern::groupBy)
@@ -41,7 +41,6 @@ PYBIND11_MODULE(backend, m){
         .def("printFiles", &StringPattern::readFile);
 
     py::class_<ExternalPattern, Pattern>(m, "ExternalPattern")
-        //.def("invalidFilePath", &ExternalPattern::invalidFilePath)
         .def("setGroup", &ExternalPattern::setGroup)
         .def("getMatching", &ExternalPattern::getMatching);
 
@@ -56,5 +55,5 @@ PYBIND11_MODULE(backend, m){
         .def("__iter__", [](ExternalFilePattern &v){ 
             v.next();
             return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());}, 
-            py::keep_alive<0, 1>());
+            py::keep_alive<0, 1>()); // Keep vector alive while iterator is used 
 }
