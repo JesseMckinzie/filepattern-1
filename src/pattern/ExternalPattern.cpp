@@ -18,11 +18,7 @@ void ExternalPattern::getMatchingLoop(ifstream& infile,
     while(m::getMap(infile, tempMap, this->mapSize)){
         temp = get<0>(tempMap)[variable];
         for(const auto& value: values){  
-            cout << "value: " << s::to_string(value) << endl;
-            cout << "temp: " << s::to_string(value) << endl;
-            cout << endl;
             if(s::to_string(temp) == s::to_string(value)){
-                cout << "Writing map..." << endl;
                 m::writeMap(outfile, tempMap);
             }
         }
@@ -44,16 +40,16 @@ void ExternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
     Tuple tempMap;
     // if first or only variable to match, iterate over valid files
     if(fs::file_size(matching) == 0) {
-        cout << "in first branch" << endl;
         ifstream validFiles(this->validFilesPath);    
         ofstream outfile(matching);
+
         this->getMatchingLoop(validFiles, outfile, variable, values, temp, tempMap);
     
         validFiles.close();
         outfile.close();
         
     } else { // iterate files that matched previous call
-        cout << "in second branch" << endl;
+    
         // copy contents
         std::ifstream infile(matching);
         std::ofstream outfile(matchingCopy);
