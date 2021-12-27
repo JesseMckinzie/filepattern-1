@@ -226,9 +226,16 @@ files = efp.FilePattern(filepath, pattern, block_size="125 B")
 </ol>
   
 After installation, use "import pattern" to import the module into Python. The pattern module contains the following classes: 
-* [FilePattern](#FilePattern);
-* [StringPattern](#StringPattern);
-* [ExternalFilePattern](#ExternalFilePattern);
+* [FilePattern](#FilePattern)
+* [StringPattern](#StringPattern)
+* [ExternalFilePattern](#ExternalFilePattern)
+
+
+## Overview
+The ``filepattern`` utility is used to store files that follow a pattern, where the pattern is analogous to a simplified regular expression. The need for 
+``filepattern`` arises in situations where large amounts of data with a systematic naming convention needs to be filtered by patterns in the naming. For example, one may have
+a directory containing segmented images where the name contains information such as the channel, the column value, and the row value. ``filepatern`` provides the ability to 
+extract all images containing such a naming pattern, filter by the row or column value, or group files by one of the affermentioned variables. 
 
 ## FilePattern
 File pattern
