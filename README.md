@@ -7,7 +7,6 @@ extract all images containing such a naming pattern, filter by the row or column
 ## Installation 
 To install filepattern:
 
-<ol>
 1. Clone repository with ```--recursive-submodules```
 2. cd to the folder and then ```run pip install .```
   
