@@ -78,6 +78,20 @@ vector<Tuple> InternalPattern::getMatching(string t, string... args){
 }
 */
 
+void InternalPattern::getMatchingLoop(vector<Tuple>& iter, 
+                                      const string& variable, 
+                                      const vector<Types>& values, 
+                                      Types& temp){
+    for(auto& file: iter){
+        temp = get<0>(file)[variable];
+        for(const auto& value: values){  
+            if(temp == value){
+                this->matching.push_back(file);
+            }
+        }
+    }
+}
+
 // "x=[1,2,3]"
 void InternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& variableMap){
     string variable = get<0>(variableMap);
@@ -89,16 +103,12 @@ void InternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
 
     Types temp;
     vector<Tuple> iter;
-    if(this->matching.size() == 0) iter = validFiles;
-    else iter = matching;
-    matching.clear();
-    for(auto& file: iter){
-        temp = get<0>(file)[variable];
-        for(const auto& value: values){  
-            if(temp == value){
-                this->matching.push_back(file);
-            }
-        }
+    if(this->matching.size() == 0) {    
+        this->getMatchingLoop(this->validFiles, variable, values, temp);
+    } else {
+        iter = this->matching;
+        this->matching.clear();
+        this->getMatchingLoop(iter, variable, values, temp);
     }
 }
 

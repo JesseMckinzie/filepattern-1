@@ -15,6 +15,12 @@ class InternalPattern : public Pattern {
         std::vector<std::pair<std::string, std::vector<Types>>> variableMapping;
 
         void getMatchingHelper(const std::tuple<std::string, std::vector<Types>>& variableMap);
+
+        void getMatchingLoop(std::vector<Tuple>& iter, 
+                             const std::string& variable, 
+                             const std::vector<Types>& values, 
+                             Types& temp);
+    
     public:
         /**
          * @brief Group matched files by a variable.
