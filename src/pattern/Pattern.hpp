@@ -30,6 +30,7 @@ class Pattern {
     public:
         std::vector<Tuple> validFiles; // Store files that match given regex
         std::vector<std::vector<Tuple>> validGroupedFiles;
+        std::string group;
 
         /**
          * @brief Convert to pattern to regex.

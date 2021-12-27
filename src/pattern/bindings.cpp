@@ -22,7 +22,8 @@ PYBIND11_MODULE(backend, m){
         .def("getVariables", &Pattern::getVariables)
         .def("printVariables", &Pattern::printVariables)
         .def("__iter__", [](const Pattern &v){ 
-            return py::make_iterator(v.validFiles.begin(), v.validFiles.end());}, 
+            if(v.group != "") return py::make_iterator(v.validGroupedFiles.begin(), v.validGroupedFiles.end());
+            else return py::make_iterator(v.validFiles.begin(), v.validFiles.end());}, 
             py::keep_alive<0, 1>()); /* Keep vector alive while iterator is used */
 
     py::class_<InternalPattern, Pattern>(m, "InternalPattern")
