@@ -20,7 +20,7 @@
 #include <map>
 #include <tuple>
 #include "Pattern.hpp"
-#include "Variables.hpp"
+#include "util.hpp"
 //#include "sort.h"
 
 class ExternalPattern : public Pattern {

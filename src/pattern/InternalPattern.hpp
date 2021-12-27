@@ -6,7 +6,7 @@
 #include <regex>
 #include <map>
 #include "Pattern.hpp"
-#include "Variables.hpp"
+#include "util.hpp"
 
 class InternalPattern : public Pattern {
 
