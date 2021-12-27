@@ -113,9 +113,7 @@ class ExternalFilePattern : public ExternalPattern {
         bool endOfFile; // True if end of temp file is reached
         bool recursive; // True if recursive iterator through subdirectories
         int totalFiles; // Total number of matched files (will be deleted)
-        int mapSize; // Number of variables in mapping
         std::ifstream infile; // Input stream used throughout methods
-        std::string validFilesPath; // Path to temporary txt file containing valid files
         bool firstCall; // True if first call has not been made to next() 
 
         /**
@@ -139,6 +137,7 @@ class ExternalFilePattern : public ExternalPattern {
          * @return A map of variables to values from the basename of the filepath.  
          */
         //Map matchFilesLoop(Map&, const std::string&, const std::regex&, std::vector<std::string>&);
+
 
         /**
          * @brief Matches files from a directory iterator. 

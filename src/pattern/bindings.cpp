@@ -41,7 +41,8 @@ PYBIND11_MODULE(backend, m){
 
     py::class_<ExternalPattern, Pattern>(m, "ExternalPattern")
         //.def("invalidFilePath", &ExternalPattern::invalidFilePath)
-        .def("setGroup", &ExternalPattern::setGroup);
+        .def("setGroup", &ExternalPattern::setGroup)
+        .def("getMatching", &ExternalPattern::getMatching);
 
     py::class_<ExternalFilePattern, ExternalPattern>(m, "ExternalFilePattern")
         .def(py::init<const std::string&, const std::string&, const std::string&, bool>())
