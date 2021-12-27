@@ -9,3 +9,6 @@ files = fp.FilePattern(filepath, pattern, block_size="1 KB")
 while(len(files) != 0):
     for file in files(group_by='r'):
         print(file)
+
+file = files.get_matching(r=[1], c=[1])
+print(file)
