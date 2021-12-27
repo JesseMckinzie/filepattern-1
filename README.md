@@ -220,29 +220,25 @@ pattern = "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif"
 
 files = efp.FilePattern(filepath, pattern, block_size="125 B")
 
-while(True):
+<ol>
+  <li>Clone repository with --recursive-submodules</li>
+  <li>cd to the folder and then "run pip install ." </li>
+</ol>
+  
+After installation, use "import pattern" to import the module into Python. The pattern module contains the following classes: 
+  <ul>
+    <li>[FilePattern](#filepattern</li> 
+    <li>[StringPattern](#stringpattern) </li> 
+    <li>[ExternalFilePattern](#externalfilepattern) </li> 
+  </ul>
+A test is included in the root directory in the file test.py.
 
-    for file in files():
-        pprint.pprint(file)
-    
-    print('-----------------')
-    
-    if(len(files) == 0):
-        break
 
-```
-The output from this example is:
-
-```
-({'c': 1, 'channel': 'DAPI', 'r': 1},
- ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_DAPI.tif'])
------------------
-({'c': 1, 'channel': 'TXREAD', 'r': 1},
- ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif'])
------------------
-({'c': 1, 'channel': 'GFP', 'r': 1},
- ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_GFP.tif'])
------------------
------------------
-```
-where each group of file is seperated by the dashes. Note that the ```block_size``` argument is provided in bytes (B) in this example, but also has the options for kilobytes (KB), megabytes (MB), and gigabytes (GB).  
+  
+##FilePattern
+  
+##StringPattern
+StringPattern contains all the functionalility of FilePattern, except it takes in a txt file as an input rather than a directory.
+  
+##ExternalFilePattern
+ExternalFilePattern has the same functionality as FilePattern, however it processes the input in a specified block size for when the input is too large to store in main memory, or for when the memory use of FilePattern must be restricted.
