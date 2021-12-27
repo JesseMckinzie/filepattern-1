@@ -36,48 +36,6 @@ void InternalPattern::groupBy(const string& groupBy) {
     }
 }
 
-// "x=[1,2,3]"
-/*
-void InternalPattern::getMatchingHelper(string t, string... args){
-    t.erase(remove(t.begin(), t.end(), ' '), t.end());
-    vector<string> parsed = s::split(t, "=");
-    vector<string> values;
-
-    if(parsed.size() > 2) throw invalid_argument("Input string must be in format \"<variable>=[<value1>, <value2>, ..., <valuen>]");
-
-    string current;
-    for(const auto& c: parsed[1]){
-        if(c == '[' || c == ']') continue;
-        else if(c == ',') {
-            values.push_back(current);
-            current = "";
-        }
-        else current.push_back(c);
-    }
-
-    for(const auto& file: this->validfiles){
-        for(const auto& value: values){  
-            if(s::to_string(get<0>(file)[parsed[0]]) == value){
-                this->matching.push_back(file);
-            }
-        }
-    }
-
-    getMatchingHelper(args...);
-}
-
-vector<Tuple> InternalPattern::getMatching(string t, string... args){
-
-    this->matching.clear();
-    this->variableMapping.clear();
-
-    this->getMatchingHelper(t, args...);
-
-    return matching;
-    
-}
-*/
-
 void InternalPattern::getMatchingLoop(vector<Tuple>& iter, 
                                       const string& variable, 
                                       const vector<Types>& values, 
@@ -92,76 +50,36 @@ void InternalPattern::getMatchingLoop(vector<Tuple>& iter,
     }
 }
 
-// "x=[1,2,3]"
 void InternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& variableMap){
-    string variable = get<0>(variableMap);
-    vector<Types> values = get<1>(variableMap);
+    string variable = get<0>(variableMap); // get key from argument
+    vector<Types> values = get<1>(variableMap); // get value from argument
 
+    // throw error if argument variable is not in the pattern
     if(find(begin(variables), end(variables), variable) == end(variables)) {
         throw invalid_argument("\"" + variable + "\" is not a variable. Use a variable that is contained in the pattern.");
     }
 
     Types temp;
     vector<Tuple> iter;
+    // if first or only variable to match, iterate over valid files
     if(this->matching.size() == 0) {    
         this->getMatchingLoop(this->validFiles, variable, values, temp);
-    } else {
+    } else { // iterate files that matched previous call
         iter = this->matching;
         this->matching.clear();
         this->getMatchingLoop(iter, variable, values, temp);
     }
 }
 
-/*
-input is in the form "x=[0,1,2]; y=[0,1]"
-*/
 vector<Tuple> InternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
 
+    // clear vector to store matching files incase it was called previously
     this->matching.clear();
 
+    // match files for each argument
     for(const auto& variableMap: variables){
         this->getMatchingHelper(variableMap);
     }
 
     return matching;
 }
-
-/*
-vector<Tuple> InternalPattern::getMatching(string& variables){
-    
-    //remove spaces if present
-    variables.erase(std::remove_if(variables.begin(), variables.end(), ::isspace), variables.end());
-    
-    //split on commas
-    vector<string> splitVaraibles = s::split(variables, ",");
-    vector<std::pair<string,string>> variableValues;
-
-    std::pair<string, string> pair;
-    size_t position;
-    // Parse input into variables and values (to be updated)
-    for(const auto& variable: splitVaraibles) {
-        position = variable.find("=");
-        pair.first = variable.substr(0, position);
-        pair.second = variable.substr(position+1);
-        if(!get<0>(validFiles[0]).count(pair.first)) throw invalid_argument("Variable must be in file pattern.");
-        variableValues.push_back(pair);
-    }
-
-    vector<Tuple> matching;
-
-    bool match;
-    Types temp;
-    //Iterate over files, pushing to return vector if the variable matches the input
-    for(auto& file: this->validFiles){
-        match = true;
-        for(const auto& variable: variableValues) {
-            temp = get<0>(file)[variable.first];
-            if(!(s::to_string(temp) == variable.second)) match = false; 
-        }
-        if(match) matching.push_back(file);
-    }
-
-    return matching;
-    
-}
-*/
