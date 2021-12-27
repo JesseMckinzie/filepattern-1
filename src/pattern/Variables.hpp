@@ -10,16 +10,17 @@ typedef std::variant<int, std::string> Types;
 typedef std::map<std::string, Types> Map;
 typedef std::tuple<Map , std::vector<std::string>> Tuple;
 
-struct AnyGet {
-    std::string operator()(int value) { return std::to_string(value); }
-    std::string operator()(const std::string& value) { return value; }
-};
-
 /**
  * @brief String methods
  * 
  */
 namespace s {
+
+        struct AnyGet {
+                std::string operator()(int value) { return std::to_string(value); }
+                std::string operator()(const std::string& value) { return value; }
+        };
+
         inline bool is_number(const std::string &s) {
                 return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
         }
