@@ -4,7 +4,7 @@ The ``filepattern`` utility is used to store files that follow a pattern, where 
 a directory containing segmented images where the name contains information such as the channel, the column value, and the row value. ``filepattern`` provides the ability to 
 extract all images containing such a naming pattern, filter by the row or column value, or group files by one of the affermentioned variables. 
 
-## Installation 
+## Install
 To install filepattern:
 
 1. Clone repository with ```--recursive-submodules```
