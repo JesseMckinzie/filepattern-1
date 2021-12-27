@@ -56,6 +56,24 @@ class FilePattern:
         except ValueError as e: 
             print(e)
 
+    def get_matching(self, **kwargs) -> str:
+        """
+        Returns variables matching a specific value
+
+        :param str variables: variables to be matched e.g. variables="variable1=value1, variable2=value2"
+
+        :return list: list of matching files
+        """
+        try:
+            mapping = []
+            for key, value in kwargs.items():
+                mapping.append((key, value))
+
+            return self._file_pattern.getMatching(mapping)
+        except ValueError as e:
+            print(e)
+
+
     def length(self) -> int:
         """
         Returns the length of the current file block.
