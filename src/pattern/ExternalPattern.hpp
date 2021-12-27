@@ -27,7 +27,6 @@ class ExternalPattern : public Pattern {
     
     protected:
         long blockSize; // Max amount of main memory to use at a time
-        std::string group; // Variable to group the valid files by
         std::string matching;
         std::string matchingCopy;
         std::string validFilesPath; // Path to temporary txt file containing valid files
