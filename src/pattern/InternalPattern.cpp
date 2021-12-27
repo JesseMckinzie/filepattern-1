@@ -78,8 +78,47 @@ vector<Tuple> InternalPattern::getMatching(string t, string... args){
 }
 */
 
-vector<Tuple> InternalPattern::getMatching(string& variables){
+// "x=[1,2,3]"
+void InternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& variableMap){
+    string variable = get<0>(variableMap);
+    vector<Types> values = get<1>(variableMap);
 
+    if(find(begin(variables), end(variables), variable) == end(variables)) {
+        throw invalid_argument("\"" + variable + "\" is not a variable. Use a variable that is contained in the pattern.");
+    }
+
+    Types temp;
+    vector<Tuple> iter;
+    if(this->matching.size() == 0) iter = validFiles;
+    else iter = matching;
+    matching.clear();
+    for(auto& file: iter){
+        temp = get<0>(file)[variable];
+        for(const auto& value: values){  
+            if(temp == value){
+                this->matching.push_back(file);
+            }
+        }
+    }
+}
+
+/*
+input is in the form "x=[0,1,2]; y=[0,1]"
+*/
+vector<Tuple> InternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
+
+    this->matching.clear();
+
+    for(const auto& variableMap: variables){
+        this->getMatchingHelper(variableMap);
+    }
+
+    return matching;
+}
+
+/*
+vector<Tuple> InternalPattern::getMatching(string& variables){
+    
     //remove spaces if present
     variables.erase(std::remove_if(variables.begin(), variables.end(), ::isspace), variables.end());
     
@@ -115,3 +154,4 @@ vector<Tuple> InternalPattern::getMatching(string& variables){
     return matching;
     
 }
+*/
