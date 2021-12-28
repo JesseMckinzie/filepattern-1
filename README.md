@@ -85,9 +85,9 @@ for file in files():
 The output of this case is:
 ```
 ({'c': 1, 'r': 1},
- ['/home/ec2-user/Dev/FilePattern/data/recursive_example/DAPI/img_r001_c001.tif',
-  '/home/ec2-user/Dev/FilePattern/data/recursive_example/GFP/img_r001_c001.tif',
-  '/home/ec2-user/Dev/FilePattern/data/recursive_example/TXREAD/img_r001_c001.tif'])
+ ['path/to/root/direcotry/DAPI/img_r001_c001.tif',
+  'path/to/root/direcotry/GFP/img_r001_c001.tif',
+  'path/to/root/direcotry/TXREAD/img_r001_c001.tif'])
 ```
 
 
