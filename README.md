@@ -19,6 +19,7 @@ After installation, use "import pattern" to import the module into Python. The p
 * [ExternalFilePattern](#ExternalFilePattern)
 
 <h2 id="filepattern-section"> FilePattern </h2> 
+
 FilePattern iterates over a directory, matching filenames to a suplied ```filepattern```. The syntax of the ```filepattern``` is best described by example. Consider a direcotry
 containing the following files, 
 
@@ -91,7 +92,9 @@ The output of this case is:
 ```
 
 <h3 id="group-by"> Group By </h3>
+
 Say the images need to be processed in a specific order, for example by the row number. With the directory 
+
 ```
 img_r001_c001_DAPI.tif
 img_r002_c001_DAPI.tif
@@ -134,6 +137,7 @@ The output is:
 ```
 
 <h3 id="get-matching"> Get Matching </h3>
+
 To get files where the variable matches a value, the ```get_matching``` method is used. For example, if only files from the TXREAD channel are needed, ```get_matching(channel=['TXREAD']``` is called. 
 
 ```python
