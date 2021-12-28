@@ -92,6 +92,7 @@ The output of this case is:
 
 <h3 id="group-by"> Group By </h3>
 Say the images need to be processed in a specific order, for example by the row number. With the directory 
+
 ```
 img_r001_c001_DAPI.tif
 img_r002_c001_DAPI.tif
