@@ -25,7 +25,7 @@ img_r001_c001_TXREAD.tif
 img_r001_c001_GFP.tif
 ```
 
-In each of these filenames, there are three descriptors of the image: the row, the column, and the channel. To match these files, the pattern ```img_r{r:ddd}_c{c:001}_{channel:c+}``` can be used. In this pattern, the nameed groups are contained within the curly brackets, where the variable name is before the colon and the value is after the colon. For the value, the descriptors `d` and `c` are used, which represent a digit and a character, respectively. In the example pattern, three `d`'s are used to catpure three digits. The `+` after `c` denotes that one or more characters will be captured, equivelantly to `[a-zA-z]+` in a regular expression. The `+` symbol may be used after either `d` or `c`. 
+In each of these filenames, there are three descriptors of the image: the row, the column, and the channel. To match these files, the pattern ```img_r{r:ddd}_c{c:ddd}_{channel:c+}``` can be used. In this pattern, the nameed groups are contained within the curly brackets, where the variable name is before the colon and the value is after the colon. For the value, the descriptors `d` and `c` are used, which represent a digit and a character, respectively. In the example pattern, three `d`'s are used to catpure three digits. The `+` after `c` denotes that one or more characters will be captured, equivelantly to `[a-zA-z]+` in a regular expression. The `+` symbol may be used after either `d` or `c`. 
 
 To retrieve the matched files, an iterator is called on the `FilePattern` object, as shown below.
 ```
@@ -33,7 +33,7 @@ from pattern import FilePattern as fp
 
 filepath = "path/to/direcotry"
 
-pattern = "img_r{r:ddd}_c{c:001}_{channel:c+}.tif"
+pattern = "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif"
 
 files = fp.FilePattern(filepath, pattern)
 
@@ -62,7 +62,7 @@ from pattern import FilePattern as fp
 
 filepath = "path/to/root/direcotry"
 
-pattern = "img_r{r:ddd}_c{c:001}.tif"
+pattern = "img_r{r:ddd}_c{c:ddd}.tif"
 
 files = fp.FilePattern(filepath, pattern, True)
 
