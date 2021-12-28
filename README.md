@@ -28,7 +28,8 @@ img_r001_c001_GFP.tif
 In each of these filenames, there are three descriptors of the image: the row, the column, and the channel. To match these files, the pattern ```img_r{r:ddd}_c{c:ddd}_{channel:c+}``` can be used. In this pattern, the nameed groups are contained within the curly brackets, where the variable name is before the colon and the value is after the colon. For the value, the descriptors `d` and `c` are used, which represent a digit and a character, respectively. In the example pattern, three `d`'s are used to catpure three digits. The `+` after `c` denotes that one or more characters will be captured, equivelantly to `[a-zA-z]+` in a regular expression. The `+` symbol may be used after either `d` or `c`. 
 
 To retrieve the matched files, an iterator is called on the `FilePattern` object, as shown below.
-```
+
+```python
 from pattern import FilePattern as fp
 
 filepath = "path/to/direcotry"
@@ -57,7 +58,7 @@ As shown in this example, the output is a tuple where the first member is a map 
 ```
 
 In this case, the subdirectories are split by the channel. Recursive matching can be used as shown below.
-```
+```python
 from pattern import FilePattern as fp
 
 filepath = "path/to/root/direcotry"
