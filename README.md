@@ -6,7 +6,6 @@ extract all images containing such a naming pattern, filter by the row or column
 
 ## Install
 
-### Dependencies 
 `filepattern` requires GCC 8+ or LLVM 9.0+ for installation. 
 
 To install `filepattern`:
