@@ -132,6 +132,30 @@ The output is:
   ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_TXREAD.tif'])]
 ```
 
+To get files where the variable matches a value, the ```get_matching``` method is used. For example, if only files from the TXREAD channel are needed, ```get_matching(channel=['TXREAD']``` is called. 
+
+```python
+filepath = "/home/ec2-user/Dev/FilePattern/data/example"
+
+pattern = "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif"
+
+files = fp.FilePattern(filepath, pattern)
+
+matching = files.get_matching(channel=['TXREAD'])
+
+pprint.pprint(matching)
+```
+
+The output is:
+```
+[({'c': 1, 'channel': 'TXREAD', 'r': 1},
+  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif']),
+ ({'c': 1, 'channel': 'TXREAD', 'r': 2},
+  ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_TXREAD.tif'])]
+```
+
+
+
 ## StringPattern
 StringPattern contains all the functionalility of FilePattern, except it takes in a text file as an input rather than a directory and matches each line to the pattern. For example, a text file containing
 ```
