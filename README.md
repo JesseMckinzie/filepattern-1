@@ -90,7 +90,7 @@ The output of this case is:
   'path/to/root/direcotry/TXREAD/img_r001_c001.tif'])
 ```
 
-<h4 id="group-by"> group_by </h4>
+<h3 id="group-by"> Group By </h3>
 Say the images need to be processed in a specific order, for example by the row number. With the directory 
 ```
 img_r001_c001_DAPI.tif
@@ -133,7 +133,7 @@ The output is:
   ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_TXREAD.tif'])]
 ```
 
-<h4 id="get-matching"> get_matching </h4>
+<h3 id="get-matching"> Get Matching </h3>
 To get files where the variable matches a value, the ```get_matching``` method is used. For example, if only files from the TXREAD channel are needed, ```get_matching(channel=['TXREAD']``` is called. 
 
 ```python
