@@ -2,7 +2,7 @@
 The ``filepattern`` utility is used to store files that follow a pattern, where the pattern is analogous to a simplified regular expression. The need for 
 ``filepattern`` arises in situations where large amounts of data with a systematic naming convention needs to be filtered by patterns in the naming. For example, one may have
 a directory containing segmented images where the name contains information such as the channel, the column value, and the row value. ``filepattern`` provides the ability to 
-extract all images containing such a naming pattern, filter by the row or column value, or group files by one of the affermentioned variables. 
+extract all images containing such a naming pattern, filter by the row or column value, or group files by one or more of the affermentioned variables. 
 
 ## Install
 
