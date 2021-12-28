@@ -81,12 +81,7 @@ for file in files():
 
 The output of this case is:
 ```
-({'c': 1, 'r': 1},
- ['data/Small_Fluorescent_Test_Dataset/image-tiles/img_r001_c001.tif'])
-({'c': 1, 'r': 1},
- ['data/Small_Fluorescent_Test_Dataset/image-tiles/img_r001_c001.tif'])
- ({'c': 1, 'r': 1},
- ['data/Small_Fluorescent_Test_Dataset/image-tiles/img_r001_c001.tif'])
+
 ```
 
 
