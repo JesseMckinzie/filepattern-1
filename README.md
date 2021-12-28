@@ -46,7 +46,7 @@ The output is,
 
 As shown in this example, the output is a tuple where the first member is a map between the group name supplied in the pattern and the value of the group for each file name. The second member of the tuple is a vector containing the path to the matched file. The second member is stored in a vector for the case where a directory is supplied with multiple subdirectories. In this case, a third optional parameter can be passed to the constructor. If the third parameter is set to `True`, a recursive directory iterator will be used, which iterates over all subdirectories. If the basename of two files from two different subdirectories match, ```filepattern``` will add the path of the file to the vector in the existing tuple rather than creating a new tuple. For example, consider the directory with the structure 
 
-'''
+```
 /root_directory
     /DAPI
         img_r001_c001.tif
@@ -54,7 +54,7 @@ As shown in this example, the output is a tuple where the first member is a map 
         img_r001_c001.tif
     /GFP
         img_r001_c001.tif
-'''
+```
 
 In this case, the subdirectories are split by the channel. Recursive matching can be used as shown below.
 ```
