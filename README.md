@@ -5,7 +5,11 @@ a directory containing segmented images where the name contains information such
 extract all images containing such a naming pattern, filter by the row or column value, or group files by one of the affermentioned variables. 
 
 ## Install
-To install filepattern:
+
+### Dependencies 
+`filepattern` requires GCC 8+ or LLVM 9.0+ for installation. 
+
+To install `filepattern`:
 
 1. Clone repository with ```--recursive-submodules```
 2. cd to the folder and then run ```pip install .```
