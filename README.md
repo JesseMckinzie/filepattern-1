@@ -190,7 +190,7 @@ The ouput is:
  ['img_r001_c001_GFP.tif'])
 ```
 
-`StringPattern` also contains the `group_by` and `get_matching` functionality as outlined in the [FilePattern](#FilePattern) section. 
+`StringPattern` also contains the `group_by` and `get_matching` functionality as outlined in the [FilePattern](#filepattern-section) section. 
 
 ## ExternalFilePattern
 
