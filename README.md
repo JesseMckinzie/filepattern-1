@@ -141,6 +141,9 @@ img_r001_c001_GFP.tif
 `ExternalFilePattern` can be used to processes this directory with only one file in memory as:
 
 ```python
+from pattern import ExternalFilePattern as efp
+import pprint
+
 filepath = "path/to/directory"
 
 pattern = "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif"
