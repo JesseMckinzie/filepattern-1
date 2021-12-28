@@ -14,20 +14,18 @@ StringPattern::StringPattern(const string& fileName, const string& filePattern) 
 
 void StringPattern::readFile(){
     string str;
-    try {
-        ifstream in(fileName);
-        if(!in) {
-            throw invalid_argument("File \"" + fileName + "\" not found.");
-        }
-        while(getline(in, str)){
-            if(str.size()) files.push_back(str);
-        }
-    } catch (const exception& e){
-        cout << e.what();
+    ifstream in(fileName);
+    if(!in.is_open()) {
+        throw runtime_error("File \"" + fileName + "\" not found.");
     }
+    while(getline(in, str)){
+        if(str.size()) files.push_back(str);
+    }
+
 }
 
 void StringPattern::matchFiles(){
+    filePatternToRegex();
     Map mapping;
     vector<string> parsedRegex;
 
@@ -37,12 +35,12 @@ void StringPattern::matchFiles(){
     Tuple member;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
+    cout << regexFilePattern << endl;
     smatch sm;
-    for (const auto& entry : this->files) {
+    for (const auto& filePath : this->files) {
         // Get the current file
-        filePath = entry;
-        file = s::getBaseName(filePath);
-        if(regex_match(file, sm, patternRegex)){
+        cout << filePath << endl;
+        if(regex_match(filePath, sm, patternRegex)){
             validFiles.push_back(getVariableMap(filePath, sm)); // write to txt file
         }
     }

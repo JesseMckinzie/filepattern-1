@@ -28,7 +28,7 @@ class StringPattern:
             self._file_pattern = backend.StringPattern(filePath, pattern)
         except RuntimeError as e:
             #error = "No directory found. Invalid path " + filePath
-            print(e.what())
+            print(e)
 
     def get_matching(self, variables: str) -> list:
         """
@@ -61,7 +61,7 @@ class StringPattern:
         try: 
             self._file_pattern.matchFiles()
         except ValueError as e: 
-            print(e.what())
+            print(e)
 
     def group_by(self, group: str) -> None:
         """
