@@ -8,16 +8,23 @@ extract all images containing such a naming pattern, filter by the row or column
 To install filepattern:
 
 1. Clone repository with ```--recursive-submodules```
-2. cd to the folder and then ```run pip install .```
+2. cd to the folder and then run ```pip install .```
   
 After installation, use "import pattern" to import the module into Python. The pattern module contains the following classes: 
 * [FilePattern](#FilePattern)
 * [StringPattern](#StringPattern)
 * [ExternalFilePattern](#ExternalFilePattern)
 
-
 ## FilePattern
-File pattern
+FilePattern iterates over a directory, matching filenames to a suplied ```filepattern```. The syntax of the ```filepattern``` is best described by example. Consider a direcotry
+containing the following files, 
+
+```
+img_r001_c001_DAPI.tif
+img_r001_c001_TXREAD.tif
+img_r001_c001_GFP.tif
+```
+In each of these filenames, there are three descriptors of the image: the row, the column, and the channel. To match these files, the pattern ```img_r{r:ddd}_c{c:001}_{channel:c+}``` can be used. In this pattern, the nameed groups are contained within the curly brackets, where the variable name is before the colon and the value is after the colon. For the value, the descriptors `d` and `c` are used, which represent a digit and a character, respectively. In the example pattern, three `d`'s are used to catpure three digits. The `+` after `c` denotes that one or more characters will be captured, equivelantly to `[a-zA-z]+` in a regular expression. 
   
 ## StringPattern
 StringPattern contains all the functionalility of FilePattern, except it takes in a txt file as an input rather than a directory.
