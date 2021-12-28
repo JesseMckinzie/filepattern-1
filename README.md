@@ -42,7 +42,7 @@ files = fp.FilePattern(filepath, pattern)
 for file in files(): 
     pprint.pprint(file)
 ```
-The output is,
+The output is:
 ```
 ({'c': 1, 'channel': 'DAPI', 'r': 1},
  ['path/to/direcotry/img_r001_c001_DAPI.tif'])
@@ -58,9 +58,9 @@ As shown in this example, the output is a tuple where the first member is a map 
 /root_directory
     /DAPI
         img_r001_c001.tif
-    /TXREAD
-        img_r001_c001.tif
     /GFP
+        img_r001_c001.tif
+    /TXREAD
         img_r001_c001.tif
 ```
 
@@ -73,7 +73,7 @@ filepath = "path/to/root/direcotry"
 
 pattern = "img_r{r:ddd}_c{c:ddd}.tif"
 
-files = fp.FilePattern(filepath, pattern, True)
+files = fp.FilePattern(filepath, pattern, recursive=True)
 
 for file in files(): 
     pprint.pprint(file)
@@ -81,7 +81,10 @@ for file in files():
 
 The output of this case is:
 ```
-
+({'c': 1, 'r': 1},
+ ['/home/ec2-user/Dev/FilePattern/data/recursive_example/DAPI/img_r001_c001.tif',
+  '/home/ec2-user/Dev/FilePattern/data/recursive_example/GFP/img_r001_c001.tif',
+  '/home/ec2-user/Dev/FilePattern/data/recursive_example/TXREAD/img_r001_c001.tif'])
 ```
 
 
