@@ -92,6 +92,7 @@ The output of this case is:
 ```
 
 <h3 id="group-by"> Group By </h3>
+
 Say the images need to be processed in a specific order, for example by the row number. With the directory 
 
 ```
@@ -136,6 +137,7 @@ The output is:
 ```
 
 <h3 id="get-matching"> Get Matching </h3>
+
 To get files where the variable matches a value, the ```get_matching``` method is used. For example, if only files from the TXREAD channel are needed, ```get_matching(channel=['TXREAD']``` is called. 
 
 ```python
