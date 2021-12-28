@@ -36,7 +36,7 @@ To retrieve the matched files, an iterator is called on the `FilePattern` object
 from pattern import FilePattern as fp
 import pprint
 
-filepath = "path/to/direcotry"
+filepath = "path/to/directory"
 
 pattern = "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif"
 
@@ -72,7 +72,7 @@ In this case, the subdirectories are split by the channel. Recursive matching ca
 from pattern import FilePattern as fp
 import pprint
 
-filepath = "path/to/root/direcotry"
+filepath = "path/to/root/directory"
 
 pattern = "img_r{r:ddd}_c{c:ddd}.tif"
 
@@ -92,7 +92,41 @@ The output of this case is:
 
 
 ## StringPattern
-StringPattern contains all the functionalility of FilePattern, except it takes in a txt file as an input rather than a directory.
-  
+StringPattern contains all the functionalility of FilePattern, except it takes in a text file as an input rather than a directory and matches each line to the pattern. For example, a text file containing
+```
+img_r001_c001_DAPI.tif
+img_r001_c001_TXREAD.tif
+img_r001_c001_GFP.tif
+```
+
+can be matched to the pattern ```img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif``` with:
+
+```python
+from pattern import StringPattern as sp
+import pprint
+
+filepath = "path/to/file.txt"
+
+pattern = "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif"
+
+files = sp.StringPattern(filepath, pattern)
+
+for file in files(): 
+    pprint.pprint(file)
+
+```
+
+The ouput is:
+
+```
+({'c': 1, 'channel': 'DAPI', 'r': 1}, 
+ ['img_r001_c001_DAPI.tif'])
+({'c': 1, 'channel': 'TXREAD', 'r': 1}, 
+ ['img_r001_c001_TXREAD.tif'])
+({'c': 1, 'channel': 'GFP', 'r': 1}, 
+ ['img_r001_c001_GFP.tif'])
+```
+
+
 ## ExternalFilePattern
 ExternalFilePattern has the same functionality as FilePattern, however it processes the input in a specified block size for when the input is too large to store in main memory, or for when the memory use of FilePattern must be restricted.
