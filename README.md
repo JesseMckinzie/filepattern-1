@@ -57,7 +57,7 @@ As shown in this example, the output is a tuple where the first member is a map 
 '''
 
 In this case, the subdirectories are split by the channel. Recursive matching can be used as shown below.
-'''
+```
 from pattern import FilePattern as fp
 
 filepath = "path/to/root/direcotry"
@@ -68,7 +68,7 @@ files = fp.FilePattern(filepath, pattern, True)
 
 for file in files(): 
     pprint.pprint(file)
-'''
+```
 
 The output of this case is:
 ```
