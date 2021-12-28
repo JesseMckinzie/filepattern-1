@@ -14,11 +14,11 @@ To install `filepattern`:
 2. cd to the folder and then run ```pip install .```
   
 After installation, use "import pattern" to import the module into Python. The pattern module contains the following classes: 
-* [FilePattern](#FilePattern-)
+* [FilePattern](#filepattern-section)
 * [StringPattern](#StringPattern)
 * [ExternalFilePattern](#ExternalFilePattern)
 
-## FilePattern 
+<h2 id="filepattern-section"> FilePattern </h2> 
 FilePattern iterates over a directory, matching filenames to a suplied ```filepattern```. The syntax of the ```filepattern``` is best described by example. Consider a direcotry
 containing the following files, 
 
