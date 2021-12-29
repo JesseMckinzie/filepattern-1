@@ -13,7 +13,6 @@
 #ifndef ExternalFilePattern_H
 #define ExternalFilePattern_H
 #include <chrono>
-#include <bits/stdc++.h>
 #include "ExternalPattern.hpp"
 #include "fs_stream.hpp"
 #include "sort.hpp"

@@ -254,7 +254,6 @@ void ExternalFilePattern::next(){
 }
 
 int ExternalFilePattern::currentBlockLength(){
-    if(firstCall) return INT_MAX; // return max int if call has not been made (may change)
     return this->currentBlock.size();
 }
 
