@@ -200,7 +200,7 @@ vector<Tuple> ExternalFilePattern::getMatching(string& t, Args... args){
     //std::pair<string, string> pair;
     //size_t position;
 
-    /*
+
     for(const auto& variable: splitVaraibles) {
         position = variable.find("=");
         pair.first = variable.substr(0, position);
@@ -208,8 +208,6 @@ vector<Tuple> ExternalFilePattern::getMatching(string& t, Args... args){
         if(!validFiles[0].count(pair.first)) throw invalid_argument("Variable must be in file pattern.");
         variableValues.push_back(pair);
     }
-    */
-/*
     ifstream infile(this->validFilesPath, ios_base::app);
 
     string out = tmpdir + "matched";
@@ -222,7 +220,6 @@ vector<Tuple> ExternalFilePattern::getMatching(string& t, Args... args){
         }
     }
     
-    /*
     //vector<pair<string, int> variablesVec;
     vector<Tuple> matching;
     Types temp;
