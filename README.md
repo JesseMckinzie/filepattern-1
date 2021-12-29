@@ -13,11 +13,11 @@ extract all images containing such a naming pattern, filter by the row or column
 
 ## Install
 
-`filepattern` requires GCC 8+ or LLVM 9.0+ for installation. 
+`filepattern` requires GCC 8+ for installation. 
 
 To install `filepattern`:
 
-1. Clone repository with ```--recursive-submodules```
+1. Clone repository with ```--recurse-submodules```
 2. cd to the folder and then run ```pip install .```
   
 After installation, use "import pattern" to import the module into Python. The pattern module contains the following classes: 
