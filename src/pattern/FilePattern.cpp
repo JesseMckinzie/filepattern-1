@@ -27,7 +27,7 @@ FilePattern::FilePattern(const string& path, const string& filePattern, bool rec
 
 void FilePattern::printFiles(){
     for(const auto& file: this->iterator){
-        cout << file << endl;
+        //cout << file << endl;
     }
 }
 
