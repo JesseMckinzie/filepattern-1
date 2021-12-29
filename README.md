@@ -4,6 +4,13 @@ The ``filepattern`` utility is used to store files that follow a pattern, where 
 a directory containing segmented images where the name contains information such as the channel, the column value, and the row value. ``filepattern`` provides the ability to 
 extract all images containing such a naming pattern, filter by the row or column value, or group files by one or more of the affermentioned variables. 
 
+## Summary 
+* [Install](#install)
+* [FilePattern](#filepattern-section)
+* [StringPattern](#StringPattern)
+* [ExternalFilePattern](#ExternalFilePattern)
+* [Examples](#examples)
+
 ## Install
 
 `filepattern` requires GCC 8+ or LLVM 9.0+ for installation. 
