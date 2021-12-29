@@ -35,11 +35,10 @@ void StringPattern::matchFiles(){
     Tuple member;
     // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
-    cout << regexFilePattern << endl;
+
     smatch sm;
     for (const auto& filePath : this->files) {
         // Get the current file
-        cout << filePath << endl;
         if(regex_match(filePath, sm, patternRegex)){
             validFiles.push_back(getVariableMap(filePath, sm)); // write to txt file
         }
