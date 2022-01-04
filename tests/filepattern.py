@@ -1,5 +1,6 @@
 from pattern import FilePattern as fp
 import os
+import time
 import pprint
 
 directory = 'test_data/data'
@@ -9,12 +10,14 @@ path = os.path.join(root_directory, directory)
 
 pattern = 'img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif'
 
-files = fp.FilePattern(path, pattern)
-
+start = time.time()
+files = fp.FilePattern(path,pattern)
 
 for file in files(): 
     pprint.pprint(file)
 print()
+end = time.time()
+print(end - start)
 
 
 print('Files grouped by \'r\'')
@@ -26,3 +29,4 @@ print()
 print('Files matching channel=\'TXREAD\'')
 matching = files.get_matching(channel=['TXREAD'])
 pprint.pprint(matching)
+

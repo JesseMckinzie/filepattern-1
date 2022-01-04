@@ -4,7 +4,6 @@ MAX = 3
 
 directory = 'test_data'
 root_directory = os.path.dirname(os.path.realpath(__file__))
-
 path = os.path.join(root_directory, directory)
 data_path = path + '/data'
 recursive_path = path + '/recursive_data'
@@ -15,7 +14,7 @@ try:
     os.mkdir(path)
     os.mkdir(data_path)
     os.mkdir(recursive_path)
-    print('Data directory created at ' + path + '.')
+    print('Data directory created at ' + path)
 except FileExistsError as e:
     print("Data directory already exists")
 
