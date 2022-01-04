@@ -127,6 +127,20 @@ namespace m {
                 return false;
         }
 
+        inline long getSize(Tuple& mapping){
+                long size = 0;
+                for(const auto& mem: std::get<0>(mapping)){
+                        size += sizeof(mem.first);
+                        if(s::is_number(s::to_string(mem.second))) size += sizeof(int);
+                        else size += sizeof(std::string) + s::to_string(mem.second).length();
+                }
+                size += sizeof(std::vector<std::string>);
+                for(const auto& str: std::get<1>(mapping)){
+                        size += str.length();
+                }
+                return size;
+        }
+
         /**
          * @brief Write map to output file. 
          * 
