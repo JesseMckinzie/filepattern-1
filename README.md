@@ -4,20 +4,13 @@ The ``filepattern`` utility is used to store files that follow a pattern, where 
 a directory containing segmented images where the name contains information such as the channel, the column value, and the row value. ``filepattern`` provides the ability to 
 extract all images containing such a naming pattern, filter by the row or column value, or group files by one or more of the affermentioned variables. 
 
-## Summary 
-* [Install](#install)
-* [FilePattern](#filepattern-section)
-* [StringPattern](#StringPattern)
-* [ExternalFilePattern](#ExternalFilePattern)
-* [Examples](#examples)
-
 ## Install
 
-`filepattern` requires GCC 8+ for installation. 
+`filepattern` requires GCC 8+ or LLVM 9.0+ for installation. 
 
 To install `filepattern`:
 
-1. Clone repository with ```--recurse-submodules```
+1. Clone repository with ```--recursive-submodules```
 2. cd to the folder and then run ```pip install .```
   
 After installation, use "import pattern" to import the module into Python. The pattern module contains the following classes: 
@@ -252,4 +245,42 @@ The output from this example is:
 -----------------
 -----------------
 ```
-where each group of file is seperated by the dashes. Note that the ```block_size``` argument is provided in bytes (B) in this example, but also has the options for kilobytes (KB), megabytes (MB), and gigabytes (GB).  
+where each group of file is seperated by the dashes. Note that the ```block_size``` argument is provided in bytes (B) in this example, but also has the options for kilobytes (KB), megabytes (MB), and gigabytes (GB).
+
+<h3 id="group-by-external"> Group by </h3>
+
+`ExternalFilePattern` also contains the [group_by](#group-by) functionalility as described in [FilePattern](#filepattern). The output of `group_by` is the same as `FilePatten`, however, the API is slightly different:
+
+```python
+while(True):
+
+    for file in files(group_by="r"):
+        pprint.pprint(file)
+    
+    if(len(files) == 0):
+        break
+```
+
+However, the output remains identical to `FilePattern`.
+
+<h3 id="get-matching-external"> Get Matching </h3>
+
+Similarly to `group_by`, `ExternalFilePattern` also contains the `get_matching` functionality. To call `get_matching`, the following is used:
+
+```python
+files.get_matching(channel=['TXREAD'])
+
+while(True):
+    matching = files.get_matching_block()
+
+    if(len(matching) == 0):
+        break
+```
+where the output is returned in blocks of `block_size`. The output is:
+
+```
+({'c': 1, 'channel': 'TXREAD', 'r': 1},
+ ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif'])
+```
+
+where the dashed line seperates the chunks that are returned. 
