@@ -32,6 +32,7 @@ class ExternalPattern : public Pattern {
         std::string validFilesPath; // Path to temporary txt file containing valid files
         int mapSize;
         std::ifstream matchingStream;
+        std::ifstream groupStream;
 
         void getMatchingHelper(const std::tuple<std::string, std::vector<Types>>& variableMap, const std::string& matching);
 

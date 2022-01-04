@@ -16,6 +16,7 @@ stream(FilesystemStream(path, true, blockSize)) {
     this->validFilesPath = stream.getValidFilesPath(); // Store path to valid files txt file
     this->firstCall = true; // first call to next() has not occured
     this->matchFiles(); // match files to pattern
+    this->groupStream.open(stream.getValidFilesPath());
     this->infile.open(validFilesPath); // open temp file for the valid files
     this->endOfFile = false; // end of valid files 
     
@@ -253,13 +254,46 @@ vector<Tuple> ExternalFilePattern::getMatching(string& t, Args... args){
 }
 */
 void ExternalFilePattern::next(){
+    
     // If first call, call groupby if supplied
     if(firstCall && this->group != ""){
         this->groupBy(this->group);
+    } 
+
+    if(this->group != ""){
+        this->currentBlock.clear();
+
+        if(!firstCall || get<0>(this->temp).size() != 0) this->currentBlock.push_back(this->temp);
+        
+        streampos ptr = groupStream.tellg();
+        string str;
+        if(!(this->groupStream >> str)){
+            this->currentBlock.clear();
+        }
+        groupStream.seekg(ptr, ios::beg);
+
+        while(m::getMap(groupStream, this->temp, this->mapSize)){
+
+            if(firstCall) {
+                this->currentValue = get<0>(temp)[this->group];
+                this->currentBlock.push_back(temp);
+                this->firstCall = false;
+            } else {
+
+                if(get<0>(this->temp)[this->group] == this->currentValue) {
+                     this->currentBlock.push_back(this->temp);
+                } else {
+                    this->currentValue = get<0>(this->temp)[this->group];
+                    break;
+                };
+            }
+        }
+
+    } else {
+        this->currentBlock = this->getValidFilesBlock(); // get block of valid files
     }
 
     this->firstCall = false; // first call was made
-    this->currentBlock = this->getValidFilesBlock(); // get block of valid files
 }
 
 int ExternalFilePattern::currentBlockLength(){
@@ -268,11 +302,14 @@ int ExternalFilePattern::currentBlockLength(){
 
 
 std::vector<Tuple> ExternalFilePattern::getValidFilesBlock(){
+
     if(stream.endOfValidFiles()){
         std::vector<Tuple> empty;
         return empty;
     }
+
     return stream.getValidFilesBlock();
+
 }
 
 void ExternalFilePattern::groupBy(const string& groupBy) {

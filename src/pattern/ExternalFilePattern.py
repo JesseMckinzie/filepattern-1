@@ -56,7 +56,7 @@ class FilePattern:
         except ValueError as e: 
             print(e)
 
-    def get_matching(self, **kwargs) -> str:
+    def get_matching(self, **kwargs) -> None:
         """
         Returns variables matching a specific value
 
@@ -69,10 +69,23 @@ class FilePattern:
             for key, value in kwargs.items():
                 mapping.append((key, value))
 
-            return self._file_pattern.getMatching(mapping)
+            self._file_pattern.getMatching(mapping)
         except ValueError as e:
             print(e)
+    
+    def get_matching_block(self) -> list:
+        """
+        Returns block of mathing files of size less than or equal to block_size.
 
+        Must be called after making a call to get_matching.
+
+        :retur list: block of matching files.
+        """
+
+        try:
+            return self._file_pattern.getMatchingBlock()
+        except ValueError as e:
+            print(e)
 
     def length(self) -> int:
         """

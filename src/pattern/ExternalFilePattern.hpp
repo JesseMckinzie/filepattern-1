@@ -115,7 +115,9 @@ class ExternalFilePattern : public ExternalPattern {
         bool recursive; // True if recursive iterator through subdirectories
         int totalFiles; // Total number of matched files (will be deleted)
         std::ifstream infile; // Input stream used throughout methods
-        bool firstCall; // True if first call has not been made to next() 
+        bool firstCall; // True if first call has not been made to next()
+        Tuple temp;
+        Types currentValue; 
 
         /**
          * @brief Get a map from a .txt file 
