@@ -282,5 +282,3 @@ where the output is returned in blocks of `block_size`. The output is:
 ({'c': 1, 'channel': 'TXREAD', 'r': 1},
  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif'])
 ```
-
-where the dashed line seperates the chunks that are returned. 
