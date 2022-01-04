@@ -261,11 +261,11 @@ while(True):
         break
 ```
 
-However, the output remains identical to `FilePattern`.
+The output remains identical to `FilePattern`.
 
 <h3 id="get-matching-external"> Get Matching </h3>
 
-Similarly to `group_by`, `ExternalFilePattern` also contains the `get_matching` functionality. To call `get_matching`, the following is used:
+`ExternalFilePattern` also contains the `get_matching` functionality. To call `get_matching`, the following is used:
 
 ```python
 files.get_matching(channel=['TXREAD'])
