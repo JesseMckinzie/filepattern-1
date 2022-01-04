@@ -4,9 +4,10 @@ using namespace std;
 
 ExternalFilePattern::ExternalFilePattern(const string& path, const string& filePattern, const string& blockSize="50 MB", bool recursive=false):
 stream(FilesystemStream(path, true, blockSize)) {
-
     this->path = path; // store path to target directory
-    
+
+    this->blockSize = Block::parseblockSize(blockSize);
+
     this->filePattern = filePattern; // cast input string to regex
     this->regexFilePattern = ""; // Regex equivalent of the pattern
     this->recursive = recursive; // Recursive directory iteration
@@ -18,8 +19,14 @@ stream(FilesystemStream(path, true, blockSize)) {
     this->infile.open(validFilesPath); // open temp file for the valid files
     this->endOfFile = false; // end of valid files 
     
-
 }
+
+ExternalFilePattern::~ExternalFilePattern(){
+    fs::path path = this->validFilesPath; 
+    path.remove_filename();
+    uintmax_t n = fs::remove_all(path);
+}
+
 
 void ExternalFilePattern::printFiles(){
     bool after = false;
@@ -48,24 +55,29 @@ void ExternalFilePattern::printFiles(){
 void ExternalFilePattern::matchFilesOneDir(){
     vector<string> block;
 
-    // Iterate over every file in directory
     regex patternRegex = regex(this->regexFilePattern);
     string file;
     smatch sm;
+
     int count = 0;
     // iterate over files    
     while(!this->stream.isEmpty()){
+
         block = stream.getBlock();
+        if(count == 0 && block.size() == 0) throw runtime_error("Block size too small.");
+        
         for (const auto& filePath : block) {
             file = s::getBaseName(filePath);
+
             if(regex_match(file, sm, patternRegex)){
                 stream.writeValidFiles(getVariableMap(filePath, sm)); // write to txt file
                 ++count;
             }
         }
     }
+
     if(count == 0){
-        throw std::runtime_error("No files matched. Check that the pattern is correct.");
+        cout << ("WARNING: No files matched. Check that the pattern is correct.") << endl;
     }
 }
 

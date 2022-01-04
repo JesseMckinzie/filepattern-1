@@ -18,6 +18,7 @@ void ExternalPattern::getMatchingLoop(ifstream& infile,
     while(m::getMap(infile, tempMap, this->mapSize)){
         temp = get<0>(tempMap)[variable];
         for(const auto& value: values){  
+
             if(s::to_string(temp) == s::to_string(value)){
                 m::writeMap(outfile, tempMap);
             }
@@ -39,7 +40,8 @@ void ExternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
     vector<Tuple> iter;
     Tuple tempMap;
     // if first or only variable to match, iterate over valid files
-    if(fs::file_size(matching) == 0) {
+    if(!(fs::exists(matching))) {
+
         ifstream validFiles(this->validFilesPath);    
         ofstream outfile(matching);
 
@@ -77,12 +79,42 @@ string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& 
     //    throw runtime_error("Could not create temporary file.");
     //}
 
-    this->matching = tmpdir + "/matching.txt";
+    this->matching = tmpdir + "matching.txt";
     this->matchingCopy = tmpdir + "/temp.txt";
+    if(fs::exists(matching)) {
+
+        fs::remove(matching);
+    }
 
     for(const auto& variableMap: variables){
         this->getMatchingHelper(variableMap, matching);
     }
 
+    this->matchingStream.open(this->matching);
+
     return matching;
+}
+
+vector<Tuple> ExternalPattern::getMatchingBlock(){
+    //if(!matchingStream.is_open()) throw runtime_error("The get matching function must be called first.");
+
+    long size = sizeof(vector<Tuple>);
+    if(size > this->blockSize) throw runtime_error("The block size is smaller than the size of a vector. The block size must be increased");
+
+    Tuple temp;
+    vector<Tuple> vec;
+    bool moreFiles;
+
+    while(size < this->blockSize){
+        moreFiles = m::getMap(this->matchingStream, temp, this->mapSize);
+        if(!moreFiles) {
+            this->matchingStream.close();
+            break;
+        }
+        vec.push_back(temp);
+
+        size += m::getSize(temp);
+    }
+
+    return vec;
 }

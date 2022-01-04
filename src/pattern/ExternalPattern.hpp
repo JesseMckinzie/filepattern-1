@@ -31,6 +31,7 @@ class ExternalPattern : public Pattern {
         std::string matchingCopy;
         std::string validFilesPath; // Path to temporary txt file containing valid files
         int mapSize;
+        std::ifstream matchingStream;
 
         void getMatchingHelper(const std::tuple<std::string, std::vector<Types>>& variableMap, const std::string& matching);
 
@@ -57,6 +58,8 @@ class ExternalPattern : public Pattern {
          * @return std::vector<Tuple> Vector of files where the variable(s) match the value.
          */
         std::string getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables);
+
+        std::vector<Tuple> getMatchingBlock();
 };
 
 #endif

@@ -42,7 +42,8 @@ PYBIND11_MODULE(backend, m){
 
     py::class_<ExternalPattern, Pattern>(m, "ExternalPattern")
         .def("setGroup", &ExternalPattern::setGroup)
-        .def("getMatching", &ExternalPattern::getMatching);
+        .def("getMatching", &ExternalPattern::getMatching)
+        .def("getMatchingBlock", &ExternalPattern::getMatchingBlock);
 
     py::class_<ExternalFilePattern, ExternalPattern>(m, "ExternalFilePattern")
         .def(py::init<const std::string&, const std::string&, const std::string&, bool>())

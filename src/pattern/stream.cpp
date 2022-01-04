@@ -83,12 +83,16 @@ vector<Tuple> Stream::getValidFilesBlock(){
             for(const auto& item : map){
                 size += item.first.length() + s::size(item.second);
             }
+
             get<0>(member) = map;
             str.pop_back(); // remove trailing comma
             get<1>(member).push_back(str);
+
             vec.push_back(member);
+
             map.clear();
             get<1>(member).clear();
+            
             infile >> str;
         }
 
