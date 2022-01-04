@@ -28,7 +28,7 @@ class Block {
          * @param block The memory size to be converted to bytes.
          * @return long double The memory size in bytes.
          */
-        static long double parseblockSize(const std::string& block){ 
+        static long parseblockSize(const std::string& block){ 
 
             std::string numString = "";
             std::string unitString = "";
@@ -40,7 +40,7 @@ class Block {
 
             if (numString == "") throw std::invalid_argument("Block size must include a size.");
             std::string::size_type sz;
-            long double num = stoi (numString, &sz);
+            long num = stoi (numString, &sz);
 
             if (unitString == "KB"){
                 num = KB(num);
