@@ -158,4 +158,13 @@ namespace m {
                 } 
 
         }
+
+        inline void preserveType(Tuple& mapping){
+                Types value;
+                for(auto& p: std::get<0>(mapping)){
+                        value = p.second;
+                        if(s::is_number(s::to_string(p.second))) value = std::stoi(s::to_string(p.second));
+                        p.second = value;
+                }
+        }
 }
