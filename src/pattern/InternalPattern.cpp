@@ -25,7 +25,7 @@ void InternalPattern::groupBy(const string& groupBy) {
 
             // sort group of variables
             sort(validGroupedFiles[group_ptr].begin(), validGroupedFiles[group_ptr].end(), [](Tuple& m1, Tuple& m2){
-                return get<0>(m1)["file"] < get<0>(m2)["file"];
+                return get<1>(m1)[0] < get<1>(m2)[0];
             });
 
             ++i;
@@ -74,7 +74,7 @@ void InternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
 
 vector<Tuple> InternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
 
-    
+    this->matching.clear();
 
     // match files for each argument
     for(const auto& variableMap: variables){

@@ -19,6 +19,7 @@
 #include <regex>
 #include <map>
 #include <tuple>
+#include <chrono>
 #include "Pattern.hpp"
 #include "util.hpp"
 //#include "sort.h"

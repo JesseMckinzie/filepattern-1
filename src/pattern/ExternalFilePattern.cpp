@@ -273,6 +273,7 @@ void ExternalFilePattern::next(){
         groupStream.seekg(ptr, ios::beg);
 
         while(m::getMap(groupStream, this->temp, this->mapSize)){
+            m::preserveType(temp);
 
             if(firstCall) {
                 this->currentValue = get<0>(temp)[this->group];
@@ -288,6 +289,10 @@ void ExternalFilePattern::next(){
                 };
             }
         }
+
+        sort(this->currentBlock.begin(), this->currentBlock.end(), [](Tuple& m1, Tuple& m2){
+            return get<1>(m1)[0] < get<1>(m2)[0];
+        });
 
     } else {
         this->currentBlock = this->getValidFilesBlock(); // get block of valid files

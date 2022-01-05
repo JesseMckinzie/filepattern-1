@@ -73,6 +73,10 @@ string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& 
     string tmpdir = fs::temp_directory_path();
     tmpdir += "/filepattern/";
 
+    if(fs::exists(tmpdir)){
+        fs::remove_all(tmpdir);
+    }
+
     bool created = fs::create_directory(tmpdir);
 
     //if (!created) {
@@ -107,6 +111,9 @@ vector<Tuple> ExternalPattern::getMatchingBlock(){
 
     while(size < this->blockSize){
         moreFiles = m::getMap(this->matchingStream, temp, this->mapSize);
+
+        m::preserveType(temp);
+
         if(!moreFiles) {
             this->matchingStream.close();
             break;
