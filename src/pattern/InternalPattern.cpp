@@ -3,7 +3,7 @@
 using namespace std;
 
 void InternalPattern::groupBy(const string& groupBy) {
-    this->group = groupBy;
+    this->setGroup(groupBy);
     validGroupedFiles.clear();
     Tuple member;
     

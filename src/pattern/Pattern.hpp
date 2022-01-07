@@ -25,7 +25,7 @@ class Pattern {
         std::string filePattern; // Pattern to match files to
         std::string regexFilePattern; // Pattern with capture groups
         std::vector<std::string> variables; // Store the names of variables from the pattern
-
+        std::map<std::string, std::map<Types, int>> variableOccurences;
 
     public:
         std::vector<Tuple> validFiles; // Store files that match given regex
@@ -101,4 +101,13 @@ class Pattern {
          * 
          */
         void printVariables();
+
+        /**
+         * @brief Sets the variable to be grouped in groupBy()
+         * 
+         * @param group Variable to group the matched files by 
+         */
+        void setGroup(const std::string& group);
+
+        std::map<std::string, std::map<Types, int>> getOccurences();
 };

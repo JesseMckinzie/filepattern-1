@@ -4,10 +4,6 @@ using namespace std;
 
 namespace fs = std::filesystem;
 
-void ExternalPattern::setGroup(const string& group){
-    this->group = group;
-}
-
 void ExternalPattern::getMatchingLoop(ifstream& infile, 
                                       ofstream& outfile,
                                       const string& variable, 

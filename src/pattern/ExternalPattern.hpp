@@ -46,12 +46,6 @@ class ExternalPattern : public Pattern {
 
     public: 
 
-        /**
-         * @brief Sets the variable to be grouped in groupBy()
-         * 
-         * @param group Variable to group the matched files by 
-         */
-        void setGroup(const std::string& group);
 
         /**
          * @brief Returns files that match the value of variable. Needs to be updated to match old version input. 

@@ -112,4 +112,7 @@ class FilePattern:
         """
             
         return self._file_pattern.__iter__()
+
+    def next(self):
+        self._file_pattern.next()
  

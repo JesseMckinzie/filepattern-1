@@ -16,6 +16,7 @@ stream(FilesystemStream(path, true, blockSize)) {
     this->validFilesPath = stream.getValidFilesPath(); // Store path to valid files txt file
     this->firstCall = true; // first call to next() has not occured
     this->matchFiles(); // match files to pattern
+    //this->next();
     this->groupStream.open(stream.getValidFilesPath());
     this->infile.open(validFilesPath); // open temp file for the valid files
     this->endOfFile = false; // end of valid files 
@@ -254,24 +255,31 @@ vector<Tuple> ExternalFilePattern::getMatching(string& t, Args... args){
 }
 */
 void ExternalFilePattern::next(){
-    
+    this->currentBlock.clear();
     // If first call, call groupby if supplied
     if(firstCall && this->group != ""){
         this->groupBy(this->group);
     } 
 
     if(this->group != ""){
-        this->currentBlock.clear();
-
-        if(!firstCall || get<0>(this->temp).size() != 0) this->currentBlock.push_back(this->temp);
         
+        // add mapping from previous call to return block
+        if(!firstCall && get<0>(this->temp).size() != 0) this->currentBlock.push_back(this->temp);
+        
+        // check if end of file
         streampos ptr = groupStream.tellg();
         string str;
         if(!(this->groupStream >> str)){
+            // reset variables incase of another call
             this->currentBlock.clear();
+            this->groupStream.close();
+            this->groupStream.open(this->validFilesPath);
+            this->firstCall = true;
+            return;
         }
         groupStream.seekg(ptr, ios::beg);
 
+        // iterate over vaild files temp file while the group variable is constant
         while(m::getMap(groupStream, this->temp, this->mapSize)){
             m::preserveType(temp);
 
@@ -281,20 +289,25 @@ void ExternalFilePattern::next(){
                 this->firstCall = false;
             } else {
 
+                // add to block if value matches current value
                 if(get<0>(this->temp)[this->group] == this->currentValue) {
                      this->currentBlock.push_back(this->temp);
-                } else {
+                } else { 
+                    // update variable value and end loop on variable value change
+                            // sort block by basename
+                    sort(this->currentBlock.begin(), this->currentBlock.end(), [](Tuple& m1, Tuple& m2){
+                        return get<1>(m1)[0] < get<1>(m2)[0];
+                    });
                     this->currentValue = get<0>(this->temp)[this->group];
-                    break;
+                    return;
                 };
             }
         }
-
         sort(this->currentBlock.begin(), this->currentBlock.end(), [](Tuple& m1, Tuple& m2){
             return get<1>(m1)[0] < get<1>(m2)[0];
         });
 
-    } else {
+    } else { // get a valid files block if no grouping
         this->currentBlock = this->getValidFilesBlock(); // get block of valid files
     }
 
@@ -318,8 +331,8 @@ std::vector<Tuple> ExternalFilePattern::getValidFilesBlock(){
 }
 
 void ExternalFilePattern::groupBy(const string& groupBy) {
-
-    // sort valid files
+    this->setGroup(groupBy);
+    // sort valid files externally 
     string path = stream.getValidFilesPath();
     ExternalMergeSort sort = ExternalMergeSort(std_map, 
                                                path, 
