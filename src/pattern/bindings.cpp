@@ -21,6 +21,7 @@ PYBIND11_MODULE(backend, m){
         .def("getRegexPattern", &Pattern::getRegexPattern)
         .def("getVariables", &Pattern::getVariables)
         .def("printVariables", &Pattern::printVariables)
+        .def("getOccurences", &Pattern::getOccurences)
         .def("__iter__", [](const Pattern &v){ 
             if(v.group != "") return py::make_iterator(v.validGroupedFiles.begin(), v.validGroupedFiles.end());
             else return py::make_iterator(v.validFiles.begin(), v.validFiles.end());}, 
@@ -53,6 +54,7 @@ PYBIND11_MODULE(backend, m){
         .def("getValidFilesBlock", &ExternalFilePattern::getValidFilesBlock)
         .def("groupBy", &ExternalFilePattern::groupBy)
         .def("currentBlockLength", &ExternalFilePattern::currentBlockLength)
+        .def("next", &ExternalFilePattern::next)
         .def("__iter__", [](ExternalFilePattern &v){ 
             v.next();
             return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());}, 

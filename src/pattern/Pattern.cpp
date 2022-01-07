@@ -2,6 +2,14 @@
 
 using namespace std;
 
+void Pattern::setGroup(const string& group){
+    if(find(this->variables.begin(), this->variables.end(), group) != variables.end()) {
+        this->group = group;
+    } else {
+        throw invalid_argument("Group by variable must be contained in the pattern.");
+    }
+}
+
 vector<string> Pattern::getVariables(){
     return this->variables;
 }
@@ -84,9 +92,30 @@ Tuple Pattern::getVariableMap(const string& filePath, const smatch& sm){
         str = sm[i];
         s::is_number(str) ? get<0>(tup)[variables[i-1]] = stoi(str) : 
                             get<0>(tup)[variables[i-1]] = str;
+        this->variableOccurences[variables[i-1]][str] += 1;
     }
     
     return tup;
+}
+//(variableName, variableValue)
+std::map<string, std::map<Types, int>> Pattern::getOccurences(){
+    /* In progress
+    if(mapping.size() == 0) {
+        return this->variableOccurences;
+    } else {
+        std::map<Types, int> temp;
+        std::map<string, std::map<Types, int>> occurences;
+        for(const auto& tup: mapping){
+            for(const auto& var: get<1>(tup)){
+                temp[var] = 
+            }
+            occurences[this->variableOccurences[get<0>(tup)]] = 
+        }
+        return occurences;
+    }
+    */ 
+
+    return this->variableOccurences;
 }
 
 string Pattern::getPattern(){

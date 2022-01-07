@@ -108,6 +108,9 @@ class FilePattern:
         """
         self._file_pattern.groupBy(group)
 
+    def get_occurences(self):
+
+        return self._file_pattern.getOccurences()
     
     def __call__(self, group_by=None):
         if(group_by is not None):
