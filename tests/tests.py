@@ -312,7 +312,8 @@ class TestExternalFilePattern(unittest.TestCase):
                 while(True):    
                     for file in files():
                         result.append(file)
-                    
+
+                    #files.next()
                     if(len(files) == 0):
                         break
 
@@ -349,9 +350,6 @@ class TestExternalFilePattern(unittest.TestCase):
                         if(len(matching) == 0):
                             break
                     
-                    
-                    print("result " + str(len(result)))
-                    print("old_result" + str(len(old_result)))
                     self.assertEqual(len(old_result), len(result)) 
 
                     for i in range(len(old_result)):                
@@ -434,47 +432,51 @@ class TestExternalFilePattern(unittest.TestCase):
                     
                     old_result.append(file)
 
-                temp = []
                 while(True):    
+                    temp = []
                     for file in files(group_by="r"):
                         temp.append(file)
                     
+                    #files.next()
                     if(len(files) == 0):
                         break
-                        
+
                     result.append(temp)
 
+                        
+
                 self.assertEqual(len(old_result), len(result)) 
-                #for i in range(len(old_result)):
-                #   self.assertEqual(len(old_result[i]), len(result[i])) 
-
-                """
-                for i in range(len(result)):
-                    for j in range(len(result[i])):
-                        pprint.pprint(result[i][j])
-                        pprint.pprint(old_result[i][j])
-                        print()
-                """
-                print()
-                for file in result:
-                    print(len(file))
-                print()
-
+                for i in range(len(old_result)):
+                   self.assertEqual(len(old_result[i]), len(result[i])) 
+                
                 for i in range(len(old_result)):
                     for j in range(len(old_result[i])):
                         self.assertEqual(old_result[i][j]["r"], result[i][j][0]["r"]) 
                         self.assertEqual(old_result[i][j]["c"], result[i][j][0]["c"])
                         self.assertEqual(str(old_result[i][j]['file']), result[i][j][1][0])
 
+                result = []
+                old_result = []
+
                 for file in old_files(group_by="r"):
                     old_result.append(file)
 
                 while(True):    
+                    temp = []
                     for file in files(group_by="c"):
-                        result.append(file)
+                        temp.append(file)
                     
+                    #files.next()
                     if(len(files) == 0):
                         break
+
+                    result.append(temp)
+
+                for i in range(len(old_result)):
+                    pprint.pprint(old_result[i])
+                    pprint.pprint(result[i])
+                    print()
+                    
 
                 self.assertEqual(len(old_result), len(result)) 
 
