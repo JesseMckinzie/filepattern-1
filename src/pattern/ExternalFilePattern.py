@@ -110,8 +110,12 @@ class FilePattern:
         The variables mapped to values are in file.first
         The filepath is in file.second
         """
-            
-        return self._file_pattern.__iter__()
+        while(True):
+            for block in self._file_pattern.__iter__():
+                yield block
+
+            if(len(self) == 0):
+                break
 
     def next(self):
         self._file_pattern.next()
