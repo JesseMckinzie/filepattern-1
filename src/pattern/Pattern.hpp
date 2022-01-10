@@ -16,6 +16,7 @@
 #include <vector>
 #include <regex>
 #include <map>
+#include <set>
 #include "util.hpp"
 
 class Pattern {
@@ -26,6 +27,7 @@ class Pattern {
         std::string regexFilePattern; // Pattern with capture groups
         std::vector<std::string> variables; // Store the names of variables from the pattern
         std::map<std::string, std::map<Types, int>> variableOccurences;
+        std::map<std::string, std::set<Types>> uniqueValues;
 
     public:
         std::vector<Tuple> validFiles; // Store files that match given regex
@@ -109,5 +111,10 @@ class Pattern {
          */
         void setGroup(const std::string& group);
 
-        std::map<std::string, std::map<Types, int>> getOccurences();
+        std::map<std::string, std::map<Types, int>> getOccurences(const std::vector<std::tuple<std::string, std::vector<Types>>>& mapping);
+        //std::map<std::string, std::map<Types, int>> getOccurences();
+
+        std::map<std::string, std::set<Types>> getUniqueValues(const std::vector<std::string>& mapping);
+
+        void getNewNaming(std::string& pattern);
 };

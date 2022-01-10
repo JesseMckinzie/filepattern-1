@@ -15,6 +15,9 @@ vector<string> Pattern::getVariables(){
 }
 
 void Pattern::filePatternToRegex(){
+    if(this->filePattern.find(':') == std::string::npos){
+        getNewNaming(this->filePattern);
+    }
 
     // regex to match variables
     std::regex e("\\{(\\w+):([dc+]+)\\}");
@@ -92,30 +95,48 @@ Tuple Pattern::getVariableMap(const string& filePath, const smatch& sm){
         str = sm[i];
         s::is_number(str) ? get<0>(tup)[variables[i-1]] = stoi(str) : 
                             get<0>(tup)[variables[i-1]] = str;
-        this->variableOccurences[variables[i-1]][str] += 1;
+        this->variableOccurences[variables[i-1]][get<0>(tup)[variables[i-1]]] += 1;
+        this->uniqueValues[variables[i-1]].insert(get<0>(tup)[variables[i-1]]);
     }
     
     return tup;
 }
-//(variableName, variableValue)
-std::map<string, std::map<Types, int>> Pattern::getOccurences(){
-    /* In progress
-    if(mapping.size() == 0) {
-        return this->variableOccurences;
-    } else {
-        std::map<Types, int> temp;
-        std::map<string, std::map<Types, int>> occurences;
-        for(const auto& tup: mapping){
-            for(const auto& var: get<1>(tup)){
-                temp[var] = 
-            }
-            occurences[this->variableOccurences[get<0>(tup)]] = 
-        }
-        return occurences;
-    }
-    */ 
 
+/*
+std::map<string, std::map<Types, int>> Pattern::getOccurences(){
     return this->variableOccurences;
+}
+*/
+
+
+
+//(variableName, variableValue)
+std::map<string, std::map<Types, int>> Pattern::getOccurences(const vector<tuple<string, vector<Types>>>& mapping){
+    if(mapping.size() == 0){
+        return this->variableOccurences;
+    }
+
+    std::map<Types, int> temp;
+    std::map<string, std::map<Types, int>> occurences;
+    string variable;
+    for(const auto& tup: mapping){
+        if(get<1>(tup).size() == 0){
+            occurences[get<0>(tup)] = this->variableOccurences[get<0>(tup)];
+        } else {
+            for(const auto& value: get<1>(tup)){
+                variable = get<0>(tup);
+                //if(s::is_number(this->variableOccurences[variable][value]){
+                //    value.erase(0, min(value.find_first_not_of('0'), value.size()-1));
+                //}
+
+                temp[value] = this->variableOccurences[get<0>(tup)][value];
+            }
+            occurences[variable] = temp;
+        }
+    }
+
+    return occurences;
+
 }
 
 string Pattern::getPattern(){
@@ -143,4 +164,54 @@ void Pattern::printVariables(){
         i++;
     }
     cout << endl;
+}
+
+map<string, set<Types>> Pattern::getUniqueValues(const vector<string>& vec){
+    if(vec.size() == 0) return this->uniqueValues;
+
+    map<string, set<Types>> temp;
+    for(const auto& str: vec){
+        temp[str] = uniqueValues[str];
+    }
+    return temp;
+}
+
+//img_r{rrr}_c{ccc}.tif
+void Pattern::getNewNaming(string& pattern){
+        string vars = "\\{(["; // initialize begining of group
+    vars += "rtczyxp"; // add in valid variables
+    vars += "+]+)\\}"; // add in last part of group
+
+    std::regex e(vars);
+
+    string str; // temp string
+    vector<pair<string,string>> matches; // map between bracket expression and regex
+    string patternCopy = pattern; // get a copy of pattern since regex_search is inplace
+    std::smatch m; // regex matches
+
+    // extract bracket expressions from pattern and store regex
+    while (regex_search(patternCopy, m, e)){
+        str = m[1];
+
+        matches.push_back(make_pair(m[0], m[1]));
+    
+        patternCopy = m.suffix().str(); 
+        
+    }
+
+
+    // Replace bracket groups with regex capture groups
+    for(const auto& match: matches){
+        // Create capture group
+
+        str = "{";
+        str += match.second[0]; 
+        str += ":";
+        for(const auto& c: match.second){
+            str += "d";
+        }
+        str += "}";
+
+        s::replace(pattern, match.first, str);
+    }    
 }
