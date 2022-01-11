@@ -176,9 +176,12 @@ map<string, set<Types>> Pattern::getUniqueValues(const vector<string>& vec){
     return temp;
 }
 
-//img_r{rrr}_c{ccc}.tif
+
 void Pattern::getNewNaming(string& pattern){
-        string vars = "\\{(["; // initialize begining of group
+    cout << "WARNING: The old style of pattern was used. This style may become deprecated in future releases." << endl;
+
+
+    string vars = "\\{(["; // initialize begining of group
     vars += "rtczyxp"; // add in valid variables
     vars += "+]+)\\}"; // add in last part of group
 
@@ -208,10 +211,13 @@ void Pattern::getNewNaming(string& pattern){
         str += match.second[0]; 
         str += ":";
         for(const auto& c: match.second){
-            str += "d";
+           if(c != '+') str += "d";
+           else str += "+";
         }
         str += "}";
 
         s::replace(pattern, match.first, str);
-    }    
+    }
+    cout << "The recommended pattern to use is: " << pattern << 
+            ". See the documenation for details about the new style." << endl;
 }
