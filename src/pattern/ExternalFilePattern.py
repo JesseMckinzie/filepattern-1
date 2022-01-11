@@ -1,6 +1,6 @@
 from . import backend
 
-class FilePattern:
+class ExternalFilePattern:
     """
     External memory version of filepattern. 
 
@@ -56,7 +56,7 @@ class FilePattern:
         except ValueError as e: 
             print(e)
 
-    def get_matching(self, **kwargs) -> None:
+    def get_matching(self, mapping: list) -> None:
         """
         Returns variables matching a specific value
 
@@ -65,10 +65,6 @@ class FilePattern:
         :return list: list of matching files
         """
         try:
-            mapping = []
-            for key, value in kwargs.items():
-                mapping.append((key, value))
-
             self._file_pattern.getMatching(mapping)
         except ValueError as e:
             print(e)
@@ -86,6 +82,15 @@ class FilePattern:
             return self._file_pattern.getMatchingBlock()
         except ValueError as e:
             print(e)
+
+    def get_occurences(self, mapping: list):
+
+        return self._file_pattern.getOccurences(mapping)
+    
+    def get_unique_values(self, vec) -> list:
+
+        return self._file_pattern.getUniqueValues(vec)
+
 
     def length(self) -> int:
         """
