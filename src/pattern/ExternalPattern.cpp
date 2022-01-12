@@ -4,6 +4,9 @@ using namespace std;
 
 namespace fs = std::filesystem;
 
+ExternalPattern::ExternalPattern(const string& path, const string& blockSize, bool recursive):
+stream(FilesystemStream(path, recursive, blockSize)){}
+
 void ExternalPattern::getMatchingLoop(ifstream& infile, 
                                       ofstream& outfile,
                                       const string& variable, 
@@ -96,7 +99,6 @@ string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& 
 }
 
 vector<Tuple> ExternalPattern::getMatchingBlock(){
-    //if(!matchingStream.is_open()) throw runtime_error("The get matching function must be called first.");
 
     long size = sizeof(vector<Tuple>);
     if(size > this->blockSize) throw runtime_error("The block size is smaller than the size of a vector. The block size must be increased");
@@ -104,6 +106,8 @@ vector<Tuple> ExternalPattern::getMatchingBlock(){
     Tuple temp;
     vector<Tuple> vec;
     bool moreFiles;
+
+    if(!matchingStream.is_open()) return vec;
 
     while(size < this->blockSize){
         moreFiles = m::getMap(this->matchingStream, temp, this->mapSize);
@@ -120,4 +124,93 @@ vector<Tuple> ExternalPattern::getMatchingBlock(){
     }
 
     return vec;
+}
+
+void ExternalPattern::next(){
+    this->currentBlock.clear();
+    // If first call, call groupby if supplied
+    if(firstCall && this->group != ""){
+        this->groupBy(this->group);
+    } 
+
+    if(this->group != ""){
+        
+        // add mapping from previous call to return block
+        if(!firstCall && get<0>(this->temp).size() != 0) this->currentBlock.push_back(this->temp);
+        
+        // check if end of file
+        streampos ptr = groupStream.tellg();
+        string str;
+        if(!(this->groupStream >> str)){
+            // reset variables incase of another call
+            this->currentBlock.clear();
+            this->groupStream.close();
+            this->groupStream.open(this->validFilesPath);
+            this->firstCall = true;
+            return;
+        }
+        groupStream.seekg(ptr, ios::beg);
+
+        // iterate over vaild files temp file while the group variable is constant
+        while(m::getMap(groupStream, this->temp, this->mapSize)){
+            m::preserveType(temp);
+
+            if(firstCall) {
+                this->currentValue = get<0>(temp)[this->group];
+                this->currentBlock.push_back(temp);
+                this->firstCall = false;
+            } else {
+
+                // add to block if value matches current value
+                if(get<0>(this->temp)[this->group] == this->currentValue) {
+                     this->currentBlock.push_back(this->temp);
+                } else { 
+                    // update variable value and end loop on variable value change
+                            // sort block by basename
+                    sort(this->currentBlock.begin(), this->currentBlock.end(), [](Tuple& m1, Tuple& m2){
+                        return get<1>(m1)[0] < get<1>(m2)[0];
+                    });
+                    this->currentValue = get<0>(this->temp)[this->group];
+                    return;
+                };
+            }
+        }
+        sort(this->currentBlock.begin(), this->currentBlock.end(), [](Tuple& m1, Tuple& m2){
+            return get<1>(m1)[0] < get<1>(m2)[0];
+        });
+
+    } else { // get a valid files block if no grouping
+        this->currentBlock = this->getValidFilesBlock(); // get block of valid files
+    }
+
+    this->firstCall = false; // first call was made
+}
+
+int ExternalPattern::currentBlockLength(){
+    return this->currentBlock.size();
+}
+
+std::vector<Tuple> ExternalPattern::getValidFilesBlock(){
+
+    if(stream.endOfValidFiles()){
+        std::vector<Tuple> empty;
+        return empty;
+    }
+
+    return stream.getValidFilesBlock();
+
+}
+
+void ExternalPattern::groupBy(const string& groupBy) {
+    this->setGroup(groupBy);
+    // sort valid files externally 
+    string path = stream.getValidFilesPath();
+    ExternalMergeSort sort = ExternalMergeSort(std_map, 
+                                               path, 
+                                               path,
+                                               stream.getBlockSizeStr(),
+                                               groupBy,
+                                               stream.mapSize);
+
+    
 }

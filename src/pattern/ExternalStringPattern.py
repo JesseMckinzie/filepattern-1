@@ -1,7 +1,6 @@
 from . import backend
-import pprint
 
-class ExternalFilePattern:
+class ExternalStringPattern:
     """
     External memory version of filepattern. 
 
@@ -10,7 +9,7 @@ class ExternalFilePattern:
     parameter of the constructor. 
     """
 
-    def __init__(self, path: str, pattern: str, block_size: str="50 MB", recursive: bool=False):
+    def __init__(self, path: str, pattern: str, block_size: str="50 MB"):
         """
         Constructor of the FilePattern class.
 
@@ -30,7 +29,7 @@ class ExternalFilePattern:
         arbitrary number of characters. 
         """
         try:
-            self._file_pattern = backend.ExternalFilePattern(path, pattern, block_size, recursive)
+            self._file_pattern = backend.ExternalStringPattern(path, pattern, block_size)
         except RuntimeError as e:
             print(e)
             exit(1)
@@ -41,7 +40,7 @@ class ExternalFilePattern:
         """
 
         self._file_pattern.printFiles()
-
+    
     def get_valid_files_block(self) -> list:
         """
         Returns a list of tuples that contain the matched files that is the size of block_size.
@@ -73,14 +72,14 @@ class ExternalFilePattern:
                 matching = self._get_matching_block()
                 if(len(matching) == 0):
                     break
-
+                
                 for match in matching:
                     yield match
 
 
         except ValueError as e:
             print(e)
-
+    
     def _get_matching_block(self) -> list:
         """
         Returns block of mathing files of size less than or equal to block_size.
@@ -98,7 +97,7 @@ class ExternalFilePattern:
     def get_occurences(self, mapping: list):
 
         return self._file_pattern.getOccurences(mapping)
-
+    
     def get_unique_values(self, vec) -> list:
 
         return self._file_pattern.getUniqueValues(vec)
@@ -109,7 +108,7 @@ class ExternalFilePattern:
         Returns the length of the current file block.
         """
         return self._file_pattern.currentBlockLength()
-
+            
     def __call__(self, group_by=None):
         if(group_by is not None):
             self._file_pattern.setGroup(group_by)
@@ -136,3 +135,4 @@ class ExternalFilePattern:
 
     def next(self):
         self._file_pattern.next()
+ 

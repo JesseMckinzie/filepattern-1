@@ -14,6 +14,7 @@
 class FilesystemStream : public Stream {
 
     public:
+
         /**
          * @brief Construct a new Filesystem Stream object.
          * 
@@ -32,10 +33,26 @@ class FilesystemStream : public Stream {
          */
         std::vector<std::string> getBlock();
 
+        /**
+         * @brief Get a block of filenames that consumes at most blockSize of main memory.
+         * 
+         * @return std::vector<std::string> Vector of filenames
+         */
+        std::vector<std::string> getBlockIterator();
+
+        /**
+         * @brief Get a block of filenames that consumes at most blockSize of main memory.
+         * 
+         * @return std::vector<std::string> Vector of filenames
+         */
+        std::vector<std::string> getBlockTxt();
+
     private:
         fs::directory_iterator directory_iterator; // directory iterator to stream from
         fs::recursive_directory_iterator recursive_directory_iterator; 
         bool recurisve; // Iterate over subdirectories
         fs::directory_iterator end; // End of iterator
         fs::recursive_directory_iterator rec_end; // End of recursive iterator
+        bool txtInput;
+        std::ifstream infile;
 };

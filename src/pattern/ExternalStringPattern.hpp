@@ -10,13 +10,11 @@
  * 
  */
 
-#ifndef ExternalFilePattern_H
-#define ExternalFilePattern_H
+#pragma once
 #include "ExternalPattern.hpp"
 
-//namespace fs = std::filesystem;
 
-class ExternalFilePattern : public ExternalPattern {
+class ExternalStringPattern : public ExternalPattern {
     public:
 
         /**
@@ -36,9 +34,9 @@ class ExternalFilePattern : public ExternalPattern {
          * @param recursive Iterate over all subdirectories if true
          */
 
-        ExternalFilePattern(const std::string& path, const std::string& filePattern, const std::string& blockSize, bool recursive);
+        ExternalStringPattern(const std::string& path, const std::string& filePattern, const std::string& blockSize);
 
-        ~ExternalFilePattern();
+        ~ExternalStringPattern();
 
         /**
          * @brief Match files to pattern.
@@ -48,13 +46,6 @@ class ExternalFilePattern : public ExternalPattern {
          * a temporary .txt file. 
          */
         void matchFiles();
-
-        /**
-         * @brief Prints matched files to the console
-         * 
-         * Prints the maps for each matched file to the console.
-         */
-        void printFiles();
 
         /**
          * @brief Get all files that match a specified value(s) of variable(s).
@@ -93,26 +84,6 @@ class ExternalFilePattern : public ExternalPattern {
          * @return A map of variables to values from the basename of the filepath.  
          */
         //Map matchFilesLoop(Map&, const std::string&, const std::regex&, std::vector<std::string>&);
-
-
-        /**
-         * @brief Matches files from a directory iterator. 
-         * 
-         * Iterates over directory using a filesystem directory iterator and finds 
-         * all files in the directory that match the filepattern. matchFilesLoop is
-         * called to generate a mapping between the variables and values. The mapping is
-         * stored in the first member of the resulting tuple. The filepath is stored in the second 
-         * member of the tuple.
-         */
-        void matchFilesOneDir();
-
-        /**
-         * @brief Iterates over a directory and its subdirectories, matching files 
-         * to the pattern. If two files in different subdirectories have the same name, 
-         * the filepath to both files is stored in the array in the second member of the tuple.
-         * 
-         */
-        void matchFilesMultDir();
+ 
 
 };
-#endif

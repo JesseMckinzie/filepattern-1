@@ -7,6 +7,7 @@
 #include "StringPattern.hpp"
 #include "ExternalPattern.hpp"
 #include "ExternalFilePattern.hpp"
+#include "ExternalStringPattern.hpp"
 
 namespace py = pybind11;
 
@@ -18,6 +19,7 @@ PYBIND11_MODULE(backend, m){
         .def("filePatternToRegex", &Pattern::filePatternToRegex)
         .def("getPattern", &Pattern::getPattern)
         .def("setPattern", &Pattern::setPattern)
+        .def("setGroup", &Pattern::setGroup)
         .def("getRegexPattern", &Pattern::getRegexPattern)
         .def("getVariables", &Pattern::getVariables)
         .def("printVariables", &Pattern::printVariables)
@@ -43,21 +45,25 @@ PYBIND11_MODULE(backend, m){
         .def("printFiles", &StringPattern::readFile);
 
     py::class_<ExternalPattern, Pattern>(m, "ExternalPattern")
-        .def("setGroup", &ExternalPattern::setGroup)
         .def("getMatching", &ExternalPattern::getMatching)
-        .def("getMatchingBlock", &ExternalPattern::getMatchingBlock);
+        .def("getMatchingBlock", &ExternalPattern::getMatchingBlock)
+        .def("next", &ExternalPattern::next)
+        .def("getValidFilesBlock", &ExternalPattern::getValidFilesBlock)
+        .def("groupBy", &ExternalPattern::groupBy)
+        .def("currentBlockLength", &ExternalPattern::currentBlockLength);
 
     py::class_<ExternalFilePattern, ExternalPattern>(m, "ExternalFilePattern")
         .def(py::init<const std::string&, const std::string&, const std::string&, bool>())
-        .def("matchFiles", &ExternalFilePattern::matchFiles)
-        .def("printFiles", &ExternalFilePattern::printFiles)
-        .def("next", &ExternalFilePattern::next)
-        .def("getValidFilesBlock", &ExternalFilePattern::getValidFilesBlock)
-        .def("groupBy", &ExternalFilePattern::groupBy)
-        .def("currentBlockLength", &ExternalFilePattern::currentBlockLength)
-        .def("next", &ExternalFilePattern::next)
         .def("__iter__", [](ExternalFilePattern &v){ 
             v.next();
             return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());}, 
             py::keep_alive<0, 1>()); // Keep vector alive while iterator is used 
+    
+    py::class_<ExternalStringPattern, ExternalPattern>(m, "ExternalStringPattern")
+        .def(py::init<const std::string&, const std::string&, const std::string&>())
+        .def("__iter__", [](ExternalStringPattern &v){ 
+            v.next();
+            return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());}, 
+            py::keep_alive<0, 1>()); // Keep vector alive while iterator is used 
+
 }

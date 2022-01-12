@@ -1,15 +1,13 @@
 from . import ExternalFilePattern, InternalFilePattern
-import psutil
 
 class FilePattern:
-    def __init__(self, path: str, pattern: str, block_size: str=""): 
-        print()
-        print(psutil.virtual_memory().total)
-        print()
+    def __init__(self, path: str, pattern: str, block_size: str="", recursive: bool=False): 
         if(block_size == ""): 
-            self._file_pattern = InternalFilePattern.InternalFilePattern(path, pattern)
+            self._file_pattern = InternalFilePattern.InternalFilePattern(path, pattern, recursive=recursive)
         else: 
-            self._file_pattern = ExternalFilePattern.ExternalFilePattern(path, pattern, block_size)
+            if(recursive is True):
+                print("Recursive matching is not yet supoorted")
+            self._file_pattern = ExternalFilePattern.ExternalFilePattern(path, pattern, block_size=block_size, recursive=False)
 
     def get_matching(self, **kwargs) -> list:
         """
