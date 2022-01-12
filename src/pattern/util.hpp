@@ -81,6 +81,23 @@ namespace s {
                 str.replace(start_pos, from.length(), to);
                 return true;
         }
+
+        /**
+         * @brief Checks if a string ends in another string.
+         * 
+         * From: https://stackoverflow.com/questions/874134/find-out-if-string-ends-with-another-string-in-c
+         * 
+         * @param value 
+         * @param ending 
+         * @return true 
+         * @return false 
+         */
+        inline bool endsWith(std::string const & value, std::string const & ending) {
+
+                if (ending.size() > value.size()) return false;
+                return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
+
+        }
 };
 
 namespace m {
