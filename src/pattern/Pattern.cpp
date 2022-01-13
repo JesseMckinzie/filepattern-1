@@ -15,35 +15,53 @@ vector<string> Pattern::getVariables(){
 }
 
 void Pattern::filePatternToRegex(){
-    if(this->filePattern.find(':') == std::string::npos){
-        getNewNaming(this->filePattern);
-    }
+    
+    getNewNaming(this->filePattern);
 
     // regex to match variables
-    std::regex e("\\{(\\w+):([dc+]+)\\}");
+    std::regex e("(\\{(\\w+):([dc+]+)\\})|(\\(P\\?<(\\w+)>(.+)\\))"); // check for bracket expressions or named groups
+    std::regex group("\\P\\?<(\\w+)>(.+)");
+    std::regex var("\\{(\\w+):([dc+]+)\\}");
 
     map<char, string> patternMap; // map of variable types to regex equivalent 
     patternMap['d'] = "[0-9]"; 
     patternMap['c'] = "[a-zA-Z]";
     patternMap['+'] = "+";
     
-    string str; // temp string
-    string rgx; // temp regex
+    string str, rgx; // temp string and regex
     vector<pair<string,string>> matches; // map between bracket expression and regex
     vector<string> variables; // store variable names
     string patternCopy = this->filePattern; // get a copy of pattern since regex_search is inplace
-    std::smatch m; // regex matches
+    std::smatch sm, m; // regex matches
 
+    string temp;
     // extract bracket expressions from pattern and store regex
     while (regex_search(patternCopy, m, e)){
-        str = m[2];
-        rgx = "";
-        for(const auto c: str){
-            rgx += patternMap[c];
+        temp = m[0];
+        if(temp.rfind("(P?<", 0) == 0) {
+           while (regex_search(temp, sm, group)){
+                rgx = sm[2];
+                rgx.pop_back();
+
+                this->variables.push_back(sm[1]);
+                str = sm[0];
+                str = "(" + str;
+                matches.push_back(make_pair(str, rgx));
+                temp = sm.suffix().str();
+           }
+        } else {
+            while (regex_search(temp, sm, var)){
+                str = sm[2];
+                rgx = "";
+                for(const auto c: str){
+                    rgx += patternMap[c];
+                }
+                this->variables.push_back(sm[1]);
+                matches.push_back(make_pair(sm[0], rgx));
+                temp = sm.suffix().str();
+            }
         }
 
-        this->variables.push_back(m[1]);
-        matches.push_back(make_pair(m[0], rgx));
 
         patternCopy = m.suffix().str(); 
     }
@@ -178,12 +196,8 @@ map<string, set<Types>> Pattern::getUniqueValues(const vector<string>& vec){
 
 
 void Pattern::getNewNaming(string& pattern){
-    cout << "WARNING: The old style of pattern was used. This style may become deprecated in future releases." << endl;
-
-
-    string vars = "\\{(["; // initialize begining of group
-    vars += "rtczyxp"; // add in valid variables
-    vars += "+]+)\\}"; // add in last part of group
+    
+    string vars = "\\{([rtczyxp+]+)\\}"; // check for old naming style or named grouped
 
     std::regex e(vars);
 
@@ -191,7 +205,7 @@ void Pattern::getNewNaming(string& pattern){
     vector<pair<string,string>> matches; // map between bracket expression and regex
     string patternCopy = pattern; // get a copy of pattern since regex_search is inplace
     std::smatch m; // regex matches
-
+    bool replaced = false;
     // extract bracket expressions from pattern and store regex
     while (regex_search(patternCopy, m, e)){
         str = m[1];
@@ -202,22 +216,28 @@ void Pattern::getNewNaming(string& pattern){
         
     }
 
-
     // Replace bracket groups with regex capture groups
     for(const auto& match: matches){
         // Create capture group
 
-        str = "{";
-        str += match.second[0]; 
-        str += ":";
-        for(const auto& c: match.second){
-           if(c != '+') str += "d";
-           else str += "+";
-        }
-        str += "}";
+        if(match.first.find(':') == std::string::npos) {
 
-        s::replace(pattern, match.first, str);
+            replaced = true;
+            str = "{";
+            str += match.second[0]; 
+            str += ":";
+            for(const auto& c: match.second){
+                if(c != '+') str += "d";
+                else str += "+";
+            }
+            str += "}";
+
+            s::replace(pattern, match.first, str);
+        } 
     }
-    cout << "The recommended pattern to use is: " << pattern << 
-            ". See the documenation for details about the new style." << endl;
+    if(replaced){
+        cout << "WARNING: The old style of pattern was used. This style may become deprecated in future releases." << endl;
+        cout << "The recommended pattern to use is: " << pattern << 
+                ". See the documenation for details about the new style." << endl;
+    }
 }
