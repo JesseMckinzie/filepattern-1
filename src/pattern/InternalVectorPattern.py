@@ -1,6 +1,6 @@
 from . import backend
 
-class InternalStringPattern:
+class VectorPattern:
 
     def __init__(self, filePath: str, pattern: str):
         """
@@ -23,7 +23,7 @@ class InternalStringPattern:
         """
 
         try:
-            self._file_pattern = backend.StringPattern(filePath, pattern)
+            self._file_pattern = backend.InternalVectorPattern(filePath, pattern)
         except RuntimeError as e:
             #error = "No directory found. Invalid path " + filePath
             print(e)

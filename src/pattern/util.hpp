@@ -98,6 +98,10 @@ namespace s {
                 return std::equal(ending.rbegin(), ending.rend(), value.rbegin());
 
         }
+
+        inline void removeSpaces(std:: string& str){
+                str.erase(remove(str.begin(), str.end(), ' '), str.end());
+        }
 };
 
 namespace m {

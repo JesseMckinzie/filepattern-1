@@ -3,7 +3,7 @@
 using namespace std;
 
 ExternalStringPattern::ExternalStringPattern(const string& path, const string& filePattern, const string& blockSize="50 MB"):
-ExternalPattern(path, blockSize, recursive) {
+ExternalPattern(path, blockSize, false) {
 
     this->path = path; // store path to target directory
     this->stream = {path, true, blockSize};

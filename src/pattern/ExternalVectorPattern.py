@@ -1,6 +1,6 @@
 from . import backend
 
-class ExternalFilePattern:
+class ExternalVectorPattern:
     """
     External memory version of filepattern. 
 
@@ -9,7 +9,7 @@ class ExternalFilePattern:
     parameter of the constructor. 
     """
 
-    def __init__(self, path: str, pattern: str, block_size: str="50 MB", recursive: bool=False):
+    def __init__(self, path: str, pattern: str, block_size: str="50 MB"):
         """
         Constructor of the FilePattern class.
 
@@ -29,7 +29,7 @@ class ExternalFilePattern:
         arbitrary number of characters. 
         """
         try:
-            self._file_pattern = backend.ExternalFilePattern(path, pattern, block_size, recursive)
+            self._file_pattern = backend.ExternalVectorPattern(path, pattern, block_size)
         except RuntimeError as e:
             print(e)
             exit(1)

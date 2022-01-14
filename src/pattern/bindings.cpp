@@ -8,6 +8,8 @@
 #include "ExternalPattern.hpp"
 #include "ExternalFilePattern.hpp"
 #include "ExternalStringPattern.hpp"
+#include "VectorPattern.hpp"
+#include "ExternalVectorPattern.hpp"
 
 namespace py = pybind11;
 
@@ -66,4 +68,15 @@ PYBIND11_MODULE(backend, m){
             return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());}, 
             py::keep_alive<0, 1>()); // Keep vector alive while iterator is used 
 
+    py::class_<VectorPattern, InternalPattern>(m, "InternalVectorPattern")
+        .def(py::init<const std::string&, const std::string&>());
+
+    py::class_<ExternalVectorPattern, ExternalPattern>(m, "ExternalVectorPattern")
+        .def(py::init<const std::string&, const std::string&, const std::string&>())
+        .def("__iter__", [](ExternalVectorPattern &v){ 
+            v.next();
+            return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());}, 
+            py::keep_alive<0, 1>()); // Keep vector alive while iterator is used ;
+
+    
 }
