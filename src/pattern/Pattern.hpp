@@ -28,6 +28,7 @@ class Pattern {
         std::vector<std::string> variables; // Store the names of variables from the pattern
         std::map<std::string, std::map<Types, int>> variableOccurences;
         std::map<std::string, std::set<Types>> uniqueValues;
+        std::vector<std::string> namedGroups;
 
     public:
         std::vector<Tuple> validFiles; // Store files that match given regex
@@ -117,4 +118,6 @@ class Pattern {
         std::map<std::string, std::set<Types>> getUniqueValues(const std::vector<std::string>& mapping);
 
         void getNewNaming(std::string& pattern);
+
+        std::string outputNameHelper(std::vector<Tuple>& vec);
 };

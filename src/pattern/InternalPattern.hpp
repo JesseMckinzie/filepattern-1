@@ -40,4 +40,6 @@ class InternalPattern : public Pattern {
          */
         std::vector<Tuple> getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables);
 
+        std::string outputName(std::vector<Tuple>& vec);
+
 };

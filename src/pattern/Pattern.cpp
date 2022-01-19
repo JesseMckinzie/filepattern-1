@@ -70,9 +70,10 @@ void Pattern::filePatternToRegex(){
 
     // Replace bracket groups with regex capture groups
     for(const auto& match: matches){
+        this->namedGroups.push_back(match.first);
+
         // Create capture group
         str = "(" + match.second + ")";
-
         s::replace(this->regexFilePattern, match.first, str);
     }
 }
@@ -211,7 +212,8 @@ void Pattern::getNewNaming(string& pattern){
         str = m[1];
 
         matches.push_back(make_pair(m[0], m[1]));
-    
+
+        //regexMatches.push_back(m);
         patternCopy = m.suffix().str(); 
         
     }
@@ -240,4 +242,56 @@ void Pattern::getNewNaming(string& pattern){
         cout << "The recommended pattern to use is: " << pattern << 
                 ". See the documenation for details about the new style." << endl;
     }
+}
+
+string Pattern::outputNameHelper(vector<Tuple>& vec){
+    if(vec.size() == 0){
+        vec = this->validFiles;
+    }
+
+    string outputName = this->filePattern;
+
+    int idx = 0;
+    int min, max;
+    smatch sm;
+    string temp, file;
+    
+    regex patternRegex(this->regexFilePattern);
+
+    for(auto& var: variables){
+        
+        min = m::getMinIdx(vec, var); 
+        max = m::getMaxIdx(vec, var);
+
+        // if min is the same as max, put variable value in output
+        if(get<0>(vec[min])[var] == get<0>(vec[max])[var]){
+
+            file = s::getBaseName(get<1>(vec[min])[0]);
+            regex_match(file, sm, patternRegex);
+        
+            s::replace(outputName, this->namedGroups[idx], sm[idx+1]);
+
+        } else { // if min is different than max, put range in outputname
+
+            temp = "("; 
+
+            file = s::getBaseName(get<1>(vec[min])[0]); // get basename of filepath
+            regex_match(file, sm, patternRegex); // find variables
+
+            temp += sm[idx+1];
+            temp += "-";
+
+            file = s::getBaseName(get<1>(vec[max])[0]);
+            regex_match(file, sm, patternRegex);
+
+            temp += sm[idx+1];
+            temp += ")";
+
+            s::replace(outputName, this->namedGroups[idx], temp);
+        }
+        ++idx;
+    }
+
+    return outputName;
+
 }

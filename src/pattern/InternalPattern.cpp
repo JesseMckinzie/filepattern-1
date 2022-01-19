@@ -83,3 +83,7 @@ vector<Tuple> InternalPattern::getMatching(const vector<tuple<string, vector<Typ
 
     return matching;
 }
+
+string InternalPattern::outputName(vector<Tuple>& vec){
+    return this->outputNameHelper(vec);
+}

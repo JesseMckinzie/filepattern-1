@@ -29,7 +29,8 @@ class InternalFilePattern:
         """
         try:
             self._file_pattern = backend.FilePattern(path, pattern, recursive)
-        except RuntimeError as e:
+            print("creating object")
+        except Exception as e:
             print(e)
 
     def print_valid_files(self) -> None:
@@ -112,6 +113,9 @@ class InternalFilePattern:
     def get_unique_values(self, vec) -> list:
 
         return self._file_pattern.getUniqueValues(vec)
+
+    def output_name(self, files):
+        return self._file_pattern.outputName(files)
 
     def __call__(self, group_by=None):
         if(group_by is not None):

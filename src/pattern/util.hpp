@@ -102,6 +102,20 @@ namespace s {
         inline void removeSpaces(std:: string& str){
                 str.erase(remove(str.begin(), str.end(), ' '), str.end());
         }
+
+        /**
+         * @brief 
+         * 
+         * From https://stackoverflow.com/questions/6143824/add-leading-zeros-to-string-without-sprintf
+         *
+         * @param s 
+         * @param desiredLength 
+         */
+        inline void padWithZeros(std::string& s, unsigned int desiredLength){
+                unsigned int number_of_zeros = desiredLength - s.length(); // add 2 zeros
+
+                s.insert(0, number_of_zeros, '0');
+        }
 };
 
 namespace m {
@@ -187,5 +201,35 @@ namespace m {
                         if(s::is_number(s::to_string(p.second))) value = std::stoi(s::to_string(p.second));
                         p.second = value;
                 }
+        }
+
+        inline int getMinIdx(std::vector<Tuple>& vec, std::string& variable){
+                Types min = std::get<0>(vec[0])[variable]; 
+
+                int idx = 0;
+                int minIdx = 0;
+                for(auto& v : vec){
+                        if(std::get<0>(v)[variable] < min){
+                                min = std::get<0>(v)[variable];
+                                minIdx = idx;
+                        }
+                        ++idx;
+                }
+                return minIdx;
+        }
+
+        inline int getMaxIdx(std::vector<Tuple>& vec, std::string& variable){
+                Types max = std::get<0>(vec[0])[variable]; 
+
+                int idx = 0;
+                int maxIdx = 0;
+                for(auto& v : vec){
+                        if(std::get<0>(v)[variable] > max){
+                                max = std::get<0>(v)[variable];
+                                maxIdx = idx;
+                        }
+                        ++idx;
+                }
+                return maxIdx;
         }
 }

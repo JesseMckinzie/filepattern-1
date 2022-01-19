@@ -34,7 +34,8 @@ PYBIND11_MODULE(backend, m){
 
     py::class_<InternalPattern, Pattern>(m, "InternalPattern")
         .def("groupBy", &InternalPattern::groupBy)
-        .def("getMatching", &InternalPattern::getMatching);
+        .def("getMatching", &InternalPattern::getMatching)
+        .def("outputName", &InternalPattern::outputName);
 
     py::class_<FilePattern, InternalPattern>(m, "FilePattern")
         .def(py::init<const std::string &, const std::string &, bool>())
