@@ -53,7 +53,10 @@ class StringPattern:
             vec.append(str)
 
         return self._file_pattern.get_unique_values(vec)
-
+    
+    def output_name(self, files: list=[]) -> str:
+        
+        return self._file_pattern.output_name(files)
     
     def __call__(self, group_by=None):
         

@@ -244,6 +244,36 @@ void Pattern::getNewNaming(string& pattern){
     }
 }
 
+void Pattern::replaceOutputName(Tuple& min, Tuple& max, const string& var, string& outputName, const int idx, string& temp, const regex& patternRegex){
+        string file;
+        smatch sm;
+        if(get<0>(min)[var] == get<0>(max)[var]){
+
+            file = s::getBaseName(get<1>(min)[0]);
+            regex_match(file, sm, patternRegex);
+        
+            s::replace(outputName, this->namedGroups[idx], sm[idx+1]);
+
+        } else { // if min is different than max, put range in outputname
+
+            temp = "("; 
+
+            file = s::getBaseName(get<1>(min)[0]); // get basename of filepath
+            regex_match(file, sm, patternRegex); // find variables
+
+            temp += sm[idx+1];
+            temp += "-";
+
+            file = s::getBaseName(get<1>(max)[0]);
+            regex_match(file, sm, patternRegex);
+
+            temp += sm[idx+1];
+            temp += ")";
+
+            s::replace(outputName, this->namedGroups[idx], temp);
+        }
+}
+
 string Pattern::outputNameHelper(vector<Tuple>& vec){
     if(vec.size() == 0){
         vec = this->validFiles;
@@ -264,31 +294,8 @@ string Pattern::outputNameHelper(vector<Tuple>& vec){
         max = m::getMaxIdx(vec, var);
 
         // if min is the same as max, put variable value in output
-        if(get<0>(vec[min])[var] == get<0>(vec[max])[var]){
-
-            file = s::getBaseName(get<1>(vec[min])[0]);
-            regex_match(file, sm, patternRegex);
+        this->replaceOutputName(vec[min], vec[max], var, outputName, idx, temp, patternRegex);
         
-            s::replace(outputName, this->namedGroups[idx], sm[idx+1]);
-
-        } else { // if min is different than max, put range in outputname
-
-            temp = "("; 
-
-            file = s::getBaseName(get<1>(vec[min])[0]); // get basename of filepath
-            regex_match(file, sm, patternRegex); // find variables
-
-            temp += sm[idx+1];
-            temp += "-";
-
-            file = s::getBaseName(get<1>(vec[max])[0]);
-            regex_match(file, sm, patternRegex);
-
-            temp += sm[idx+1];
-            temp += ")";
-
-            s::replace(outputName, this->namedGroups[idx], temp);
-        }
         ++idx;
     }
 

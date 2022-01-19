@@ -51,6 +51,8 @@ class ExternalPattern : public Pattern {
                              const std::vector<Types>& values, 
                              Types& temp,
                              Tuple& tempMap);
+        
+        std::string externalOutPutName();
 
     public: 
         std::vector<Tuple> currentBlock;
@@ -104,6 +106,9 @@ class ExternalPattern : public Pattern {
          * @param groupBy A variable that is contained in the pattern.
          */
         void groupBy(const std::string& groupBy);
+
+
+        std::string outputName(std::vector<Tuple>& vec);
 };
 
 #endif

@@ -214,3 +214,39 @@ void ExternalPattern::groupBy(const string& groupBy) {
 
     
 }
+
+string ExternalPattern::externalOutPutName(){
+    string outputName = this->filePattern;
+    regex patternRegex(this->regexFilePattern);
+
+    std::ifstream infile;
+    
+    Tuple temp, min, max;
+    int idx = 0;
+    string tempStr;
+    for(const auto& var: variables){
+        infile.open(this->validFilesPath);
+
+        m::getMap(infile, temp, this->mapSize);
+        min = temp; 
+        max = temp;
+
+        while(m::getMap(infile, temp, this->mapSize)){
+            if(get<0>(temp)[var] < get<0>(min)[var]) min = temp;
+            if(get<0>(temp)[var] > get<0>(max)[var]) max = temp;
+        }
+
+        this->replaceOutputName(min, max, var, outputName, idx, tempStr, patternRegex);
+        ++idx;
+
+        infile.close();
+    }
+
+    return outputName;
+}
+
+string ExternalPattern::outputName(vector<Tuple>& vec){
+    if(vec.size() != 0) return this->outputNameHelper(vec);
+    else return this->externalOutPutName();
+
+}

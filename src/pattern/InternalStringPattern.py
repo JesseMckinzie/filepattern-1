@@ -78,6 +78,10 @@ class InternalStringPattern:
 
         return self._file_pattern.get_unique_values(vec)
     
+    def output_name(self, files: list=[]) -> str:
+        
+        return self._file_pattern.outputName(files)
+
     def __call__(self, group_by=None):
         if(group_by is not None):
             self._file_pattern.groupBy(group_by)

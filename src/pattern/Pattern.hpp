@@ -120,4 +120,6 @@ class Pattern {
         void getNewNaming(std::string& pattern);
 
         std::string outputNameHelper(std::vector<Tuple>& vec);
+
+        void replaceOutputName(Tuple& min, Tuple& max, const std::string& var, std::string& outputName, const int idx, std::string& temp, const std::regex& patternRegex);
 };

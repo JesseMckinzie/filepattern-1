@@ -102,6 +102,9 @@ class ExternalStringPattern:
 
         return self._file_pattern.getUniqueValues(vec)
 
+    def output_name(self, files: list=[]) -> str:
+        
+        return self._file_pattern.outputName(files)
 
     def length(self) -> int:
         """

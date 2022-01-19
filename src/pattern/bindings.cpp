@@ -53,7 +53,8 @@ PYBIND11_MODULE(backend, m){
         .def("next", &ExternalPattern::next)
         .def("getValidFilesBlock", &ExternalPattern::getValidFilesBlock)
         .def("groupBy", &ExternalPattern::groupBy)
-        .def("currentBlockLength", &ExternalPattern::currentBlockLength);
+        .def("currentBlockLength", &ExternalPattern::currentBlockLength)
+        .def("outputName", &ExternalPattern::outputName);
 
     py::class_<ExternalFilePattern, ExternalPattern>(m, "ExternalFilePattern")
         .def(py::init<const std::string&, const std::string&, const std::string&, bool>())
