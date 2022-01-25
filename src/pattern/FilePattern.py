@@ -60,6 +60,10 @@ class FilePattern:
 
         return self._file_pattern.output_name(files)
 
+    def infer_pattern(files: list, variables: str="") -> str:
+        
+        return InternalFilePattern.InternalFilePattern.infer_pattern(files, variables)
+
     
     def __call__(self, group_by=None):
         

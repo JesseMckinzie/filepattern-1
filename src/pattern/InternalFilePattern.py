@@ -117,6 +117,9 @@ class InternalFilePattern:
     def output_name(self, files):
         return self._file_pattern.outputName(files)
 
+    def infer_pattern(files: list, variables: str='') -> str:
+        return backend.Pattern.inferPattern(files, variables)
+
     def __call__(self, group_by=None):
         if(group_by is not None):
             self._file_pattern.groupBy(group_by)

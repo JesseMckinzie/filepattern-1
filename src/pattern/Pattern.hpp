@@ -30,6 +30,8 @@ class Pattern {
         std::map<std::string, std::set<Types>> uniqueValues;
         std::vector<std::string> namedGroups;
 
+        std::string VARIABLES;
+
     public:
         std::vector<Tuple> validFiles; // Store files that match given regex
         std::vector<std::vector<Tuple>> validGroupedFiles;
@@ -42,6 +44,8 @@ class Pattern {
          * if the pattern contains {variable:d}, this is changed to [0-9] in the regex pattern.
          */
         void filePatternToRegex();
+
+        static std::tuple<std::string, std::vector<std::string>, std::vector<std::string>> getRegex(std::string& pattern);
 
         /**
          * @brief Get the mapping of variables to values for a matching file. Used with a recursive directory iterator. 
@@ -117,9 +121,19 @@ class Pattern {
 
         std::map<std::string, std::set<Types>> getUniqueValues(const std::vector<std::string>& mapping);
 
-        void getNewNaming(std::string& pattern);
+        static void getNewNaming(std::string& pattern);
 
         std::string outputNameHelper(std::vector<Tuple>& vec);
 
-        void replaceOutputName(Tuple& min, Tuple& max, const std::string& var, std::string& outputName, const int idx, std::string& temp, const std::regex& patternRegex);
+        void replaceOutputName(Tuple& min, 
+                               Tuple& max, 
+                               const std::string& var, 
+                               std::string& outputName, 
+                               const int idx, 
+                               std::string& temp, 
+                               const std::regex& patternRegex);
+
+        static std::string inferPattern(std::vector<std::string>& files, std::string& variables);
+
+        static std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables);
 };
