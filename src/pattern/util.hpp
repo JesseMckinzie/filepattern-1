@@ -118,6 +118,21 @@ namespace s {
 
                 s.insert(0, number_of_zeros, '0');
         }
+
+        inline int getCount(const std::string& str, const char c){
+                int count = 0;
+                for(const auto& s: str){
+                        if(s == c) ++count;
+                }
+                return count;
+        }
+
+        inline bool contains(const std::string& str, const char c){
+                for(const auto& s: str){
+                        if(s == c) return true;
+                }
+                return false;
+        }
 };
 
 namespace m {
@@ -235,3 +250,12 @@ namespace m {
                 return maxIdx;
         }
 }
+/*
+namespace p { 
+        inline void print(const std::string& str, bool debug=true){
+                if(debug) {
+                        cout << str << endl;
+                }
+        }
+}
+*/
