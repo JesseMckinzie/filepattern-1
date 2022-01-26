@@ -379,25 +379,16 @@ string Pattern::inferPattern(vector<string>& files, string& variables){
     string patternCpy = pattern;
     regex rgx = regex(get<0>(getRegex(patternCpy)));
 
-    cout << "starting pattern: " << pattern << endl;
-    cout << "starting regex: " << get<0>(getRegex(pattern)) << endl;
-
     for(auto& file : files){
-        cout << "file: " << file << endl;
+
         if(!regex_match(file, rgx)) {
             pattern = swSearch(pattern, file, variables);
             patternCpy = pattern;
             regexStr = get<0>(getRegex(patternCpy));
             rgx = regex(regexStr);
 
-            cout << "file: " << file << endl;
-            cout << "new pattern: " << pattern << endl; 
-            cout << "new regex: " << regexStr << endl;
         }
     }
-    cout << "final pattern: " << endl;
-
-    //getNewNaming(pattern);
 
     return pattern;
 
@@ -423,19 +414,19 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
         rgx = regex(rgxStr);
         match = false;
         while(regex_search(pattern, sm, rgx)){
-            for(const auto& match: sm){
-                cout << "sm " << match << endl;
-            }
+
             match = true;
             // check if + is in group
             smStr = sm[0];
             if(s::contains(smStr, '+')) {
-                if(sm[1] == "d+") s::replace(pattern, sm[0], ">");// check this
-                else s::replace(pattern, sm[0], "@");
+                if(sm[2] == "d+") s::replace(pattern, sm[0], ">");// check this
+                else  s::replace(pattern, sm[0], "@");
+
 
             } else {
                 temp = "";
                 smStr = sm[2].str();
+
                 if(s::contains(smStr, 'd')){
                     temp.insert(0, s::getCount(sm[0].str(), 'd'), '<');
                     s::replace(pattern, sm[0], temp);// check this
@@ -450,17 +441,18 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
         }
     }
 
-    cout << "swSearch updated pattern: " << pattern << endl;
-    cout << "swSearch filename: " << filename << endl;
-
     map<string, map<string, int>> sab = {
         {"numeric", {
             {"match", 2}, 
             {"penalty", 1}
         }},
         {"alpha", {
-            {"match", 5}, 
-            {"penalty", 3}
+            {"match", 2}, //5
+            {"penalty", 1} //3
+        }},
+        {"char", {
+            {"match", 5}, //5
+            {"penalty", 3} //3
         }}
     };
 
@@ -468,21 +460,24 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
     int n = filename.length();
     int matrix[m+1][n+1];
     fill(matrix[0], matrix[0] + (m+1) * (n+1), 0);
-    //fill( &matrix[0][0], &matrix[0][0] + sizeof(matrix), 0);
+
 
     int p_idx = 0;
     int f_idx = 0;
     bool pIsNumeric, fIsNumeric;
+    bool pIsCharacter, fIsCharacter;
     vector<int> scores;
     int s, wi, wj;
 
     for(const auto& p: pattern){
         pIsNumeric = count(numbers.begin(), numbers.end(), p);
+        pIsCharacter = count(alphabet.begin(), alphabet.end(), p);
 
         f_idx = 0;
         for(const auto& f: filename){
             
             fIsNumeric = count(numbers.begin(), numbers.end(), f);
+            fIsCharacter = count(alphabet.begin(), alphabet.end(), f);
             
             scores.clear();
             scores.push_back(0);
@@ -493,11 +488,17 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
                 } else {
                     s = matrix[p_idx][f_idx] - sab["numeric"]["match"];
                 }
-            } else {
-                if (p == f){
+            } else if(fIsCharacter) {
+                if(pIsCharacter){
                     s = matrix[p_idx][f_idx] + sab["alpha"]["match"];
                 } else {
                     s = matrix[p_idx][f_idx] - sab["alpha"]["match"];
+                }
+            } else {
+                if (p == f){
+                    s = matrix[p_idx][f_idx] + sab["char"]["match"];
+                } else {
+                    s = matrix[p_idx][f_idx] - sab["char"]["match"];
                 }
             }
 
@@ -511,9 +512,17 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
                     wi = matrix[p_idx+1][f_idx] - sab["alpha"]["penalty"];
                     wj = matrix[p_idx][f_idx+1] - sab["alpha"]["penalty"];
                 }
+            } else if(fIsCharacter) {
+                if(pIsCharacter){
+                    wi = matrix[p_idx+1][f_idx] - sab["alpha"]["penalty"];
+                    wj = matrix[p_idx][f_idx+1] - sab["alpha"]["penalty"];
+                } else {
+                    wi = matrix[p_idx+1][f_idx] - sab["numeric"]["penalty"];
+                    wj = matrix[p_idx][f_idx+1] - sab["numeric"]["penalty"];
+                }
             } else {
-                wi = matrix[p_idx+1][f_idx] - sab["alpha"]["penalty"];
-                wj = matrix[p_idx][f_idx+1] - sab["alpha"]["penalty"];
+                wi = matrix[p_idx+1][f_idx] - sab["char"]["penalty"];
+                wj = matrix[p_idx][f_idx+1] - sab["char"]["penalty"];
             }
 
             scores.push_back(wi);
@@ -531,7 +540,6 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
     int row       = m;
     int col       = n;
 
-    cout << "before nested loop" << endl;
     for(int r = 1; r < m+1; ++r){
         for(int c = 1; c < n+1; ++c){
             if(matrix[r][c] > bestScore){
@@ -547,15 +555,6 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
     int lastRow = row;
     int lastCol = col;
     int r, c;
-
-    /*
-    for(const auto& vec: matrix){
-        for(const auto& v: vec){
-            cout << v << " ";
-        }
-        cout << endl;
-    }
-    */
 
     while(true){
         r = row - 1;
@@ -597,13 +596,9 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
                         patternTemplate = "@" + patternTemplate;
                     }
                 } else {
-                    cout << "ERROR" << endl;
-                    cout << "filename: " << filename[col-1] << endl;
-                    cout << "pattern: " << pattern[row-1] << endl;
                     throw runtime_error("Non-numeric, non-alphabetic characters found that do not match");
                 }
 
-                //throw std::runtime_error("There are nonnumeric characters that do not match");    
             } else if(lastCol != col && lastRow != row){
                 if(pattern[row-1] == '>'){
                     patternTemplate = '>' + patternTemplate;
@@ -624,7 +619,6 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
     int vi = 0;
     rgx = "[<>\\$@]+";
     string vdef;
-    cout << "pattern template: " << patternTemplate << endl;
     for (auto i = sregex_iterator(patternTemplate.begin(), patternTemplate.end(), rgx); i != sregex_iterator(); ++i) {
         temp = (*i).str();
 
@@ -650,13 +644,9 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
             vdef += "}";
         }
 
-        cout << "vdef " << vdef << endl;
-        cout << "pattern " << pattern << endl;
-        cout << "temp " << temp << endl;
         s::replace(pattern, temp, vdef);
-        cout << "new pattern " << pattern << endl;
+
         ++vi;
-        
     }
     
     return pattern;
