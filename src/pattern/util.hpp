@@ -1,3 +1,20 @@
+/**
+ * @file util.hpp
+ * @author Jesse McKinzie (Jesse.McKinzie@axleinfo.com)
+ * @brief Utility functions to support filepattern.
+ * @version 0.1
+ * @date 2022-01-26
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ * Utility functions to operate on std::string, std::map, and Types. Types are defined to be 
+ * either a int or string and are used to allow for type preservation when extracting
+ * variables from filenames. This file also contains type definitions for nested data structures
+ * that are used throughout `filepattern`. 
+ * 
+ * 
+ */
+
 #pragma once
 #include <regex>
 #include <tuple>
@@ -11,27 +28,64 @@ typedef std::map<std::string, Types> Map;
 typedef std::tuple<Map , std::vector<std::string>> Tuple;
 
 /**
- * @brief String methods
+ * @brief Functions for std::strings and Types.
  * 
  */
 namespace s {
 
+        /**
+         * @brief Get the value of a Type as a string or int based on the type.
+         * 
+         */
         struct AnyGet {
+                
+                /**
+                 * @brief Helper method of to_string. Returns an integer as a string
+                 * 
+                 * @param value Integer to be converted to a string
+                 * @return std::string String version of the integer
+                 */
                 std::string operator()(int value) { return std::to_string(value); }
+
+                /**
+                 * @brief Helper method of to_string. Returns string if input is string
+                 * 
+                 * @param value Value to be converted
+                 * @return std::string String of the value
+                 */
                 std::string operator()(const std::string& value) { return value; }
         };
 
-        inline bool is_number(const std::string &s) {
-                return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
-        }
-        
+        /**
+         * @brief Convert a Types to a string.
+         * 
+         * @param input A Type to be converted to a string
+         * @return std::string The type value as a string
+         */
         inline std::string to_string(const Types& input) {
                 return std::visit(AnyGet{}, input);
         }
 
+        /**
+         * @brief Returns the amount of memory taken by a Types 
+         * 
+         * @param input Types to find the memory footprint of
+         * @return int How much memory the Types is using
+         */
         inline int size(const Types& input){
                 return input.index() == 0 ? sizeof(int) : sizeof(std::string) + s::to_string(input).length();
         }       
+        
+        /**
+         * @brief Check if a string is a digit.
+         * 
+         * @param s String to be checked
+         * @return true String is a number
+         * @return false String is not a number
+         */
+        inline bool is_number(const std::string &s) {
+                return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
+        }
 
         /**
         * @brief Get the basename of a filepath.
@@ -76,6 +130,19 @@ namespace s {
                 return res;
         }
 
+        /**
+         * @brief Replace a part of a string with another string
+         * 
+         * Replace a part of a string with another string in place. For example,
+         * if s::replace(str="here is a string", "string", "sentence") is called, 
+         * str will become "here is a sentence".
+         * 
+         * @param str String to replace part of
+         * @param from Section of string to replace
+         * @param to What to replace the section of the string with
+         * @return true Replace successful
+         * @return false Replace unsuccessful
+         */
         inline bool replace(std::string& str, const std::string& from, const std::string& to) {
                 size_t start_pos = str.find(from);
                 if(start_pos == std::string::npos)
@@ -89,10 +156,10 @@ namespace s {
          * 
          * From: https://stackoverflow.com/questions/874134/find-out-if-string-ends-with-another-string-in-c
          * 
-         * @param value 
-         * @param ending 
-         * @return true 
-         * @return false 
+         * @param value String to check
+         * @param ending Ending to check for
+         * @return true value ends with ending
+         * @return false value does not end with ending
          */
         inline bool endsWith(std::string const & value, std::string const & ending) {
 
@@ -101,17 +168,22 @@ namespace s {
 
         }
 
+        /**
+         * @brief Remove spaces from string inplace
+         * 
+         * @param str String to remove spaces from
+         */
         inline void removeSpaces(std:: string& str){
                 str.erase(remove(str.begin(), str.end(), ' '), str.end());
         }
 
         /**
-         * @brief 
+         * @brief Pad the front of a string with zeros
          * 
          * From https://stackoverflow.com/questions/6143824/add-leading-zeros-to-string-without-sprintf
          *
-         * @param s 
-         * @param desiredLength 
+         * @param s String to pad with zeros
+         * @param desiredLength Length of string after padding is added
          */
         inline void padWithZeros(std::string& s, unsigned int desiredLength){
                 unsigned int number_of_zeros = desiredLength - s.length(); // add 2 zeros
@@ -119,6 +191,13 @@ namespace s {
                 s.insert(0, number_of_zeros, '0');
         }
 
+        /**
+         * @brief Get the number of times a character appears in a string
+         * 
+         * @param str String to check 
+         * @param c Character to check for
+         * @return int Number of occurences of c in str
+         */
         inline int getCount(const std::string& str, const char c){
                 int count = 0;
                 for(const auto& s: str){
@@ -179,6 +258,12 @@ namespace m {
                 return false;
         }
 
+        /**
+         * @brief Returns the amount of memory that a Tuple uses
+         * 
+         * @param mapping Tuple to calculate the memory footprint of
+         * @return long Amount of memory the Tuple uses
+         */
         inline long getSize(Tuple& mapping){
                 long size = 0;
                 for(const auto& mem: std::get<0>(mapping)){
@@ -211,6 +296,12 @@ namespace m {
 
         }
 
+        /**
+         * @brief Converts the value in a mapping of string to Types to the correct type after reading
+         * from a text file.
+         * 
+         * @param mapping The Tuple to convert the Types to the correct type
+         */
         inline void preserveType(Tuple& mapping){
                 Types value;
                 for(auto& p: std::get<0>(mapping)){
@@ -220,6 +311,13 @@ namespace m {
                 }
         }
 
+        /**
+         * @brief Get the index of the minimum value of a vector of Tuples at a specific variable
+         * 
+         * @param vec Vector to find the minimum value of 
+         * @param variable Which variable to use to find the minumum value
+         * @return int Index of minumum value
+         */
         inline int getMinIdx(std::vector<Tuple>& vec, std::string& variable){
                 Types min = std::get<0>(vec[0])[variable]; 
 
@@ -235,6 +333,13 @@ namespace m {
                 return minIdx;
         }
 
+        /**
+         * @brief Get the index of the maximum value of a vector of Tuples at a specific variable
+         * 
+         * @param vec Vector to find the max value of 
+         * @param variable Which variable to use to find the max value
+         * @return int Index of max value
+         */
         inline int getMaxIdx(std::vector<Tuple>& vec, std::string& variable){
                 Types max = std::get<0>(vec[0])[variable]; 
 
