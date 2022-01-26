@@ -250,12 +250,3 @@ namespace m {
                 return maxIdx;
         }
 }
-/*
-namespace p { 
-        inline void print(const std::string& str, bool debug=true){
-                if(debug) {
-                        cout << str << endl;
-                }
-        }
-}
-*/
