@@ -35,3 +35,16 @@ void VectorPattern::matchFiles(){
     }
     infile.close();
 }
+
+string VectorPattern::inferPattern(const string& path, string& variables){
+    string file;
+    ifstream infile(path);
+    vector<string> files;
+
+    while(getline(infile, file)){
+        file = VectorParser::getFileName(file);
+        files.push_back(file);
+    }
+
+    return inferPatternInternal(files, variables);
+}

@@ -111,6 +111,10 @@ class ExternalStringPattern:
         Returns the length of the current file block.
         """
         return self._file_pattern.currentBlockLength()
+    
+    def infer_pattern(path: str, variables: str, block_size: str):
+            
+        return backend.ExternalPattern.inferPattern(path, variables, block_size)
             
     def __call__(self, group_by=None):
         if(group_by is not None):

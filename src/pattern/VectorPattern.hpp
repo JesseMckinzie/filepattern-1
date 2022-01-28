@@ -17,4 +17,5 @@ class VectorPattern: public InternalPattern {
         VectorPattern(const std::string& path, const std::string& pattern);
         //VectorPattern(const std::string& path, const std::string& pattern);
         void matchFiles();
+        static std::string inferPattern(const std::string& path, std::string& variables);
 };

@@ -109,6 +109,8 @@ class ExternalPattern : public Pattern {
 
 
         std::string outputName(std::vector<Tuple>& vec);
+
+        static std::string inferPattern(const std::string& path, std::string& variables, const std::string& blockSize);
 };
 
 #endif

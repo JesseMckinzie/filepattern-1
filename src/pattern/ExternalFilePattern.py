@@ -13,57 +13,32 @@ class ExternalFilePattern:
         """
         Constructor of the FilePattern class.
 
-        Creates a new file pattern object given a path to a 
-        directory of files and a pattern.
+        Creates a new file pattern object given a path to a directory of files and a pattern.
+        Valid patterns are d, c, and +, where d is a digit, c isa character, and + means an 
+        arbitrary number of the pattern it acts on. 
 
-        :param str path: path to directory 
-        :param str pattern: file pattern
-        :param bool debug: debug mode on or off. When true, debug statements are printed to the consol
-
-        Valid patterns are d, c, and +, where d is a digit, c is
-        a character, and + means an arbitrary number of the pattern it 
-        acts on. 
-
-        Example: The pattern files_x{row:ddd}_y{col:ddd}_{channel: c+}.ome.tif
-        would match files with 3 digits after x, 3 digits after y, and then an 
+        Example: The pattern files_x{row:ddd}_y{col:ddd}_{channel: c+}.ome.tif would match files 
+        with 3 digits after x, 3 digits after y, and then an 
         arbitrary number of characters. 
+
+        @param str path: path to directory 
+        @param str pattern: file pattern
+        @param bool debug: debug mode on or off. When true, debug statements are printed to the console
+
         """
         try:
             self._file_pattern = backend.ExternalFilePattern(path, pattern, block_size, recursive)
         except RuntimeError as e:
             print(e)
-            exit(1)
 
-    def print_valid_files(self) -> None:
-        """
-        Prints out files that match the file pattern to the console.
-        """
-
-        self._file_pattern.printFiles()
-
-    def get_valid_files_block(self) -> list:
-        """
-        Returns a list of tuples that contain the matched files that is the size of block_size.
-        """
-        return self._file_pattern.getValidFilesBlock()
-
-    def match_files(self, group_by: str="") -> None:
-        """
-        Comapres files to file pattern and stores file names that match
-        the file pattern.
-        """
-        try: 
-            self._file_pattern.matchFiles()
-        except ValueError as e: 
-            print(e)
 
     def get_matching(self, mapping: list) -> None:
         """
         Returns variables matching a specific value
 
-        :param str variables: variables to be matched e.g. variables="variable1=value1, variable2=value2"
+        @param str variables Variables to be matched e.g. variables="variable1=value1, variable2=value2"
 
-        :return list: list of matching files
+        @return list List of matching files
         """
         try:
             self._file_pattern.getMatching(mapping)
@@ -86,7 +61,7 @@ class ExternalFilePattern:
 
         Must be called after making a call to get_matching.
 
-        :retur list: block of matching files.
+        @return list Block of matching files.
         """
 
         try:
@@ -95,7 +70,7 @@ class ExternalFilePattern:
             print(e)
 
     def get_occurences(self, mapping: list):
-
+        
         return self._file_pattern.getOccurences(mapping)
 
     def get_unique_values(self, vec) -> list:
@@ -111,6 +86,10 @@ class ExternalFilePattern:
         Returns the length of the current file block.
         """
         return self._file_pattern.currentBlockLength()
+    
+    def infer_pattern(path: str, variables: str, block_size: str):
+        
+        return backend.ExternalPattern.inferPattern(path, variables, block_size)
 
     def __call__(self, group_by=None):
         if(group_by is not None):
@@ -136,5 +115,3 @@ class ExternalFilePattern:
             if(len(self) == 0):
                 break
 
-    def next(self):
-        self._file_pattern.next()

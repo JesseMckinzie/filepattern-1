@@ -1,6 +1,7 @@
 #include "Pattern.hpp"
 
 using namespace std;
+namespace fs = filesystem;
 
 void Pattern::setGroup(const string& group){
     if(find(this->variables.begin(), this->variables.end(), group) != variables.end()) {
@@ -370,15 +371,45 @@ string Pattern::outputNameHelper(vector<Tuple>& vec){
 
 }
 
-string Pattern::inferPattern(vector<string>& files, string& variables){
+/*
+string Pattern::inferPattern(const string& path, string& variables, const string& blockSize){
+    vector<string> vec;
 
+    if(blockSize == ""){ 
+
+        fs::directory_iterator iterator = fs::directory_iterator(path);
+        string filePath;
+        for(auto& file: iterator){
+            vec.push_back(s::getBaseName(file.path()));
+        }
+
+        return inferPatternInternal(vec, variables);
+    }
+
+    FilesystemStream stream = FilesystemStream(path, false, blockSize);
+
+    vec = stream.getBlock();
+    string pattern = inferPatternInternal(vec, variables);
+    while(vec.size() != 0){
+        vec = stream.getBlock();
+        vec.insert(vec.begin(), pattern);
+
+        pattern = inferPatternInternal(vec, variables);
+    }
+    
+    return pattern;
+}
+*/
+
+string Pattern::inferPatternInternal(vector<string>& files, string& variables, const string& startingPattern){
     variables += "rtczyxp";
+    string pattern;
+    if(startingPattern == "") pattern = files[0];
+    else pattern = startingPattern;
 
-    string pattern = files[0];
     string regexStr;
     string patternCpy = pattern;
     regex rgx = regex(get<0>(getRegex(patternCpy)));
-
     for(auto& file : files){
 
         if(!regex_match(file, rgx)) {
@@ -391,12 +422,11 @@ string Pattern::inferPattern(vector<string>& files, string& variables){
     }
 
     return pattern;
-
 }
 
 string Pattern::swSearch(string& pattern, string& filename, const string& variables){
-    string numbers = "0123456789<>";
-    string alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@$";
+    string numbers = "0123456789<>"; 
+    string alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@$"; // @ -> c+ and $ -> c
     smatch sm;
     string rgxStr;
     regex rgx; 

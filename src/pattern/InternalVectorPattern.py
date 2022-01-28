@@ -82,6 +82,9 @@ class VectorPattern:
         
         return self._file_pattern.outputName(files)
     
+    def infer_pattern(path: str, variables: str='') -> str:
+        return backend.InternalVectorPattern.inferPattern(files, variables)
+    
     def __call__(self, group_by=None):
         if(group_by is not None):
             self._file_pattern.groupBy(group_by)

@@ -87,3 +87,19 @@ vector<Tuple> InternalPattern::getMatching(const vector<tuple<string, vector<Typ
 string InternalPattern::outputName(vector<Tuple>& vec){
     return this->outputNameHelper(vec);
 }
+
+string InternalPattern::inferPattern(const string& path, string& variables){
+    vector<string> vec;
+
+    fs::directory_iterator iterator = fs::directory_iterator(path);
+    string filePath;
+    for(auto& file: iterator){
+        vec.push_back(s::getBaseName(file.path()));
+    }
+
+    return inferPatternInternal(vec, variables);
+}
+
+string InternalPattern::inferPattern(vector<string>& vec, string& variables){
+    return inferPatternInternal(vec, variables);
+}

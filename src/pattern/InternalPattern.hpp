@@ -41,5 +41,9 @@ class InternalPattern : public Pattern {
         std::vector<Tuple> getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables);
 
         std::string outputName(std::vector<Tuple>& vec);
+        
+        static std::string inferPattern(const std::string& path, std::string& variables);
+        
+        static std::string inferPattern(std::vector<std::string>& vec, std::string& variables);
 
 };

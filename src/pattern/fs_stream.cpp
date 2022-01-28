@@ -27,7 +27,7 @@ FilesystemStream::FilesystemStream(const string& path, bool recursive, const str
             if(recursive){
                 this->recursive_directory_iterator = fs::recursive_directory_iterator(path);
                 this->rec_end = fs::end(recursive_directory_iterator);
-            } else{ // create directory iterator
+            //} else{ // create directory iterator
                 this->directory_iterator = fs::directory_iterator(path); // store iterator for target directory
                 this->end = fs::end(directory_iterator);
             }
@@ -49,12 +49,14 @@ vector<string> FilesystemStream::getBlock(){
 
 
 vector<string> FilesystemStream::getBlockIterator(){
-    
+
     vector<string> vec;
     long double previousSize = sizeof(vector<string>);
 
     string current;
+
     if(this->recurisve){
+
         try {
             current = (*recursive_directory_iterator).path().string();
         } catch (exception& e){
@@ -79,10 +81,12 @@ vector<string> FilesystemStream::getBlockIterator(){
         }
     } else{ 
         try {
-            current = (*directory_iterator).path().string();
+            
+            current = (*this->directory_iterator).path().string();
         } catch (exception& e){
             cout << e.what() << endl;
         }
+
         while(this->currentSize(current.length(), previousSize) < blockSize){
             vec.push_back(current);
             ++directory_iterator;
@@ -100,7 +104,9 @@ vector<string> FilesystemStream::getBlockIterator(){
                 }
             }
         }
+
     }
+
     return vec;
 }
 
@@ -122,7 +128,6 @@ vector<string> FilesystemStream::getBlockTxt(){
     }
     infile.seekg(ptr, ios::beg);
     
-    cout << "VEC SIZE: " << vec.size() << endl;
     return vec;
 }
 

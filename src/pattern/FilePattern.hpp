@@ -56,4 +56,5 @@ class FilePattern : public InternalPattern {
          * if recrusive is false.
          */
         void matchFilesMultDir();
+
 };

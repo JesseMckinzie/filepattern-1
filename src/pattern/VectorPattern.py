@@ -58,6 +58,12 @@ class VectorPattern:
         
         return self._file_pattern.output_name(files)
 
+    def infer_pattern(path: str="", variables: str="", block_size: str=""):
+        
+        if(block_size == ''):
+            return InternalVectorPattern.InternalVectorPattern.infer_pattern(path, variables)
+        else:
+            return ExternalVectorPattern.ExternalVectorPattern.infer_pattern(path, variables, block_size)
     
     def __call__(self, group_by=None):
         

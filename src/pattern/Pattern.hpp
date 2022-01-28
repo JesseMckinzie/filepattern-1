@@ -17,6 +17,7 @@
 #include <regex>
 #include <map>
 #include <set>
+#include "fs_stream.hpp"
 #include "util.hpp"
 
 class Pattern {
@@ -31,6 +32,8 @@ class Pattern {
         std::vector<std::string> namedGroups;
 
         std::string VARIABLES;
+
+        static std::string inferPatternInternal(std::vector<std::string>& files, std::string& variables, const std::string& startingPattern="");
 
     public:
         std::vector<Tuple> validFiles; // Store files that match given regex
@@ -133,7 +136,7 @@ class Pattern {
                                std::string& temp, 
                                const std::regex& patternRegex);
 
-        static std::string inferPattern(std::vector<std::string>& files, std::string& variables);
-
+        //static std::string inferPattern(const std::string& path, std::string& variables, const std::string& blockSize="");
+        //static std::string inferPattern(std::vector<std::string>& vec, std::string& variables);
         static std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables);
 };

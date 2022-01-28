@@ -58,6 +58,20 @@ class StringPattern:
         
         return self._file_pattern.output_name(files)
     
+    def infer_pattern(path: str="", files: list=[], variables: str="", block_size: str=""):
+        if(path == "" and files == []):
+            raise ValueError('A path or list of files must be provided')
+        elif(path != "" and files != []):
+            raise ValueError('Pass in only a path or list of files, not both.')
+        elif(path == ""):
+            return InternalStringPattern.InternalStringPattern.infer_pattern(files, variables)
+        else:
+            if (block_size == ""):
+                return InternalStringPattern.InternalStringPattern.infer_pattern(path, variables)
+            else:
+                return ExternalStringPattern.ExternalStringPattern.infer_pattern(path, variables, block_size)
+
+    
     def __call__(self, group_by=None):
         
         return self._file_pattern.__call__(group_by)

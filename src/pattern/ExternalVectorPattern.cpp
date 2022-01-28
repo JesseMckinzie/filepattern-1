@@ -50,3 +50,30 @@ void ExternalVectorPattern::matchFiles(){
     }
     vectorReader.close();
 }
+
+string ExternalVectorPattern::inferPattern(const string& path, string& variables, const string& blockSize){
+    long block = Block::parseblockSize(blockSize);
+    vector<string> files;
+    string file;
+    ifstream infile(path);
+    long size = sizeof(vector<string>) + sizeof(vector<vector<int>>);
+    string pattern = "";
+
+    while(getline(infile, file)){
+        if(size < block){
+            file = VectorParser::getFileName(file);
+            files.push_back(file);
+            size += sizeof(string) + file.length() + sizeof(int)*2*file.length(); // account for size of filenames
+            
+        } else {
+            pattern = inferPatternInternal(files, variables, pattern);
+            size = sizeof(vector<string>) + sizeof(vector<vector<int>>);
+            files.clear();
+        }
+    }
+    if(files.size() != 0){
+        pattern = inferPatternInternal(files, variables, pattern);
+    }
+
+    return pattern;
+}

@@ -27,7 +27,6 @@ PYBIND11_MODULE(backend, m){
         .def("printVariables", &Pattern::printVariables)
         .def("getOccurences", &Pattern::getOccurences)
         .def("getUniqueValues", &Pattern::getUniqueValues)
-        .def("inferPattern", &Pattern::inferPattern)
         .def("__iter__", [](const Pattern &v){ 
             if(v.group != "") return py::make_iterator(v.validGroupedFiles.begin(), v.validGroupedFiles.end());
             else return py::make_iterator(v.validFiles.begin(), v.validFiles.end());}, 
@@ -36,7 +35,9 @@ PYBIND11_MODULE(backend, m){
     py::class_<InternalPattern, Pattern>(m, "InternalPattern")
         .def("groupBy", &InternalPattern::groupBy)
         .def("getMatching", &InternalPattern::getMatching)
-        .def("outputName", &InternalPattern::outputName);
+        .def("outputName", &InternalPattern::outputName)
+        .def_static("inferPattern", py::overload_cast<std::vector<std::string>&, std::string&>(&InternalPattern::inferPattern))
+        .def_static("inferPattern", py::overload_cast<const std::string&, std::string&>(&InternalPattern::inferPattern));
 
     py::class_<FilePattern, InternalPattern>(m, "FilePattern")
         .def(py::init<const std::string &, const std::string &, bool>())
@@ -55,7 +56,8 @@ PYBIND11_MODULE(backend, m){
         .def("getValidFilesBlock", &ExternalPattern::getValidFilesBlock)
         .def("groupBy", &ExternalPattern::groupBy)
         .def("currentBlockLength", &ExternalPattern::currentBlockLength)
-        .def("outputName", &ExternalPattern::outputName);
+        .def("outputName", &ExternalPattern::outputName)
+        .def("inferPattern", &ExternalPattern::inferPattern);
 
     py::class_<ExternalFilePattern, ExternalPattern>(m, "ExternalFilePattern")
         .def(py::init<const std::string&, const std::string&, const std::string&, bool>())
@@ -72,10 +74,12 @@ PYBIND11_MODULE(backend, m){
             py::keep_alive<0, 1>()); // Keep vector alive while iterator is used 
 
     py::class_<VectorPattern, InternalPattern>(m, "InternalVectorPattern")
-        .def(py::init<const std::string&, const std::string&>());
+        .def(py::init<const std::string&, const std::string&>())
+        .def_static("inferPattern", &VectorPattern::inferPattern);
 
     py::class_<ExternalVectorPattern, ExternalPattern>(m, "ExternalVectorPattern")
         .def(py::init<const std::string&, const std::string&, const std::string&>())
+        .def_static("inferPattern", &ExternalVectorPattern::inferPattern)
         .def("__iter__", [](ExternalVectorPattern &v){ 
             v.next();
             return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());}, 

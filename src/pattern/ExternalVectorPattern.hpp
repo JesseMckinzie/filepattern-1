@@ -22,4 +22,6 @@ class ExternalVectorPattern: public ExternalPattern {
         ExternalVectorPattern(const std::string& path, const std::string& pattern, const std::string& blockSize);
         //VectorPattern(const std::string& path, const std::string& pattern);
         void matchFiles();
+
+        static std::string inferPattern(const std::string& path, std::string& variables, const std::string& blockSize);
 };
