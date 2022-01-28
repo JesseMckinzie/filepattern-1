@@ -6,7 +6,7 @@ extract all images containing such a naming pattern, filter by the row or column
 
 ## Install
 
-`filepattern` requires GCC 8+ or LLVM 9.0+ for installation. 
+`filepattern` requires GCC 8+ for installation. 
 
 To install `filepattern`:
 
@@ -16,7 +16,6 @@ To install `filepattern`:
 After installation, use "import pattern" to import the module into Python. The pattern module contains the following classes: 
 * [FilePattern](#filepattern-section)
 * [StringPattern](#StringPattern)
-* [ExternalFilePattern](#ExternalFilePattern)
 
 <h2 id="filepattern-section"> FilePattern </h2> 
 
@@ -31,7 +30,28 @@ img_r001_c001_GFP.tif
 
 In each of these filenames, there are three descriptors of the image: the row, the column, and the channel. To match these files, the pattern ```img_r{r:ddd}_c{c:ddd}_{channel:c+}``` can be used. In this pattern, the nameed groups are contained within the curly brackets, where the variable name is before the colon and the value is after the colon. For the value, the descriptors `d` and `c` are used, which represent a digit and a character, respectively. In the example pattern, three `d`'s are used to catpure three digits. The `+` after `c` denotes that one or more characters will be captured, equivelantly to `[a-zA-z]+` in a regular expression. The `+` symbol may be used after either `d` or `c`. 
 
-To retrieve the matched files, an iterator is called on the `FilePattern` object, as shown below.
+To have `filepattern` guess what the pattern is for a directory, the static method `infer_pattern` can be used:
+
+```python
+from pattern import FilePattern as fp 
+
+path = 'path/to/directory'
+
+pattern = fp.FilePattern.infer_pattern(filepath)
+
+print(pattern)
+
+```
+The result is:
+
+```
+img_r00{r:d}_c00{c:d}_{t:c+}.tif
+``` 
+
+Note that the `infer_pattern` method is also included in `VectorPattern` and `StringPattern` to guess the patterns from stitching vectors and text files, respectively. 
+
+To retrieve the matched files, an iterator is called on the `FilePattern` object, as shown below. A user specified custom pattern, such as the one below, or the guessed pattern can be
+as input in the constructor.
 
 ```python
 from pattern import FilePattern as fp
@@ -198,6 +218,45 @@ The ouput is:
 
 `StringPattern` also contains the [group_by](#group-by) and [get_matching](#get-matching) functionality as outlined in the [FilePattern](#filepattern-section) section. 
 
+## VectorPattern
+
+`VectorPattern` is a class in `filepattern` which takes in a stitching vector as input rather than a directory. A stitching vector, contained within a text file, has the following form,
+
+```
+file: x01_y01_wx0_wy0_c1.ome.tif; corr: 0; position: (0, 0); grid: (0, 0);
+file: x02_y01_wx0_wy0_c1.ome.tif; corr: 0; position: (3496, 0); grid: (3, 0);
+file: x03_y01_wx0_wy0_c1.ome.tif; corr: 0; position: (6992, 0); grid: (6, 0);
+file: x04_y01_wx0_wy0_c1.ome.tif; corr: 0; position: (10488, 0); grid: (9, 0);
+```
+
+`VectorPattern` is called from `filepattern` with 
+
+```python
+from pattern import VectorPattern as vp 
+
+filepath = 'path/to/stitching/vector.txt'
+
+pattern = 'x0{x:d}_y01_wx0_wy0_c1.ome.tif'
+
+files = vp.VectorPattern(filepath, pattern)
+
+for file in files():
+    pprint.pprint(files)
+```
+
+The output is:
+```
+({'correlation': 0, 'gridX': 0, 'gridY': 0, 'posX': 0, 'posY': 0, 'x': 1},
+ ['x01_y01_wx0_wy0_c1.ome.tif'])
+({'correlation': 0, 'gridX': 3, 'gridY': 0, 'posX': 3496, 'posY': 0, 'x': 2},
+ ['x02_y01_wx0_wy0_c1.ome.tif'])
+({'correlation': 0, 'gridX': 6, 'gridY': 0, 'posX': 6992, 'posY': 0, 'x': 3},
+ ['x03_y01_wx0_wy0_c1.ome.tif'])
+({'correlation': 0, 'gridX': 9, 'gridY': 0, 'posX': 10488, 'posY': 0, 'x': 4},
+ ['x04_y01_wx0_wy0_c1.ome.tif'])
+```
+As shown in the output, `VectorPattern` not only captures the specified variables from the pattern, but also captures the variables supplied in the stitching vector. 
+
 ## ExternalFilePattern
 
 `ExternalFilePattern` is an external memory version of `filepattern`, i.e. it utilizes disk memory along with main memory. It has the same functionality as FilePattern, however it takes in an addition parameter called `block_size`, which limits the amount of main memory used by `filepattern`. Consider a directory containing the files:
@@ -211,24 +270,19 @@ img_r001_c001_GFP.tif
 `ExternalFilePattern` can be used to processes this directory with only one file in memory as:
 
 ```python
-from pattern import ExternalFilePattern as efp
+from pattern import FilePattern as fp
 import pprint
 
 filepath = "path/to/directory"
 
 pattern = "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif"
 
-files = efp.FilePattern(filepath, pattern, block_size="125 B")
+files = fp.FilePattern(filepath, pattern, block_size="125 B")
 
-while(True):
 
-    for file in files():
-        pprint.pprint(file)
+for file in files():
+    pprint.pprint(file)
     
-    print('-----------------')
-    
-    if(len(files) == 0):
-        break
 
 ```
 The output from this example is:
@@ -236,29 +290,20 @@ The output from this example is:
 ```
 ({'c': 1, 'channel': 'DAPI', 'r': 1},
  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_DAPI.tif'])
------------------
 ({'c': 1, 'channel': 'TXREAD', 'r': 1},
  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif'])
------------------
 ({'c': 1, 'channel': 'GFP', 'r': 1},
  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_GFP.tif'])
------------------
------------------
 ```
-where each group of file is seperated by the dashes. Note that the ```block_size``` argument is provided in bytes (B) in this example, but also has the options for kilobytes (KB), megabytes (MB), and gigabytes (GB).
+Note that the ```block_size``` argument is provided in bytes (B) in this example, but also has the options for kilobytes (KB), megabytes (MB), and gigabytes (GB).
 
 <h3 id="group-by-external"> Group by </h3>
 
-`ExternalFilePattern` also contains the [group_by](#group-by) functionalility as described in [FilePattern](#filepattern). The output of `group_by` is the same as `FilePatten`, however, the API is slightly different:
+`ExternalFilePattern`contains the [group_by](#group-by) functionalility as described in [FilePattern](#filepattern). The output of `group_by` is the same as `FilePatten`.
 
 ```python
-while(True):
-
-    for file in files(group_by="r"):
-        pprint.pprint(file)
-    
-    if(len(files) == 0):
-        break
+for file in files(group_by="r"):
+    pprint.pprint(file)
 ```
 
 The output remains identical to `FilePattern`.
@@ -270,11 +315,8 @@ The output remains identical to `FilePattern`.
 ```python
 files.get_matching(channel=['TXREAD'])
 
-while(True):
-    matching = files.get_matching_block()
-
-    if(len(matching) == 0):
-        break
+for matching in files.get_matching_block()
+    pprint.pprint(matching)
 ```
 where the output is returned in blocks of `block_size`. The output is:
 
@@ -282,3 +324,7 @@ where the output is returned in blocks of `block_size`. The output is:
 ({'c': 1, 'channel': 'TXREAD', 'r': 1},
  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif'])
 ```
+
+## ExternalStringPattern and ExternalVectorPattern
+
+`StringPattern` and `VectorPattern` also contain external memory versiosn, which can be called the with the same method as `ExternalFilePattern`, with the exception of calling the `StringPattern` or  `VectorPattern` constructors.
