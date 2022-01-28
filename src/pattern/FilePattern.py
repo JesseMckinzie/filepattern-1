@@ -1,7 +1,27 @@
 from . import ExternalFilePattern, InternalFilePattern
 
 class FilePattern:
+    """
+    Class to create either a `InternalFilePattern` or `ExternalFilePattern` object based on
+    whether the arguement `block_size` is passed to the constrctor. If `block_size` is a nonempty 
+    string, an `InternalFilePattern` object is created. Otherwise, an `ExternalFilePattern` object is
+    created, which processes the input in blocks with a memory footprint less than `block_sizes`.
+    
+    """
+    
     def __init__(self, path: str, pattern: str, block_size: str="", recursive: bool=False): 
+        """Constructor of the FilePattern class. Passing in the optional arguement `block_size` will 
+        create an ExternalFilePattern object, which will process the directory in blocks which comsume less
+        than or equal to `block_size` of memory. 
+        
+        The pattern 
+
+        Args:
+            path (str): Path to directory
+            pattern (str): Pattern to compare each filename to
+            block_size (str, optional): Maximum amount of RAM to consume at once. Defaults to "" which processes all files at once.
+            recursive (bool, optional): Iterate over subdirectories. Defaults to False.
+        """
         if(block_size == ""): 
             self._file_pattern = InternalFilePattern.InternalFilePattern(path, pattern, recursive=recursive)
         else: 
@@ -10,6 +30,7 @@ class FilePattern:
             self._file_pattern = ExternalFilePattern.ExternalFilePattern(path, pattern, block_size=block_size, recursive=False)
 
     def get_matching(self, **kwargs) -> list:
+        
         """
         Returns variables matching a specific value
 
