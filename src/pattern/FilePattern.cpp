@@ -50,9 +50,11 @@ void FilePattern::matchFilesOneDir(){
             validFiles.push_back(getVariableMap(filePath, sm)); // write to txt file
         }
     }
+    /*
     if(validFiles.size() == 0){
         throw std::runtime_error("No files matched. Check that the pattern is correct.");
     }
+    */
 }
 
 void FilePattern::matchFilesMultDir(){

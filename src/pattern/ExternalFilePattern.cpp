@@ -78,10 +78,6 @@ void ExternalFilePattern::matchFilesOneDir(){
             }
         }
     }
-
-    if(count == 0){
-        cout << ("WARNING: No files matched. Check that the pattern is correct.") << endl;
-    }
 }
 
 void ExternalFilePattern::matchFilesMultDir(){

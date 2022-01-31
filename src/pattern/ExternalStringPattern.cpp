@@ -36,7 +36,7 @@ void ExternalStringPattern::matchFiles(){
     this->mapSize = variables.size();
 
     vector<string> block;
-    cout << "pattern" << this->regexFilePattern << endl;
+
     regex patternRegex = regex(this->regexFilePattern);
     string file;
     smatch sm;
@@ -57,10 +57,6 @@ void ExternalStringPattern::matchFiles(){
                 ++count;
             }
         }
-    }
-    cout << "Number of files matched: " << count << endl;
-    if(count == 0){
-        cout << ("WARNING: No files matched. Check that the pattern is correct.") << endl;
     }
     
 }

@@ -252,7 +252,7 @@ string ExternalPattern::outputName(vector<Tuple>& vec){
 }
 
 string ExternalPattern::inferPattern(const string& path, string& variables, const string& blockSize){
-    FilesystemStream stream = FilesystemStream(path, true, blockSize);
+    FilesystemStream stream = FilesystemStream(path, true, blockSize, true);
 
     vector<string> vec = stream.getBlock();
     for(auto& str: vec) str = s::getBaseName(str);
