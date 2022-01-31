@@ -7,6 +7,7 @@ import os
 import pprint
 
 class TestFilePattern(unittest.TestCase):
+
     root_directory = os.path.dirname(os.path.realpath(__file__))
 
     path = root_directory + '/test_data/data100'
@@ -18,7 +19,6 @@ class TestFilePattern(unittest.TestCase):
     MAX_NUM = 9
 
     def test_file_pattern(self):
-        print("testing normal")
 
         for pattern in self.patterns:
             old_files = filepattern.FilePattern(self.path, self.old_pattern)
@@ -158,7 +158,19 @@ class TestFilePattern(unittest.TestCase):
                 basename = os.path.basename(mapping[1][0])
                 for filepath in mapping[1]:
                     self.assertEqual(basename, os.path.basename(filepath))
-    
+
+    def test_empty_input(self):
+        path = '/home/ec2-user/Dev/FilePattern/tests/test_data/empty_data'
+        pattern = ''
+        
+        files = fp.FilePattern(path, pattern)
+        
+        results = []
+        for file in files():
+            results.append(file) 
+            
+        self.assertEqual([], results)
+
 
 class TestStringPattern(unittest.TestCase):
 
@@ -175,7 +187,6 @@ class TestStringPattern(unittest.TestCase):
     MAX_NUM = 9
 
     def test_file_pattern(self):
-        print("testing string")
         for pattern in self.patterns:
             old_files = filepattern.FilePattern(self.path, self.old_pattern)
             files = sp.StringPattern(self.filepath, pattern)
@@ -297,7 +308,6 @@ class TestExternalFilePattern(unittest.TestCase):
     MAX_NUM = 1
 
     def test_file_pattern(self):
-        print("testing external")
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
@@ -321,7 +331,6 @@ class TestExternalFilePattern(unittest.TestCase):
 
 
     def test_get_matching(self):
-        print("testing matching in external")
         for pattern in self.patterns:
             nums = []
             for block_size in self.block_sizes:
@@ -397,13 +406,10 @@ class TestExternalFilePattern(unittest.TestCase):
 
                 # group by "c" instead of "r" since we changed how group by works
                 for file in old_files(group_by="c"):
-                    
                     old_result.append(file)
-
 
                 for file in files(group_by="r"):
                     result.append(file)
-                        
 
                 self.assertEqual(len(old_result), len(result)) 
                 for i in range(len(old_result)):
@@ -450,7 +456,6 @@ class TestExternalStringPattern(unittest.TestCase):
     MAX_NUM = 1
 
     def test_file_pattern(self):
-        print("testing external")
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
@@ -474,7 +479,6 @@ class TestExternalStringPattern(unittest.TestCase):
 
 
     def test_get_matching(self):
-        print("testing matching in external")
         for pattern in self.patterns:
             nums = []
             for block_size in self.block_sizes:
@@ -489,8 +493,6 @@ class TestExternalStringPattern(unittest.TestCase):
 
                     result = []
                     for match in files.get_matching(r=[i]):
-                        pprint.pprint(result)
-                        pprint.pprint(result)
                         result.append(match)
                     
                     self.assertEqual(len(old_result), len(result)) 
