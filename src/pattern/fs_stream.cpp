@@ -10,8 +10,8 @@ using namespace std;
  * @param recursive 
  * @param blockSize 
  */
-FilesystemStream::FilesystemStream(const string& path, bool recursive, const string& blockSize)
-:Stream(blockSize){
+FilesystemStream::FilesystemStream(const string& path, bool recursive, const string& blockSize, const bool isInfer)
+:Stream(blockSize, isInfer){
     this->recurisve = true;
 
     try {
@@ -47,11 +47,18 @@ vector<string> FilesystemStream::getBlock(){
     }
 }
 
+void FilesystemStream::updateSize(long& size, const string& current){
+    if(isInfer){
+        size +=  sizeof(vector<vector<int>>) + current.length()*sizeof(vector<int>) + 2*current.length()*sizeof(int);
+    }
+    if(size > this->blockSize) throw runtime_error("The block size is too small. Block size must be increased.");
+}
+
 
 vector<string> FilesystemStream::getBlockIterator(){
 
     vector<string> vec;
-    long double previousSize = sizeof(vector<string>);
+    long previousSize = sizeof(vector<string>);
 
     string current;
 
@@ -62,6 +69,9 @@ vector<string> FilesystemStream::getBlockIterator(){
         } catch (exception& e){
             cout << e.what() << endl;
         }
+
+        this->updateSize(previousSize, current);
+
         while(this->currentSize(current.length(), previousSize) < blockSize){
             vec.push_back(current);
             ++recursive_directory_iterator;
@@ -86,6 +96,8 @@ vector<string> FilesystemStream::getBlockIterator(){
         } catch (exception& e){
             cout << e.what() << endl;
         }
+
+        this->updateSize(previousSize, current);
 
         while(this->currentSize(current.length(), previousSize) < blockSize){
             vec.push_back(current);
@@ -113,9 +125,14 @@ vector<string> FilesystemStream::getBlockIterator(){
 vector<string> FilesystemStream::getBlockTxt(){
 
     vector<string> vec;
-    long double size = sizeof(vector<string>);
+    long size = sizeof(vector<string>);
     string str;
     // get string while less than block size
+    this->infile >> str;
+    this->updateSize(size, str);
+    vec.push_back(str);
+    size = Stream::currentSize(str.length(), size);
+
     while(size < this->blockSize && this->infile >> str){
         size = Stream::currentSize(str.length(), size);
         vec.push_back(str);

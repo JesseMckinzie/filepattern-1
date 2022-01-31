@@ -24,7 +24,7 @@ class FilesystemStream : public Stream {
          * @param recursive True will create a recursive directory iterator that will iterate through subdirectories
          * @param blockSize Maximum size of memory the stream will consume at a time
          */
-        FilesystemStream(const std::string& path, bool recursive=false, const std::string& blockSize="50 MB");
+        FilesystemStream(const std::string& path, bool recursive=false, const std::string& blockSize="50 MB", const bool isInfer=false);
 
         /**
          * @brief Get a block of filenames that consumes at most blockSize of main memory.
@@ -55,4 +55,6 @@ class FilesystemStream : public Stream {
         fs::recursive_directory_iterator rec_end; // End of recursive iterator
         bool txtInput;
         std::ifstream infile;
+
+        void updateSize(long& size, const std::string& current);
 };

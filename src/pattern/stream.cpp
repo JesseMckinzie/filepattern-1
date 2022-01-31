@@ -2,12 +2,12 @@
 
 using namespace std;
 
-Stream::Stream(const string& blockSize) {
+Stream::Stream(const string& blockSize, const bool isInfer) {
+    this->isInfer = isInfer;
     this->tmpdir = fs::temp_directory_path();
     this->tmpdir += "/fs_stream_tmp/";
     this->blockSizeStr = blockSize;
     this->blockSize = Block::parseblockSize(blockSize);
-
     
     this->empty = false;
     this->validFiles = tmpdir + "validFiles.txt";

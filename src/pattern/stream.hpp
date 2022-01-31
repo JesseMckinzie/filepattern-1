@@ -62,7 +62,8 @@ class Stream {
         std::ifstream infile;
         std::string blockSizeStr;
         Map tempMap;
+        bool isInfer;
 
-        Stream(const std::string&);
+        Stream(const std::string&, const bool isInfer=false);
 
 };
