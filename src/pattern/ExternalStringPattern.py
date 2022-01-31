@@ -32,7 +32,6 @@ class ExternalStringPattern:
             self._file_pattern = backend.ExternalStringPattern(path, pattern, block_size)
         except RuntimeError as e:
             print(e)
-            exit(1)
 
     def print_valid_files(self) -> None:
         """

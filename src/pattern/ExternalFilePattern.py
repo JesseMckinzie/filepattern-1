@@ -109,6 +109,7 @@ class ExternalFilePattern:
         The filepath is in file.second
         """
         while(True):
+            
             for block in self._file_pattern.__iter__():
                 yield block
 

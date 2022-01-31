@@ -29,7 +29,6 @@ class InternalFilePattern:
         """
         try:
             self._file_pattern = backend.FilePattern(path, pattern, recursive)
-            print("creating object")
         except Exception as e:
             print(e)
 
