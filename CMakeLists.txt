@@ -30,4 +30,4 @@ pybind11_add_module(backend MODULE ${SOURCES} "${SOURCE_DIR}/bindings.cpp"
                                               "${SOURCE_DIR}/vector_parser.cpp"
                                             )
 
-target_link_libraries(backend PRIVATE stdc++fs)
+#target_link_libraries(backend PRIVATE stdc++fs)
