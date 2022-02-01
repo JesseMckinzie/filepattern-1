@@ -30,4 +30,9 @@ pybind11_add_module(backend MODULE ${SOURCES} "${SOURCE_DIR}/bindings.cpp"
                                               "${SOURCE_DIR}/vector_parser.cpp"
                                             )
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_link_libraries(backend PRIVATE stdc++fs)
+endif()
+
+
 #target_link_libraries(backend PRIVATE stdc++fs)
