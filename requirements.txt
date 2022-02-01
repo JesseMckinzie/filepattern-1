@@ -47,7 +47,6 @@ docutils==0.14
 dpath==2.0.5
 dulwich==0.20.26
 dvc==2.1.0
-file-pattern @ file:///home/ec2-user/Dev/FilePatternPy/dist/file_pattern-0.1.0-cp37-cp37m-linux_x86_64.whl
 filelock==3.3.2
 filepattern==1.4.7
 flatbuffers==2.0
