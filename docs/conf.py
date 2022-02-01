@@ -16,11 +16,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
 sys.setrecursionlimit(1500)
 
-on_rtd = os.environ.get('READTHEDOCS') == 'True'
-if on_rtd:
-    html_theme = 'default'
-else:
-    html_theme = 'nature'
 
 # -- Project information -----------------------------------------------------
 
