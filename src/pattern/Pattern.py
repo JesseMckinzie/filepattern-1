@@ -1,36 +1,39 @@
-from . import ExternalFilePattern, InternalFilePattern
+from . import FilePattern, StringPattern, VectorPattern 
+import re
 
-class FilePattern:
-    """
-    Class to create either a `InternalFilePattern` or `ExternalFilePattern` object based on
-    whether the arguement `block_size` is passed to the constrctor. If `block_size` is a nonempty 
-    string, an `InternalFilePattern` object is created. Otherwise, an `ExternalFilePattern` object is
-    created, which processes the input in blocks with a memory footprint less than `block_sizes`.
-    
-    """
-    
-    def __init__(self, path: str, pattern: str='', block_size: str='', recursive: bool=False): 
-        """Constructor of the FilePattern class. Passing in the optional arguement `block_size` will 
+class Pattern:
+    def __init__(self, path: str, pattern: str='', block_size: str ='', recursive: bool=False):
+        """Constructor of the Pattern class. The path arugment can either be a directory, a text file,
+        or a stitching vector. Passing in the optional arguement `block_size` will 
         create an ExternalFilePattern object, which will process the directory in blocks which comsume less
         than or equal to `block_size` of memory. 
+        
+        Just the path may be passed in the pattern is contained within the path. In this case,
+        the names of the subdirectories are captured if they are named is the same manner as the pattern.
+        For example, if just the path 'path/to/files/{channel: c+}/img_r{r:d+}_c{c:d+}.tif' is passed, 
+        the names of the channel subfolders will be captured for each file. 
 
         Args:
-            path: Path to directory
+            path: Path to directory or text file
             pattern: Pattern to compare each filename to
             block_size: Maximum amount of RAM to consume at once. Defaults to "".
             recursive: Iterate over subdirectories. Defaults to False.
         """
-        if(block_size == ""): 
-            self._file_pattern = InternalFilePattern.InternalFilePattern(path, pattern=pattern, recursive=recursive)
-        else: 
-            if(recursive is True):
-                print("Recursive matching is not yet supoorted")
-            self._file_pattern = ExternalFilePattern.ExternalFilePattern(path, pattern=pattern, block_size=block_size, recursive=False)
+        
+        if(path.endswith('.txt')):
+            with open(path) as infile:
+                line = infile.readline().rstrip()
+            
+            if(re.match(r'file\: .+?; corr\: .+?; position\: .+?; grid\: .+?;', line)):
+                self._file_pattern = VectorPattern.VectorPattern(path, pattern, block_size=block_size)
+            else:
+                self._file_pattern = StringPattern.StringPattern(path, pattern, block_size=block_size)
+        else:
+            self._file_pattern = FilePattern.FilePattern(path, pattern, block_size=block_size, recursive=recursive)
 
-    def get_matching(self, mapping) -> list:
+    def get_matching(self, **kwargs) -> list:
         """Get all filenames matching specific values
         
-
         Args:
             **kwargs: One of the variables contained in the pattern 
 
@@ -38,11 +41,15 @@ class FilePattern:
             List of matching files
         """
         try:
+            mapping = []
+            for key, value in kwargs.items():
+                mapping.append((key, value))
+
             return self._file_pattern.get_matching(mapping)
         except ValueError as e:
             print(e)
 
-    def get_occurences(self, mapping):
+    def get_occurences(self, **kwargs):
         """
         Returns the unique values for each variable along with the number of occurences for each value.
         
@@ -53,10 +60,14 @@ class FilePattern:
         Returns:
             Dictionary of variables mapped to values where each value is mapped to the number of occurences.
         """
+    
+        mapping = []
+        for key, value in kwargs.items():
+            mapping.append((key, value))
 
         return self._file_pattern.get_occurences(mapping)
     
-    def get_unique_values(self, vec) -> list:
+    def get_unique_values(self, *args) -> list:
         """Returns the unique values for each variable.
         
         This method returns a dictionary of provided variables to a list of all unique occurences. If no variables are provided,
@@ -68,6 +79,9 @@ class FilePattern:
         Returns:
             Dictionary of variables mapped to values.
         """
+        vec = []
+        for str in args:
+            vec.append(str)
 
         return self._file_pattern.get_unique_values(vec)
 
@@ -105,17 +119,7 @@ class FilePattern:
             A string that is a guess of the pattern for the supplied filenames.
         """
         
-        if(path == "" and files == []):
-            raise ValueError('A path or list of files must be provided')
-        elif(path != "" and files != []):
-            raise ValueError('Pass in only a path or list of files, not both.')
-        elif(path == ""):
-            return InternalFilePattern.InternalFilePattern.infer_pattern(files, variables)
-        else:
-            if (block_size == ""):
-                return InternalFilePattern.InternalFilePattern.infer_pattern(path, variables)
-            else:
-                return ExternalFilePattern.ExternalFilePattern.infer_pattern(path, variables, block_size)
+        return self._file_pattern.infer_pattern(path=path, files=files, variables=variables, block_size=block_size)
 
     
     def __call__(self, group_by=None):

@@ -1,4 +1,5 @@
 from . import backend
+import pprint
 
 class ExternalStringPattern:
     """
@@ -134,6 +135,8 @@ class ExternalStringPattern:
         """
         while(True):
             for block in self._file_pattern.__iter__():
+                if(len(self) == 0):
+                    break
                 yield block
 
             if(len(self) == 0):

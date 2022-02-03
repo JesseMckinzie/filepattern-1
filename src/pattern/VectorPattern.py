@@ -23,7 +23,7 @@ class VectorPattern:
         else: 
             self._file_pattern = ExternalVectorPattern.ExternalVectorPattern(path, pattern, block_size=block_size)
     
-    def get_matching(self, **kwargs) -> list:
+    def get_matching(self, mapping) -> list:
         """Get all filenames matching specific values
     
         Args:
@@ -33,15 +33,11 @@ class VectorPattern:
             List of matching files
         """
         try:
-            mapping = []
-            for key, value in kwargs.items():
-                mapping.append((key, value))
-
             return self._file_pattern.get_matching(mapping)
         except ValueError as e:
             print(e)
 
-    def get_occurences(self, **kwargs):
+    def get_occurences(self, mapping):
         """
         Returns the unique values for each variable along with the number of occurences for each value.
         
@@ -52,13 +48,9 @@ class VectorPattern:
         Returns:
             Dictionary of variables mapped to values where each value is mapped to the number of occurences.
         """
-        mapping = []
-        for key, value in kwargs.items():
-            mapping.append((key, value))
-
         return self._file_pattern.get_occurences(mapping)
     
-    def get_unique_values(self, *args) -> list:
+    def get_unique_values(self, vec) -> list:
         """Returns the unique values for each variable.
         
         This method returns a dictionary of provided variables to a list of all unique occurences. If no variables are provided,
@@ -70,9 +62,6 @@ class VectorPattern:
         Returns:
             Dictionary of variables mapped to values.
         """
-        vec = []
-        for str in args:
-            vec.append(str)
 
         return self._file_pattern.get_unique_values(vec)
 
