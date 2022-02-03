@@ -1,7 +1,8 @@
 import unittest
 import generate_data
-from pattern import FilePattern as fp
-from pattern import StringPattern as sp
+#from pattern import FilePattern as fp
+#from pattern import StringPattern as sp
+from pattern import Pattern
 import filepattern
 import os
 import pprint
@@ -22,7 +23,7 @@ class TestFilePattern(unittest.TestCase):
 
         for pattern in self.patterns:
             old_files = filepattern.FilePattern(self.path, self.old_pattern)
-            files = fp.FilePattern(self.path, pattern)
+            files = Pattern.Pattern(self.path, pattern)
 
             old_result = []
             result = []
@@ -46,7 +47,7 @@ class TestFilePattern(unittest.TestCase):
             for i in range(0, self.MAX_NUM):
 
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.FilePattern(self.path, pattern)
+                files = Pattern.Pattern(self.path, pattern)
 
                 nums.append(i)
 
@@ -94,7 +95,7 @@ class TestFilePattern(unittest.TestCase):
     def test_group_by(self):
         for pattern in self.patterns:
             old_files = filepattern.FilePattern(self.path, self.old_pattern)
-            files = fp.FilePattern(self.path, pattern)
+            files = Pattern.Pattern(self.path, pattern)
 
             old_result = []
             result = []
@@ -109,9 +110,9 @@ class TestFilePattern(unittest.TestCase):
 
             for i in range(len(old_result)):
                 for j in range(len(old_result[i])):
-                    self.assertEqual(old_result[i][j]["r"], result[i][j][0]["r"]) 
-                    self.assertEqual(old_result[i][j]["c"], result[i][j][0]["c"])
-                    self.assertEqual(str(old_result[i][j]['file']), result[i][j][1][0])
+                    self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
+                    self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
+                    self.assertEqual(str(old_result[i][j]['file']), result[i][1][j][1][0])
 
             for file in old_files(group_by="r"):
                 old_result.append(file)
@@ -122,9 +123,9 @@ class TestFilePattern(unittest.TestCase):
 
             for i in range(len(old_result)):
                 for j in range(len(old_result[i])):
-                    self.assertEqual(old_result[i][j]["r"], result[i][j][0]["r"]) 
-                    self.assertEqual(old_result[i][j]["c"], result[i][j][0]["c"])
-                    self.assertEqual(str(old_result[i][j]['file']), result[i][j][1][0])
+                    self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
+                    self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
+                    self.assertEqual(str(old_result[i][j]['file']), result[i][1][j][1][0])
 
     def test_recursive_filepattern(self):
         path = self.root_directory + '/test_data/recursive_data'
@@ -132,7 +133,7 @@ class TestFilePattern(unittest.TestCase):
 
         for pattern in self.patterns:
             old_files = filepattern.FilePattern(old_path, self.old_pattern)
-            files = fp.FilePattern(path, pattern, recursive=True)
+            files = Pattern.Pattern(path, pattern, recursive=True)
 
             old_result = []
             result = []
@@ -163,7 +164,7 @@ class TestFilePattern(unittest.TestCase):
         path = '/home/ec2-user/Dev/FilePattern/tests/test_data/empty_data'
         pattern = ''
         
-        files = fp.FilePattern(path, pattern)
+        files = Pattern.Pattern(path, pattern)
         
         results = []
         for file in files():
@@ -189,7 +190,7 @@ class TestStringPattern(unittest.TestCase):
     def test_file_pattern(self):
         for pattern in self.patterns:
             old_files = filepattern.FilePattern(self.path, self.old_pattern)
-            files = sp.StringPattern(self.filepath, pattern)
+            files = Pattern.Pattern(self.filepath, pattern)
 
             old_result = []
             result = []
@@ -213,7 +214,7 @@ class TestStringPattern(unittest.TestCase):
             for i in range(0, self.MAX_NUM):
 
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = sp.StringPattern(self.filepath, pattern)
+                files = Pattern.Pattern(self.filepath, pattern)
 
                 nums.append(i)
 
@@ -261,7 +262,7 @@ class TestStringPattern(unittest.TestCase):
     def test_group_by(self):
         for pattern in self.patterns:
             old_files = filepattern.FilePattern(self.path, self.old_pattern)
-            files = sp.StringPattern(self.filepath, pattern)
+            files = Pattern.Pattern(self.filepath, pattern)
 
             old_result = []
             result = []
@@ -276,9 +277,9 @@ class TestStringPattern(unittest.TestCase):
 
             for i in range(len(old_result)):
                 for j in range(len(old_result[i])):
-                    self.assertEqual(old_result[i][j]["r"], result[i][j][0]["r"]) 
-                    self.assertEqual(old_result[i][j]["c"], result[i][j][0]["c"])
-                    self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), result[i][j][1][0])
+                    self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
+                    self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
+                    self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), result[i][1][j][1][0])
 
             for file in old_files(group_by="r"):
                 old_result.append(file)
@@ -289,11 +290,10 @@ class TestStringPattern(unittest.TestCase):
 
             for i in range(len(old_result)):
                 for j in range(len(old_result[i])):
-                    self.assertEqual(old_result[i][j]["r"], result[i][j][0]["r"]) 
-                    self.assertEqual(old_result[i][j]["c"], result[i][j][0]["c"])
-                    self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), result[i][j][1][0])
+                    self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
+                    self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
+                    self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), result[i][1][j][1][0])
 
-  
 class TestExternalFilePattern(unittest.TestCase):
     root_directory = os.path.dirname(os.path.realpath(__file__))
 
@@ -308,10 +308,11 @@ class TestExternalFilePattern(unittest.TestCase):
     MAX_NUM = 1
 
     def test_file_pattern(self):
+        print('Normal test')
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.FilePattern(self.path, pattern, block_size=block_size)
+                files = Pattern.Pattern(self.path, pattern, block_size=block_size)
 
                 old_result = []
                 result = []
@@ -331,13 +332,14 @@ class TestExternalFilePattern(unittest.TestCase):
 
 
     def test_get_matching(self):
+        print('Matching')
         for pattern in self.patterns:
             nums = []
             for block_size in self.block_sizes:
                 for i in range(0, self.MAX_NUM):
 
                     old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                    files = fp.FilePattern(self.path, pattern, block_size=block_size)
+                    files = Pattern.Pattern(self.path, pattern, block_size=block_size)
 
                     nums.append(i)
 
@@ -396,10 +398,11 @@ class TestExternalFilePattern(unittest.TestCase):
 
 
     def test_group_by(self):
+        print('Group')
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.FilePattern(self.path, pattern, block_size=block_size)
+                files = Pattern.Pattern(self.path, pattern, block_size=block_size)
 
                 old_result = []
                 result = []
@@ -413,13 +416,13 @@ class TestExternalFilePattern(unittest.TestCase):
 
                 self.assertEqual(len(old_result), len(result)) 
                 for i in range(len(old_result)):
-                   self.assertEqual(len(old_result[i]), len(result[i])) 
+                   self.assertEqual(len(old_result[i]), len(result[i][1])) 
                 
                 for i in range(len(old_result)):
                     for j in range(len(old_result[i])):
-                        self.assertEqual(old_result[i][j]["r"], result[i][j][0]["r"]) 
-                        self.assertEqual(old_result[i][j]["c"], result[i][j][0]["c"])
-                        self.assertEqual(str(old_result[i][j]['file']), result[i][j][1][0])
+                        self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
+                        self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
+                        self.assertEqual(str(old_result[i][j]['file']), result[i][1][j][1][0])
 
                 result = []
                 old_result = []
@@ -435,11 +438,9 @@ class TestExternalFilePattern(unittest.TestCase):
 
                 for i in range(len(old_result)):
                     for j in range(len(old_result[i])):
-                        self.assertEqual(old_result[i][j]["r"], result[i][j][0]["r"]) 
-                        self.assertEqual(old_result[i][j]["c"], result[i][j][0]["c"])
-                        self.assertEqual(str(old_result[i][j]['file']), result[i][j][1][0])
-
-
+                        self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
+                        self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
+                        self.assertEqual(str(old_result[i][j]['file']), result[i][1][j][1][0])
 
 class TestExternalStringPattern(unittest.TestCase):
     root_directory = os.path.dirname(os.path.realpath(__file__))
@@ -456,10 +457,11 @@ class TestExternalStringPattern(unittest.TestCase):
     MAX_NUM = 1
 
     def test_file_pattern(self):
+        print("in normal")
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = sp.StringPattern(self.string_path, pattern, block_size=block_size)
+                files = Pattern.Pattern(self.string_path, pattern, block_size=block_size)
 
                 old_result = []
                 result = []
@@ -479,13 +481,14 @@ class TestExternalStringPattern(unittest.TestCase):
 
 
     def test_get_matching(self):
+        print("in matching")
         for pattern in self.patterns:
             nums = []
             for block_size in self.block_sizes:
                 for i in range(0, self.MAX_NUM):
 
                     old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                    files = sp.StringPattern(self.string_path, pattern, block_size=block_size)
+                    files = Pattern.Pattern(self.string_path, pattern, block_size=block_size)
 
                     nums.append(i)
 
@@ -544,10 +547,11 @@ class TestExternalStringPattern(unittest.TestCase):
 
 
     def test_group_by(self):
+        print("in groupby")
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = sp.StringPattern(self.string_path, pattern, block_size=block_size)
+                files = Pattern.Pattern(self.string_path, pattern, block_size=block_size)
 
                 old_result = []
                 result = []
@@ -557,20 +561,19 @@ class TestExternalStringPattern(unittest.TestCase):
                     
                     old_result.append(file)
 
-
                 for file in files(group_by="r"):
                     result.append(file)
-                        
+
 
                 self.assertEqual(len(old_result), len(result)) 
                 for i in range(len(old_result)):
-                   self.assertEqual(len(old_result[i]), len(result[i])) 
+                   self.assertEqual(len(old_result[i]), len(result[i][1])) 
                 
                 for i in range(len(old_result)):
                     for j in range(len(old_result[i])):
-                        self.assertEqual(old_result[i][j]["r"], result[i][j][0]["r"]) 
-                        self.assertEqual(old_result[i][j]["c"], result[i][j][0]["c"])
-                        self.assertEqual(str(old_result[i][j]['file']), result[i][j][1][0])
+                        self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
+                        self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
+                        self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), result[i][1][j][1][0])
 
                 result = []
                 old_result = []
@@ -580,15 +583,19 @@ class TestExternalStringPattern(unittest.TestCase):
 
 
                 for file in files(group_by="c"):
-                    result.append(file)                    
-
-                self.assertEqual(len(old_result), len(result)) 
+                    result.append(file)     
+                                   
+                print("old")
+                pprint.pprint(old_result)
+                print()
+                pprint.pprint(result)
+                self.assertEqual(len(old_result), len(result))
 
                 for i in range(len(old_result)):
                     for j in range(len(old_result[i])):
-                        self.assertEqual(old_result[i][j]["r"], result[i][j][0]["r"]) 
-                        self.assertEqual(old_result[i][j]["c"], result[i][j][0]["c"])
-                        self.assertEqual(str(old_result[i][j]['file']), result[i][j][1][0])
+                        self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
+                        self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
+                        self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), result[i][1][j][1][0])
 
 if __name__ == '__main__':
 
