@@ -213,6 +213,26 @@ namespace s {
                 }
                 return false;
         }
+        
+        /**
+         * @brief Removed substring from string
+         * 
+         * From: https://thispointer.com/how-to-remove-substrings-from-a-string-in-c/
+         * 
+         * @param str String to erase from
+         * @param toErase Substring to erase from mainStr
+         */
+        inline std::string eraseSubStr(std::string& str, const std::string& toErase) {
+                std::string mainStr = str;
+                // Search for the substring in string
+                size_t pos = mainStr.find(toErase);
+                if (pos != std::string::npos)
+                {
+                        // If found then erase it from string
+                        mainStr.erase(pos, toErase.length());
+                }
+                return mainStr;
+        }
 };
 
 namespace m {
