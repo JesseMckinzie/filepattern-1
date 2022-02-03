@@ -4,23 +4,35 @@
 using namespace std;
 
 FilePattern::FilePattern(const string& path, const string& filePattern, bool recursive=false) {
-
-    this->path = path; // store path to target directory
-    
-    try {
-        if(recursive){
-            this->recursiveIterator = fs::recursive_directory_iterator(path);
-        } else{ 
-            this->iterator = fs::directory_iterator(path); // store iterator for target directory
+    if(filePattern == ""){
+        this->getPathFromPattern(path); // set path and filePattern
+        try {
+            this->recursiveIterator = fs::recursive_directory_iterator(this->path);
+            this->recursive = true;
+            this->justPath = true;
+        } catch (const std::runtime_error& e) {
+            string error = "No directory found. Invalid path \"" + path + "\"."; 
+            throw std::runtime_error(error);
         }
-    } catch (const std::runtime_error& e) {
-        string error = "No directory found. Invalid path \"" + path + "\"."; 
-        throw std::runtime_error(error);
+    } else {
+        this->justPath = false;
+        this->path = path; // store path to target directory
+        this->filePattern = filePattern; // cast input string to regex
+        this->recursive = recursive; // Iterate over subdirectories
+        try {
+            if(recursive){
+                this->recursiveIterator = fs::recursive_directory_iterator(this->path);
+            } else{ 
+                this->iterator = fs::directory_iterator(this->path); // store iterator for target directory
+            }
+        } catch (const std::runtime_error& e) {
+            string error = "No directory found. Invalid path \"" + path + "\"."; 
+            throw std::runtime_error(error);
+        }
     }
     
-    this->filePattern = filePattern; // cast input string to regex
     this->regexFilePattern = ""; // Regex version of pattern
-    this->recursive = recursive; // Iterate over subdirectories
+    
 
     this->matchFiles();
 }
@@ -65,17 +77,21 @@ void FilePattern::matchFilesMultDir(){
     string file, filePath;
     // Iterate over directories and subdirectories
     for (const auto& entry : this->recursiveIterator) {
-        filePath = entry.path();
-        file = s::getBaseName(filePath);
+        if(this->justPath){
+            filePath = entry.path();
+            file = s::eraseSubStr(filePath, this->path);
+        } else {
+            filePath = entry.path();
+            file = s::getBaseName(filePath);
+        }
+        
         if(regex_match(file, sm, patternRegex)){
-            tup = getVariableMapMultDir(filePath, sm);
+            if(this->justPath) tup = getVariableMap(filePath, sm);
+            else tup = getVariableMapMultDir(filePath, sm);
             if(get<0>(tup).size() > 0){
             validFiles.push_back(tup); // write to txt file
             }
         }
-    }
-    if(validFiles.size() == 0){
-        throw std::runtime_error("No files matched. Check that the pattern is correct.");
     }
 }
 
@@ -97,10 +113,10 @@ void FilePattern::matchFiles() {
     }
     */
     if(recursive){
-        this->matchFilesMultDir();
+       this->matchFilesMultDir();
     } else {
         this->matchFilesOneDir();
     }
     
-    this->validGroupedFiles.push_back(validFiles);
+    //this->validGroupedFiles.push_back(validFiles);
 }

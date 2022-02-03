@@ -25,19 +25,24 @@ class Pattern {
     protected:
         std::regex regexExpression; // Regex expression
         std::string filePattern; // Pattern to match files to
+        std::string pathPattern;
         std::string regexFilePattern; // Pattern with capture groups
+        std::string path;
         std::vector<std::string> variables; // Store the names of variables from the pattern
         std::map<std::string, std::map<Types, int>> variableOccurences;
         std::map<std::string, std::set<Types>> uniqueValues;
         std::vector<std::string> namedGroups;
+        bool justPath;
 
         std::string VARIABLES;
 
         static std::string inferPatternInternal(std::vector<std::string>& files, std::string& variables, const std::string& startingPattern="");
+        void getPathFromPattern(const std::string& path);
 
     public:
         std::vector<Tuple> validFiles; // Store files that match given regex
-        std::vector<std::vector<Tuple>> validGroupedFiles;
+        //std::vector<std::vector<Tuple>> validGroupedFiles;
+        std::vector<std::pair<std::pair<std::string, Types> , std::vector<Tuple>>> validGroupedFiles;
         std::string group;
 
         /**

@@ -3,6 +3,28 @@
 using namespace std;
 namespace fs = filesystem;
 
+void Pattern::getPathFromPattern(const string& path){
+     /*  path/to/file/channel_{channel:c+}/{color:c+}/img_r{r:d}_c{c:d}   */
+
+    this->path = "";
+    this->filePattern = "";
+    size_t firstBracket = path.find("{"); 
+    if(firstBracket == string::npos) return;
+ 
+    while(path[firstBracket] != '/'){
+        --firstBracket;
+        if(firstBracket == 0) {
+            throw invalid_argument("Invalid path. Atleast one directory without a named group must be provided.");
+        }
+    }
+    ++firstBracket;
+
+    this->path = path.substr(0, firstBracket);
+    this->filePattern = path.substr(firstBracket, path.length()-1);
+
+
+}
+
 void Pattern::setGroup(const string& group){
     if(find(this->variables.begin(), this->variables.end(), group) != variables.end()) {
         this->group = group;

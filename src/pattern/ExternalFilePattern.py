@@ -99,6 +99,9 @@ class ExternalFilePattern:
 
     def __len__(self):
         return self._file_pattern.currentBlockLength()
+    
+    def group_length(self):
+        return self._file_pattern.getGroupLength()
 
     def __iter__(self):
         """
@@ -110,9 +113,29 @@ class ExternalFilePattern:
         """
         while(True):
             
+            """
+            while(True):
+            
+                block = [];
+                for file in self._file_pattern.__iter__():
+                    block.append(file)
+                
+                if(len(block) == 0):
+                    break   
+                
+                yield ((self._file_pattern.group, block[0][0][self._file_pattern.group]), block)
+            
+            """
             for block in self._file_pattern.__iter__():
+                
+                if(len(self) == 0):
+                    break
+                
                 yield block
-
+                
             if(len(self) == 0):
                 break
+            
 
+            
+            

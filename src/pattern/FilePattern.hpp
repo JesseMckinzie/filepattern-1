@@ -34,7 +34,7 @@ class FilePattern : public InternalPattern {
         void printFiles();
         
     private: 
-        std::string path; // path to directory
+        //std::string path; // path to directory
         fs::directory_iterator iterator; // File iterator for given path
         fs::recursive_directory_iterator recursiveIterator; // Recursive directory iterator
         bool recursive; // Iterate over subdirectories

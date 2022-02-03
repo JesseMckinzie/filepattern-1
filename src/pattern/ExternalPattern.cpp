@@ -126,68 +126,69 @@ vector<Tuple> ExternalPattern::getMatchingBlock(){
     return vec;
 }
 
-void ExternalPattern::next(){
-    this->currentBlock.clear();
-    // If first call, call groupby if supplied
-    if(firstCall && this->group != ""){
-        this->groupBy(this->group);
-    } 
-
-    if(this->group != ""){
-        
-        // add mapping from previous call to return block
-        if(!firstCall && get<0>(this->temp).size() != 0) this->currentBlock.push_back(this->temp);
-        
-        // check if end of file
-        streampos ptr = groupStream.tellg();
-        string str;
-        if(!(this->groupStream >> str)){
-            // reset variables incase of another call
-            this->currentBlock.clear();
-            this->groupStream.close();
-            this->groupStream.open(this->validFilesPath);
-            this->firstCall = true;
-            return;
-        }
-        groupStream.seekg(ptr, ios::beg);
-
-        // iterate over vaild files temp file while the group variable is constant
-        while(m::getMap(groupStream, this->temp, this->mapSize)){
-            m::preserveType(temp);
-
-            if(firstCall) {
-                this->currentValue = get<0>(temp)[this->group];
-                this->currentBlock.push_back(temp);
-                this->firstCall = false;
-            } else {
-
-                // add to block if value matches current value
-                if(get<0>(this->temp)[this->group] == this->currentValue) {
-                     this->currentBlock.push_back(this->temp);
-                } else { 
-                    // update variable value and end loop on variable value change
-                            // sort block by basename
-                    sort(this->currentBlock.begin(), this->currentBlock.end(), [](Tuple& m1, Tuple& m2){
-                        return get<1>(m1)[0] < get<1>(m2)[0];
-                    });
-                    this->currentValue = get<0>(this->temp)[this->group];
-                    return;
-                };
-            }
-        }
-        sort(this->currentBlock.begin(), this->currentBlock.end(), [](Tuple& m1, Tuple& m2){
-            return get<1>(m1)[0] < get<1>(m2)[0];
-        });
-
-    } else { // get a valid files block if no grouping
-        this->currentBlock = this->getValidFilesBlock(); // get block of valid files
+void ExternalPattern::nextGroup(){
+    if(firstCall) this->groupBy(this->group);
+    
+    // add mapping from previous call to return block
+    if(!firstCall){
+        this->currentGroup[0].second.clear();
+        if(get<0>(this->temp).size() != 0) this->currentGroup[0].second.push_back(this->temp);
     }
+    
+    // check if end of file
+    streampos ptr = groupStream.tellg();
+    string str; 
+    vector<Tuple> empty;
+    if(!(this->groupStream >> str)){
+        // reset variables incase of another call
+        this->currentGroup[0].second.clear();
+        this->groupStream.close();
+        this->groupStream.open(this->validFilesPath);
+        this->firstCall = true;
+        return;
+    }
+    groupStream.seekg(ptr, ios::beg);
+    // iterate over vaild files temp file while the group variable is constant
+    while(m::getMap(groupStream, this->temp, this->mapSize)){
+        m::preserveType(temp);
 
-    this->firstCall = false; // first call was made
+        if(firstCall) {
+            this->currentValue = get<0>(temp)[this->group];
+            this->currentGroup.resize(1);
+            this->currentGroup[0] = make_pair(make_pair(this->group, currentValue), empty);
+            this->currentGroup[0].second.push_back(temp);
+            this->firstCall = false;
+        } else {
+            // add to block if value matches current value
+            this->currentGroup[0].first = make_pair(this->group, currentValue);
+    
+            if(get<0>(this->temp)[this->group] == this->currentValue) {
+                    this->currentGroup[0].second.push_back(this->temp);
+            } else { 
+                // update variable value and end loop on variable value change
+                        // sort block by basename
+                sort(this->currentGroup[0].second.begin(), this->currentGroup[0].second.end(), [](Tuple& m1, Tuple& m2){
+                    return get<1>(m1)[0] < get<1>(m2)[0];
+                });
+                this->currentValue = get<0>(this->temp)[this->group];
+                //cout << "else return" << endl;
+                //cout << "result: " << currentGroup[0].first.first << ", " << s::to_string(currentGroup[0].first.second) << endl << endl;
+                return;
+            };
+        }
+    }
+    sort(this->currentGroup[0].second.begin(), this->currentGroup[0].second.end(), [](Tuple& m1, Tuple& m2){
+        return get<1>(m1)[0] < get<1>(m2)[0];
+    });
+}
+
+void ExternalPattern::next(){
+    this->currentBlock = this->getValidFilesBlock(); // get block of valid files
 }
 
 int ExternalPattern::currentBlockLength(){
-    return this->currentBlock.size();
+    if(this->group == "") return this->currentBlock.size();// + this->currentGroup.size();
+    else return this->currentGroup[0].second.size();
 }
 
 std::vector<Tuple> ExternalPattern::getValidFilesBlock(){
@@ -267,4 +268,8 @@ string ExternalPattern::inferPattern(const string& path, string& variables, cons
     }
     
     return pattern;
+}
+
+int ExternalPattern::getGroupLength(){
+    return this->currentGroup.size();
 }

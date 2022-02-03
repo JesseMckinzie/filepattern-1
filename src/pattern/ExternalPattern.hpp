@@ -56,6 +56,7 @@ class ExternalPattern : public Pattern {
 
     public: 
         std::vector<Tuple> currentBlock;
+        std::vector<std::pair<std::pair<std::string, Types>, std::vector<Tuple>>> currentGroup;
 
         ExternalPattern(const std::string& path, const std::string& blockSize, bool recursive);
 
@@ -76,6 +77,8 @@ class ExternalPattern : public Pattern {
          * the block size from the temporary .txt file. 
          */
         void next();
+
+        void nextGroup();
 
         /**
          * @brief Returns the number of 
@@ -111,6 +114,8 @@ class ExternalPattern : public Pattern {
         std::string outputName(std::vector<Tuple>& vec);
 
         static std::string inferPattern(const std::string& path, std::string& variables, const std::string& blockSize);
+
+        int getGroupLength();
 };
 
 #endif
