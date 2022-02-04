@@ -23,6 +23,9 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include <chrono>
+#include <filesystem>
+#include <iostream>
 
 typedef std::variant<int, std::string> Types;
 typedef std::map<std::string, Types> Map;
@@ -233,6 +236,12 @@ namespace s {
                 }
                 return mainStr;
         }
+
+        inline std::string getTimeString(){
+                return std::to_string(std::chrono::duration_cast< std::chrono::nanoseconds >(
+                        std::chrono::system_clock::now().time_since_epoch()
+                ).count());
+        }
 };
 
 namespace m {
@@ -374,5 +383,19 @@ namespace m {
                         ++idx;
                 }
                 return maxIdx;
+        }
+}
+
+namespace d {
+        inline void remove_dir(std::string& pathToDir){
+                if(s::endsWith(pathToDir, ".txt")) pathToDir = pathToDir.substr(0, pathToDir.find_last_of('/'));
+                if(!s::endsWith(pathToDir, "/")) pathToDir += "/";
+                std::cout << "deleting directory at " << pathToDir << std::endl;
+                std::filesystem::path path = pathToDir; 
+                uintmax_t n = std::filesystem::remove_all(path);
+                //uintmax_t n2 = std::filesystem::remove(path);
+
+                if(n) std::cout << "success: deleted " << n << std::endl << std::endl;
+                //else std::cout << "error: n is " << n << std::endl << std::endl; 
         }
 }
