@@ -8,6 +8,7 @@ ExternalPattern(path, blockSize, false) {
     this->path = path; // store path to target directory
     this->stream = {path, true, blockSize};
     this->blockSize = Block::parseblockSize(blockSize);
+    this->fp_tmpdir = "";
 
     this->filePattern = filePattern; // cast input string to regex
     this->regexFilePattern = ""; // Regex equivalent of the pattern
@@ -23,11 +24,8 @@ ExternalPattern(path, blockSize, false) {
 }
 
 ExternalStringPattern::~ExternalStringPattern(){
-    /*
-    fs::path path = this->validFilesPath; 
-    path.remove_filename();
-    uintmax_t n = fs::remove_all(path);
-    */
+    d::remove_dir(this->validFilesPath);
+    if(this->fp_tmpdir != "") d::remove_dir(this->fp_tmpdir);
 }
 
 void ExternalStringPattern::matchFiles(){
