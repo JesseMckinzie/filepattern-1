@@ -69,21 +69,21 @@ void ExternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
 }
 
 string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
-    string tmpdir = fs::temp_directory_path();
-    tmpdir += "/filepattern/";
+    this->fp_tmpdir = fs::temp_directory_path();
+    this->fp_tmpdir += "/filepattern_" + s::getTimeString() + "/";
 
-    if(fs::exists(tmpdir)){
-        fs::remove_all(tmpdir);
+    if(fs::exists(fp_tmpdir)){
+        fs::remove_all(fp_tmpdir);
     }
 
-    bool created = fs::create_directory(tmpdir);
+    bool created = fs::create_directory(fp_tmpdir);
 
     //if (!created) {
     //    throw runtime_error("Could not create temporary file.");
     //}
 
-    this->matching = tmpdir + "matching.txt";
-    this->matchingCopy = tmpdir + "/temp.txt";
+    this->matching = fp_tmpdir + "matching.txt";
+    this->matchingCopy = fp_tmpdir + "/temp.txt";
     if(fs::exists(matching)) {
 
         fs::remove(matching);

@@ -38,6 +38,10 @@ class ExternalFilePattern : public ExternalPattern {
 
         ExternalFilePattern(const std::string& path, const std::string& filePattern, const std::string& blockSize, bool recursive);
 
+        /**
+         * @brief Destroy the External File Pattern object: Deletes all files in temp directory
+         * 
+         */
         ~ExternalFilePattern();
 
         /**

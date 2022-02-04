@@ -20,6 +20,7 @@ class ExternalVectorPattern: public ExternalPattern {
     public:
         
         ExternalVectorPattern(const std::string& path, const std::string& pattern, const std::string& blockSize);
+        ~ExternalVectorPattern();
         //VectorPattern(const std::string& path, const std::string& pattern);
         void matchFiles();
 

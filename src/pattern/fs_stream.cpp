@@ -39,6 +39,7 @@ FilesystemStream::FilesystemStream(const string& path, bool recursive, const str
 
 }
 
+
 vector<string> FilesystemStream::getBlock(){
     if(txtInput){
         return this->getBlockTxt();

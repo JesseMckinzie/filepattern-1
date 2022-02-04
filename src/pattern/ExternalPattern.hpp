@@ -39,6 +39,7 @@ class ExternalPattern : public Pattern {
         std::ifstream groupStream;
         Types currentValue; 
         std::ifstream infile; // Input stream used throughout methods
+        std::string fp_tmpdir;
         bool firstCall; // True if first call has not been made to next()
         Tuple temp;
         FilesystemStream stream; // I/O stream from temporary file

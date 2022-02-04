@@ -8,6 +8,7 @@ ExternalPattern(path, blockSize, recursive) {
     this->path = path; // store path to target directory
     this->stream = {path, true, blockSize};
     this->blockSize = Block::parseblockSize(blockSize);
+    this->fp_tmpdir = "";
 
     this->filePattern = filePattern; // cast input string to regex
     this->regexFilePattern = ""; // Regex equivalent of the pattern
@@ -21,13 +22,14 @@ ExternalPattern(path, blockSize, recursive) {
     this->groupStream.open(stream.getValidFilesPath());
     this->infile.open(validFilesPath); // open temp file for the valid files
     this->endOfFile = false; // end of valid files 
+
+    
     
 }
 
 ExternalFilePattern::~ExternalFilePattern(){
-    fs::path path = this->validFilesPath; 
-    path.remove_filename();
-    uintmax_t n = fs::remove_all(path);
+    d::remove_dir(this->validFilesPath);
+    if(this->fp_tmpdir != "") d::remove_dir(this->fp_tmpdir);
 }
 
 
@@ -80,6 +82,7 @@ void ExternalFilePattern::matchFilesOneDir(){
     }
 }
 
+/* In progress - need to find a way to avoid copying file on every write */
 void ExternalFilePattern::matchFilesMultDir(){
     
     string pattern;
@@ -160,97 +163,12 @@ void ExternalFilePattern::matchFiles() {
     
     filePatternToRegex(); // Get regex of filepattern
 
-    this->mapSize = variables.size();
+    this->mapSize = variables.size(); // Store map size for reading from txt file
     
     if(recursive){
         this->matchFilesMultDir();
     } else {
         this->matchFilesOneDir();
     }
-    
-    //this->validGroupedFiles.push_back(validFiles);
 }
-
-/**
- * @brief In progress
- * 
- * @tparam Args 
- * @param t 
- * @param args 
- * @return vector<Tuple> 
- */
- 
- /*
-template <typename... Args>
-vector<Tuple> ExternalFilePattern::getMatching(string& t, Args... args){
-    //remove spaces if present
-    //"x=[1,2]"
-    vector<string> vec;
-    for(const auto& arg: args...){
-        vec.push_back(arg);
-    }
-
-    for(const auto& v: vec){
-        v.erase(std::remove_if(variables.begin(), variables.end(), ::isspace), variables.end());
-    }
-
-    //split on commas
-    std::pair<string,string> splitVaraibles = split(variables, "=");
-
-    bool validVariable = false;
-    for(const auto& var: variables.varaibles){
-        if(splitVaraibles.first == std::get<0>(var)) {
-            validVariable = true;
-        }
-    }
-    if(!validVariable) throw std::invalid_argument("\"" + splitVaraibles.first + "\" is not a variable.")
-
-
-    //vector<pair<string,string>> variableValues;
-
-    //std::pair<string, string> pair;
-    //size_t position;
-
-
-    for(const auto& variable: splitVaraibles) {
-        position = variable.find("=");
-        pair.first = variable.substr(0, position);
-        pair.second = variable.substr(position+1);
-        if(!validFiles[0].count(pair.first)) throw invalid_argument("Variable must be in file pattern.");
-        variableValues.push_back(pair);
-    }
-    ifstream infile(this->validFilesPath, ios_base::app);
-
-    string out = tmpdir + "matched";
-    ofstream outfile(out);
-
-    Tuple mapping;
-    while(getMap(infile, mapping)){
-        if(get<0>(mapping)[variable] == value){
-            writeMap(outfile, mapping);
-        }
-    }
-    
-    //vector<pair<string, int> variablesVec;
-    vector<Tuple> matching;
-    Types temp;
-    bool match; 
-    if(!stream.endOfValidFiles()){
-        this->validFiles = stream.getValidFilesBlock();
-        for(auto& file: this->validFiles){
-            match = true;
-            for(const auto& variable: variableValues) {
-                temp = std::get<0>(file)[variable.first];
-                if(!(s::to_string(temp) == variable.second)) match = false; 
-            }
-            if(match) matching.push_back(file);
-        }
-    }
-
-    return matching;
-    
-}
-*/
-
-
 

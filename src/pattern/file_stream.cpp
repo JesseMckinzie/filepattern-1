@@ -9,6 +9,7 @@ FileStream::FileStream(const string& filename, const string& blockSize="50 MB")
     
 }
 
+
 vector<string> FileStream::getBlock(){
 
     vector<string> vec;

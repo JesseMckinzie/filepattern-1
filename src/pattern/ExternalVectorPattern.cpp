@@ -5,6 +5,7 @@ using namespace std;
 ExternalVectorPattern::ExternalVectorPattern(const string& path, const string& filePattern, const string& blockSize):
 ExternalPattern(path, blockSize, false){
     this->path = path; // store path to target directory
+    this->fp_tmpdir = "";
 
     this->blockSize = Block::parseblockSize(blockSize);
     this->stream = {path, true, blockSize};
@@ -25,6 +26,11 @@ ExternalPattern(path, blockSize, false){
     this->groupStream.open(stream.getValidFilesPath());
     this->infile.open(validFilesPath); // open temp file for the valid files
     this->endOfFile = false; // end of valid files 
+}
+
+ExternalVectorPattern::~ExternalVectorPattern(){
+    d::remove_dir(this->validFilesPath);
+    if(this->fp_tmpdir != "") d::remove_dir(this->fp_tmpdir);
 }
 
 void ExternalVectorPattern::matchFiles(){   
