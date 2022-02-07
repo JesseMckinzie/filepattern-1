@@ -22,7 +22,7 @@
 #include <chrono>
 #include "Pattern.hpp"
 #include "util.hpp"
-#include "stream.hpp"
+//#include "stream.hpp"
 #include "fs_stream.hpp"
 #include "sort.hpp"
 //#include "sort.h"
@@ -44,8 +44,30 @@ class ExternalPattern : public Pattern {
         Tuple temp;
         FilesystemStream stream; // I/O stream from temporary file
 
+        /**
+         * @brief Helper function for the getMatching method.
+         * 
+         * Gets all files where the keyword arguement (variable) is equal to the arguement value.
+         * Performs functionality of getMatching after getMatching() parses the input.
+         * 
+         * 
+         * @param variableMap Keyword arguement where the keyword is a variable and the value is a vector of the variable value(s)
+         * @param matching Path to file to store matching files
+         */
         void getMatchingHelper(const std::tuple<std::string, std::vector<Types>>& variableMap, const std::string& matching);
 
+        /**
+         * @brief Main loop of the getMatching function.
+         * 
+         * Adds file from infile to outfile if the variable matches the value
+         * 
+         * @param infile File to read file maps from
+         * @param outfile File to write matching files to
+         * @param variable Variable to get matching of
+         * @param values Value of variable(s)
+         * @param temp Temporary Tuple structure
+         * @param tempMap Temporary Map structure
+         */
         void getMatchingLoop(std::ifstream& infile, 
                              std::ofstream& outfile,
                              const std::string& variable, 
@@ -53,11 +75,17 @@ class ExternalPattern : public Pattern {
                              Types& temp,
                              Tuple& tempMap);
         
+        /**
+         * @brief Converts a directory of files that match the pattern to a single name which captures
+         * all variable values present
+         * 
+         * @return std::string A filename which captures all variable values
+         */
         std::string externalOutPutName();
 
     public: 
-        std::vector<Tuple> currentBlock;
-        std::vector<std::pair<std::pair<std::string, Types>, std::vector<Tuple>>> currentGroup;
+        std::vector<Tuple> currentBlock; // Store current block of files
+        std::vector<std::pair<std::pair<std::string, Types>, std::vector<Tuple>>> currentGroup; //Store current block of grouped files
 
         ExternalPattern(const std::string& path, const std::string& blockSize, bool recursive);
 
@@ -79,12 +107,20 @@ class ExternalPattern : public Pattern {
          */
         void next();
 
+        /**
+         * @brief Returns the next group of files when group_by is called.
+         * 
+         * Returns a tuple of a pair of a string and a type as the first member and 
+         * a vector of Tuples which contain the matched and grouped files in the second.
+         * The grouped variable, along with the current value, is the first pair.
+         * 
+         */
         void nextGroup();
 
         /**
-         * @brief Returns the number of 
+         * @brief Returns the number of files in the current block.
          * 
-         * @return int 
+         * @return int Number of files in the block
          */
         int currentBlockLength();
 
@@ -111,7 +147,12 @@ class ExternalPattern : public Pattern {
          */
         void groupBy(const std::string& groupBy);
 
-
+        /**
+         * @brief 
+         * 
+         * @param vec 
+         * @return std::string 
+         */
         std::string outputName(std::vector<Tuple>& vec);
 
         static std::string inferPattern(const std::string& path, std::string& variables, const std::string& blockSize);

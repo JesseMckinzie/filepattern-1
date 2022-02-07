@@ -703,3 +703,7 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
     
     return pattern;
 } 
+
+vector<string> Pattern::getTmpDirs(){
+    return this->tmpDirectories;
+}

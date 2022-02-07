@@ -32,6 +32,7 @@ class Pattern {
         std::map<std::string, std::map<Types, int>> variableOccurences;
         std::map<std::string, std::set<Types>> uniqueValues;
         std::vector<std::string> namedGroups;
+        std::vector<std::string> tmpDirectories;
         bool justPath;
 
         std::string VARIABLES;
@@ -144,4 +145,6 @@ class Pattern {
         //static std::string inferPattern(const std::string& path, std::string& variables, const std::string& blockSize="");
         //static std::string inferPattern(std::vector<std::string>& vec, std::string& variables);
         static std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables);
+
+        std::vector<std::string> getTmpDirs();
 };

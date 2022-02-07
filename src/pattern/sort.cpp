@@ -17,7 +17,7 @@ ExternalMergeSort::ExternalMergeSort(const Structure& structure,
     this->mapSize = mapSize;
     tmpdir = fs::temp_directory_path(); // Find temporary directory
 
-    this->tmpdir += "/extern_sort_tmp/"; // temp directory
+    this->tmpdir += "/extern_sort_tmp_" + s::getTimeString() + "/"; // temp directory
     // remove files from directory if already exits
     if(fs::exists(tmpdir)){ 
         uintmax_t n = fs::remove_all(tmpdir); 
@@ -447,27 +447,3 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
     }
     outfile.close();
 }
-
-
-/*
-int main(int argc, char** argv){
-
-    string::size_type sz;
-    int num = stoi(argv[1], &sz);
-    string input = "test";
-    input += argv[1];
-    input += ".txt";
-
-    string output = "output";
-    output += argv[1];
-    output += ".txt";
-
-    auto start = chrono::high_resolution_clock::now();
-    ExternalMergeSort ems = ExternalMergeSort(input, output);
-    
-    auto stop = chrono::high_resolution_clock::now();
-    auto duration = chrono::duration_cast<chrono::microseconds>(stop - start);
-    cout << "The Total time: " << duration.count() << endl;
-    exit(0);
-    }
-*/

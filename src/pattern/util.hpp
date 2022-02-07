@@ -387,15 +387,19 @@ namespace m {
 }
 
 namespace d {
+        /*
+        inline void deleteDirectoryContents(std::string& dir_path){
+                if(s::endsWith(dir_path, ".txt")) dir_path = dir_path.substr(0, dir_path.find_last_of('/'));
+                std::cout << "DIR_PATH: " << dir_path << std::endl;
+                for (const auto& entry : std::filesystem::directory_iterator(dir_path)) 
+                        std::cout << "removing " << entry.path() << std::endl;
+                        std::filesystem::remove(entry.path());
+        }
+        */
+
         inline void remove_dir(std::string& pathToDir){
                 if(s::endsWith(pathToDir, ".txt")) pathToDir = pathToDir.substr(0, pathToDir.find_last_of('/'));
-                if(!s::endsWith(pathToDir, "/")) pathToDir += "/";
-                std::cout << "deleting directory at " << pathToDir << std::endl;
                 std::filesystem::path path = pathToDir; 
                 uintmax_t n = std::filesystem::remove_all(path);
-                //uintmax_t n2 = std::filesystem::remove(path);
-
-                if(n) std::cout << "success: deleted " << n << std::endl << std::endl;
-                //else std::cout << "error: n is " << n << std::endl << std::endl; 
         }
 }

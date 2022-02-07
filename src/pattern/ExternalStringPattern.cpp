@@ -15,6 +15,7 @@ ExternalPattern(path, blockSize, false) {
     this->totalFiles = 0; // Number of files matched (to be removed)
     this->mapSize = 0; //To be updated later in program, set for compiling
     this->validFilesPath = stream.getValidFilesPath(); // Store path to valid files txt file
+    this->tmpDirectories.push_back(validFilesPath);
     this->firstCall = true; // first call to next() has not occured
     this->matchFiles(); // match files to pattern
     this->groupStream.open(stream.getValidFilesPath());
@@ -24,8 +25,9 @@ ExternalPattern(path, blockSize, false) {
 }
 
 ExternalStringPattern::~ExternalStringPattern(){
-    d::remove_dir(this->validFilesPath);
-    if(this->fp_tmpdir != "") d::remove_dir(this->fp_tmpdir);
+    for(auto& dir: this->tmpDirectories){
+        if(dir != "") d::remove_dir(dir);
+    }
 }
 
 void ExternalStringPattern::matchFiles(){

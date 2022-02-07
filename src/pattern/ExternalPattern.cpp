@@ -4,8 +4,15 @@ using namespace std;
 
 namespace fs = std::filesystem;
 
+
 ExternalPattern::ExternalPattern(const string& path, const string& blockSize, bool recursive):
-stream(FilesystemStream(path, recursive, blockSize)){}
+stream(FilesystemStream(path, recursive, blockSize)){
+    this->validFilesPath = stream.getValidFilesPath(); // Store path to valid files txt file
+    this->tmpDirectories.push_back(validFilesPath);
+    this->infile.open(validFilesPath); // open temp file for the valid files
+    this->groupStream.open(stream.getValidFilesPath());
+}
+
 
 void ExternalPattern::getMatchingLoop(ifstream& infile, 
                                       ofstream& outfile,
@@ -13,7 +20,8 @@ void ExternalPattern::getMatchingLoop(ifstream& infile,
                                       const vector<Types>& values, 
                                       Types& temp,
                                       Tuple& tempMap){
-
+    // while infile still has a map: 
+    //   read map and add to outfile if value matches
     while(m::getMap(infile, tempMap, this->mapSize)){
         temp = get<0>(tempMap)[variable];
         for(const auto& value: values){  
@@ -69,19 +77,22 @@ void ExternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
 }
 
 string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
+    // construct temporary directory path
     this->fp_tmpdir = fs::temp_directory_path();
     this->fp_tmpdir += "/filepattern_" + s::getTimeString() + "/";
 
+    this->tmpDirectories.push_back(this->fp_tmpdir);
+
+    // remove old contents if it already exists
     if(fs::exists(fp_tmpdir)){
         fs::remove_all(fp_tmpdir);
     }
 
     bool created = fs::create_directory(fp_tmpdir);
 
-    //if (!created) {
-    //    throw runtime_error("Could not create temporary file.");
-    //}
+    fs::permissions(this->fp_tmpdir, fs::perms::all);
 
+    // create a path to store matching files
     this->matching = fp_tmpdir + "matching.txt";
     this->matchingCopy = fp_tmpdir + "/temp.txt";
     if(fs::exists(matching)) {
@@ -89,6 +100,7 @@ string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& 
         fs::remove(matching);
     }
 
+    // Iterate over each variable passed from front end
     for(const auto& variableMap: variables){
         this->getMatchingHelper(variableMap, matching);
     }
@@ -100,15 +112,19 @@ string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& 
 
 vector<Tuple> ExternalPattern::getMatchingBlock(){
 
-    long size = sizeof(vector<Tuple>);
+    long size = sizeof(vector<Tuple>); // store amount of memory begin used by this method
+    // throw error if blockSize is too small to fit the empty vector
     if(size > this->blockSize) throw runtime_error("The block size is smaller than the size of a vector. The block size must be increased");
 
-    Tuple temp;
+    Tuple temp; 
     vector<Tuple> vec;
     bool moreFiles;
 
+    // If there are no more files to return, return an empty vector
     if(!matchingStream.is_open()) return vec;
 
+    // while memory is still available:
+    //      get file from matching.txt in tmpdir and add to return vec
     while(size < this->blockSize){
         moreFiles = m::getMap(this->matchingStream, temp, this->mapSize);
 
@@ -152,6 +168,7 @@ void ExternalPattern::nextGroup(){
     while(m::getMap(groupStream, this->temp, this->mapSize)){
         m::preserveType(temp);
 
+        // if method has not been called, initialize data structures
         if(firstCall) {
             this->currentValue = get<0>(temp)[this->group];
             this->currentGroup.resize(1);
@@ -192,12 +209,13 @@ int ExternalPattern::currentBlockLength(){
 }
 
 std::vector<Tuple> ExternalPattern::getValidFilesBlock(){
-
+    // return an empty vector if no more files
     if(stream.endOfValidFiles()){
         std::vector<Tuple> empty;
         return empty;
     }
 
+    // return a vector with a memory footprint of at most blockSize
     return stream.getValidFilesBlock();
 
 }
@@ -206,37 +224,39 @@ void ExternalPattern::groupBy(const string& groupBy) {
     this->setGroup(groupBy);
     // sort valid files externally 
     string path = stream.getValidFilesPath();
+    this->tmpDirectories.push_back(path);
     ExternalMergeSort sort = ExternalMergeSort(std_map, 
                                                path, 
                                                path,
                                                stream.getBlockSizeStr(),
                                                groupBy,
                                                stream.mapSize);
-
-    
 }
 
 string ExternalPattern::externalOutPutName(){
-    string outputName = this->filePattern;
-    regex patternRegex(this->regexFilePattern);
+    string outputName = this->filePattern; // store a copy of the filePattern to modify
+    regex patternRegex(this->regexFilePattern); // regex version of filePattern
 
     std::ifstream infile;
     
     Tuple temp, min, max;
     int idx = 0;
     string tempStr;
+    // iterate over every variable in mapping
     for(const auto& var: variables){
-        infile.open(this->validFilesPath);
+        infile.open(this->validFilesPath); // open matched files
 
         m::getMap(infile, temp, this->mapSize);
         min = temp; 
         max = temp;
 
+        // find min and max values 
         while(m::getMap(infile, temp, this->mapSize)){
             if(get<0>(temp)[var] < get<0>(min)[var]) min = temp;
             if(get<0>(temp)[var] > get<0>(max)[var]) max = temp;
         }
 
+        // update output namme
         this->replaceOutputName(min, max, var, outputName, idx, tempStr, patternRegex);
         ++idx;
 
@@ -247,18 +267,21 @@ string ExternalPattern::externalOutPutName(){
 }
 
 string ExternalPattern::outputName(vector<Tuple>& vec){
-    if(vec.size() != 0) return this->outputNameHelper(vec);
-    else return this->externalOutPutName();
+    // if vector is passed, process using in memory version
+    if(vec.size() != 0) return this->outputNameHelper(vec); 
+    else return this->externalOutPutName(); // if no vector provided, iterate over all matched files
 
 }
 
 string ExternalPattern::inferPattern(const string& path, string& variables, const string& blockSize){
-    FilesystemStream stream = FilesystemStream(path, true, blockSize, true);
+    FilesystemStream stream = FilesystemStream(path, true, blockSize, true); // create a stream from directory 
 
     vector<string> vec = stream.getBlock();
-    for(auto& str: vec) str = s::getBaseName(str);
-    string pattern = inferPatternInternal(vec, variables);
+    for(auto& str: vec) str = s::getBaseName(str); // Get basename of each file
+    string pattern = inferPatternInternal(vec, variables); // Get pattern from first block
 
+    // while the stream is nonempty:
+    //      process each block using the in memory version with the current pattern
     while(!stream.isEmpty()){
         vec = stream.getBlock();
         for(auto& str: vec) str = s::getBaseName(str);
@@ -266,7 +289,8 @@ string ExternalPattern::inferPattern(const string& path, string& variables, cons
         pattern = inferPatternInternal(vec, variables, pattern);
 
     }
-    
+
+    fs::remove_all(stream.getTmpPath());
     return pattern;
 }
 
