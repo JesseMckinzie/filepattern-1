@@ -1,5 +1,5 @@
 from . import FilePattern, StringPattern, VectorPattern 
-import re
+import re, shutil
 
 class Pattern:
     def __init__(self, path: str, pattern: str='', block_size: str ='', recursive: bool=False):
@@ -139,4 +139,16 @@ class Pattern:
         """Returns an iterator of files matched to the pattern
         """
         return self._file_pattern.__iter__()
+    """
+    def __del__(self):
+        directories = self._file_pattern.getTmpDirs()
+        
+        if(len(directories) != 0):
+            for directory in directories:
+                try:
+                    print("Deleting directory: " + directory)
+                    shutil.rmtree(directory)
+                except OSError as e:
+                    print("Error: %s : %s" % (dir_path, e.strerror))
+                    """
         

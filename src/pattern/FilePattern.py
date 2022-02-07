@@ -29,8 +29,7 @@ class FilePattern:
 
     def get_matching(self, mapping) -> list:
         """Get all filenames matching specific values
-        
-
+    
         Args:
             **kwargs: One of the variables contained in the pattern 
 
