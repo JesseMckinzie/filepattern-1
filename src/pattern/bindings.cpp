@@ -27,6 +27,7 @@ PYBIND11_MODULE(backend, m){
         .def("printVariables", &Pattern::printVariables)
         .def("getOccurences", &Pattern::getOccurences)
         .def("getUniqueValues", &Pattern::getUniqueValues)
+        .def("getTmpDirs", &Pattern::getTmpDirs)
         .def_readonly("group", &Pattern::group)
         .def("__iter__", [](const Pattern &v){ 
             if(v.group != "") return py::make_iterator(v.validGroupedFiles.begin(), v.validGroupedFiles.end());
