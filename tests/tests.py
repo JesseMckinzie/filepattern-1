@@ -308,7 +308,6 @@ class TestExternalFilePattern(unittest.TestCase):
     MAX_NUM = 1
 
     def test_file_pattern(self):
-        print('Normal test')
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
@@ -332,7 +331,6 @@ class TestExternalFilePattern(unittest.TestCase):
 
 
     def test_get_matching(self):
-        print('Matching')
         for pattern in self.patterns:
             nums = []
             for block_size in self.block_sizes:
@@ -398,7 +396,6 @@ class TestExternalFilePattern(unittest.TestCase):
 
 
     def test_group_by(self):
-        print('Group')
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
@@ -457,7 +454,6 @@ class TestExternalStringPattern(unittest.TestCase):
     MAX_NUM = 1
 
     def test_file_pattern(self):
-        print("in normal")
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
@@ -480,8 +476,8 @@ class TestExternalStringPattern(unittest.TestCase):
                     self.assertEqual(str(os.path.basename(old_result[i][0]['file'])), result[i][1][0])
 
 
+
     def test_get_matching(self):
-        print("in matching")
         for pattern in self.patterns:
             nums = []
             for block_size in self.block_sizes:
@@ -547,7 +543,6 @@ class TestExternalStringPattern(unittest.TestCase):
 
 
     def test_group_by(self):
-        print("in groupby")
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
