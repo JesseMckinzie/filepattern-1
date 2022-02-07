@@ -584,11 +584,7 @@ class TestExternalStringPattern(unittest.TestCase):
 
                 for file in files(group_by="c"):
                     result.append(file)     
-                                   
-                print("old")
-                pprint.pprint(old_result)
-                print()
-                pprint.pprint(result)
+                                
                 self.assertEqual(len(old_result), len(result))
 
                 for i in range(len(old_result)):
