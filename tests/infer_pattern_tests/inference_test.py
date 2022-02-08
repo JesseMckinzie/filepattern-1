@@ -2,6 +2,10 @@ import unittest, json
 from pathlib import Path
 from pattern import Pattern
 
+"""
+NOTE: Run the file "generate_data.py" in /tests and in "examples" before running this file.
+"""
+
 class InferenceTest(unittest.TestCase):
     """Verify VERSION is correct """
 
@@ -66,29 +70,29 @@ class ExternalInferenceTest(unittest.TestCase):
         self.assertEqual(pattern, 'img_r00{r:d}_c00{t:d}_{c:c+}.tif')
         
     def test_sp_single_block(self):
-        path = '/home/ec2-user/Dev/FilePattern/examples/test_data/sp_data.txt'
+        path = 'FilePattern/examples/test_data/sp_data.txt'
         pattern = Pattern.Pattern.infer_pattern(path=path, block_size='1 GB')
         
         self.assertEqual(pattern, 'img_r00{r:d}_c00{t:d}_{c:c+}.tif')
         
     def test_sp_multi_block(self):
-        path = '/home/ec2-user/Dev/FilePattern/examples/test_data/sp_data.txt'
+        path = 'FilePattern/examples/test_data/sp_data.txt'
         pattern = Pattern.Pattern.infer_pattern(path=path, block_size='900 B')
         
         self.assertEqual(pattern, 'img_r00{r:d}_c00{t:d}_{c:c+}.tif')
     
     def test_vp_single_block(self):
-        path = '/home/ec2-user/Dev/FilePattern/stitching-vector-61b3a82d6fa1f65bf8cc2448-img-global-positions-1.txt'
+        path = 'FilePattern/tests/test_data/stitching-vector-61b3a82d6fa1f65bf8cc2448-img-global-positions-1.txt'
         pattern = Pattern.Pattern.infer_pattern(path=path, block_size='1 GB')
         
         self.assertEqual(pattern, 'x{r:dd}_y{t:dd}_wx{c:d}_wy{z:d}_c1.ome.tif')
                 
     def test_vp_multi_block(self):
-        path = '/home/ec2-user/Dev/FilePattern/stitching-vector-61b3a82d6fa1f65bf8cc2448-img-global-positions-1.txt'
+        path = 'FilePattern/tests/test_data/stitching-vector-61b3a82d6fa1f65bf8cc2448-img-global-positions-1.txt'
         pattern = Pattern.Pattern.infer_pattern(path=path, block_size='250 B')
         
         self.assertEqual(pattern, 'x{r:dd}_y{t:dd}_wx{c:d}_wy{z:d}_c1.ome.tif')
-        
+
 
 if __name__=="__main__":
 
