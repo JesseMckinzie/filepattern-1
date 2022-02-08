@@ -160,19 +160,6 @@ class TestFilePattern(unittest.TestCase):
                 for filepath in mapping[1]:
                     self.assertEqual(basename, os.path.basename(filepath))
 
-    def test_empty_input(self):
-        path = '/home/ec2-user/Dev/FilePattern/tests/test_data/empty_data'
-        pattern = ''
-        
-        files = Pattern.Pattern(path, pattern)
-        
-        results = []
-        for file in files():
-            results.append(file) 
-            
-        self.assertEqual([], results)
-
-
 class TestStringPattern(unittest.TestCase):
 
     root_directory = os.path.dirname(os.path.realpath(__file__))
