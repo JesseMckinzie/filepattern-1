@@ -107,8 +107,6 @@ class Pattern:
     def infer_pattern(path: str="", files: list=[], variables: str="", block_size: str=""):
         """Returns a guess of a pattern given path to a directory of files or a list of files.
         
-
-    
         Args:
             path: The path to a directory of files. Defualts to "".
             files: A list of files. Defualts to [].
@@ -118,10 +116,18 @@ class Pattern:
         Returns:
             A string that is a guess of the pattern for the supplied filenames.
         """
+        if(path.endswith('.txt')):
+            with open(path) as infile:
+                line = infile.readline().rstrip()
+            
+            if(re.match(r'file\: .+?; corr\: .+?; position\: .+?; grid\: .+?;', line)):
+                return VectorPattern.VectorPattern.infer_pattern(path=path, variables=variables, block_size=block_size)
+            else:
+                return StringPattern.StringPattern.infer_pattern(path=path, files=files, variables=variables, block_size=block_size)
+        else:
+            return FilePattern.FilePattern.infer_pattern(path=path, files=files, variables=variables, block_size=block_size)
         
-        return self._file_pattern.infer_pattern(path=path, files=files, variables=variables, block_size=block_size)
 
-    
     def __call__(self, group_by=None):
         """Iterate thorugh files parsed using a filepattern 
         
@@ -139,16 +145,4 @@ class Pattern:
         """Returns an iterator of files matched to the pattern
         """
         return self._file_pattern.__iter__()
-    """
-    def __del__(self):
-        directories = self._file_pattern.getTmpDirs()
-        
-        if(len(directories) != 0):
-            for directory in directories:
-                try:
-                    print("Deleting directory: " + directory)
-                    shutil.rmtree(directory)
-                except OSError as e:
-                    print("Error: %s : %s" % (dir_path, e.strerror))
-                    """
         
