@@ -4,3 +4,6 @@ build:
 python:
   version: 3.7
   setup_py_install: true
+
+gnu:
+  version: 8.0
