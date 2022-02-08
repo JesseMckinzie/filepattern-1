@@ -24,7 +24,7 @@ namespace fs = std::filesystem;
 class FilesystemStream {
 
     public:
-
+    
         /**
          * @brief Construct a new Filesystem Stream object.
          * 
@@ -82,39 +82,84 @@ class FilesystemStream {
          */
         long double currentSize(const int&, const long double&);
 
+        /**
+         * @brief True if no more files, otherwise false
+         * 
+         * @return true No more files remaining
+         * @return false More files remain
+         */
         bool isEmpty();
 
+        /**
+         * @brief Returns path to files
+         * 
+         * @return std::string Path to files
+         */
         std::string getFilePath();
 
+        /**
+         * @brief Get a block of matched files that uses at most blockSize of memory.
+         * 
+         * @return std::vector<Tuple> Block of matched files
+         */
         std::vector<Tuple> getValidFilesBlock();
 
+        /**
+         * @brief End of vaildFiles.txt has been reached
+         * 
+         * @return true No more matched files remain
+         * @return false There are still matched files
+         */
         bool endOfValidFiles();
 
+        /**
+         * @brief Returns path of validFiles.txt, which stores the matched files
+         * 
+         * @return std::string Path to validFiles.txt
+         */
         std::string getValidFilesPath();
         
+        /**
+         * @brief Returns the string version of the blockSize
+         * 
+         * @return std::string String containing the max amount of memory used
+         */
         std::string getBlockSizeStr();
 
+        /**
+         * @brief Returns path of the temporary directory used by the FilesystemStream object
+         * 
+         * @return std::string Path to the temporary directory
+         */
         std::string getTmpPath();
 
     private:
         fs::directory_iterator directory_iterator; // directory iterator to stream from
         fs::recursive_directory_iterator recursive_directory_iterator; 
-        bool recurisve; // Iterate over subdirectories
         fs::directory_iterator end; // End of iterator
         fs::recursive_directory_iterator rec_end; // End of recursive iterator
-        bool txtInput;
+
+        bool recurisve; // Iterate over subdirectories
+        bool txtInput; // The path is to a text file
+
         std::ifstream infile;
         std::ifstream inputfile;
 
-        std::string tmpdir;
-        long double blockSize;
-        std::string outName;
-        bool empty;
-        bool validFilesEmpty;
-        std::string validFiles;
-        std::string blockSizeStr;
-        Map tempMap;
-        bool isInfer;
+        std::string tmpdir; // path to temporary directory
+        std::string outName; 
+        std::string validFiles; // store matched files block 
+        std::string blockSizeStr; // string version of max amount of memory
+        Map tempMap; 
+        bool isInfer; // Called from inferPattern method. Calculates memory used from matrix in inferPattern
+        bool empty; // no more files remaining
+        bool validFilesEmpty; // no more matched files
+        long double blockSize; // max amount of memory to use
 
+        /**
+         * @brief Updates the amount of memory being used
+         * 
+         * @param size Current amount of memory
+         * @param current String to add memory use of
+         */
         void updateSize(long& size, const std::string& current);
 };

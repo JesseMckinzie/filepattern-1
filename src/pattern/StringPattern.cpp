@@ -4,12 +4,11 @@
 using namespace std;
 
 StringPattern::StringPattern(const string& fileName, const string& filePattern) {
-
     this->fileName = fileName; // store path to target directory
     this->filePattern = filePattern; // cast input string to regex
     this->regexFilePattern = "";
-    this->readFile();
-    this->matchFiles();
+    this->readFile(); // read file into memory
+    this->matchFiles(); // match files to pattern
 }
 
 void StringPattern::readFile(){
@@ -18,6 +17,7 @@ void StringPattern::readFile(){
     if(!in.is_open()) {
         throw runtime_error("File \"" + fileName + "\" not found.");
     }
+    // read filenames into memory
     while(getline(in, str)){
         if(str.size()) files.push_back(str);
     }
@@ -25,18 +25,11 @@ void StringPattern::readFile(){
 }
 
 void StringPattern::matchFiles(){
-    filePatternToRegex();
-    Map mapping;
-    vector<string> parsedRegex;
+    filePatternToRegex(); // get regex equivalent of filepattern
 
-    int i, j;
-    string s;
-    string file, filePath;
-    Tuple member;
-    // Iterate over every file in directory
-    regex patternRegex = regex(this->regexFilePattern);
-
-    smatch sm;
+    string filePath;
+    regex patternRegex = regex(this->regexFilePattern); // convert to regex
+    smatch sm; // store matching groups
     for (const auto& filePath : this->files) {
         // Get the current file
         if(regex_match(filePath, sm, patternRegex)){

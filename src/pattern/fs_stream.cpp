@@ -1,41 +1,31 @@
 #include "fs_stream.hpp"
 
 using namespace std;
-/**
- * @brief Construct a new FilesystemFilesystemStream object
- * 
- * Creates a dataFilesystemStream from a filesystem directory iterator or recursive
- *
- * @param path 
- * @param recursive 
- * @param blockSize 
- */
+
 FilesystemStream::FilesystemStream(const string& path, bool recursive, const string& blockSize, const bool isInfer){
-    this->isInfer = isInfer;
-    this->tmpdir = fs::temp_directory_path();
-    this->tmpdir += "/fs_stream_tmp_" + s::getTimeString() + "/";
-    this->blockSizeStr = blockSize;
-    this->blockSize = Block::parseblockSize(blockSize);
+    this->isInfer = isInfer; // Is a call from inferPattern (handles memory footprint calculation different if true)
+    this->tmpdir = fs::temp_directory_path(); // temp directory to store txt files
+    this->tmpdir += "/fs_stream_tmp_" + s::getTimeString() + "/"; // path to temp directory
+    this->blockSizeStr = blockSize; // string version of blockSize
+    this->blockSize = Block::parseblockSize(blockSize); // parse string to long
     
-    this->empty = false;
-    this->validFiles = tmpdir + "validFiles.txt";
-    this->counter = 0;
+    this->empty = false; // no more files
+    this->validFiles = tmpdir + "validFiles.txt"; // path to txt file to store matched files
+    this->counter = 0; 
 
-    if (fs::exists(tmpdir)){
-        fs::remove_all(tmpdir);
-    }
-
-    bool created = fs::create_directory(tmpdir);
+    bool created = fs::create_directory(tmpdir); // create temp directory
+    //throw error if temp directory cannot be created
     if (!created) {
         throw runtime_error("Could not create temporary file.");
     }
+
     this->outName = tmpdir + "/temp.txt";
     this->infile.open(validFiles);
    
-    this->recurisve = true;
+    this->recurisve = false;
 
     try {
-        // create recursive iterator 
+        // handle text file or directory based on path name
         if(s::endsWith(path, ".txt")){
             this->txtInput = true;
             this->inputfile.open(path);
@@ -44,13 +34,10 @@ FilesystemStream::FilesystemStream(const string& path, bool recursive, const str
             }
         } else {
             txtInput = false;
-            if(recursive){
-                this->recursive_directory_iterator = fs::recursive_directory_iterator(path);
-                this->rec_end = fs::end(recursive_directory_iterator);
-            //} else{ // create directory iterator
-                this->directory_iterator = fs::directory_iterator(path); // store iterator for target directory
-                this->end = fs::end(directory_iterator);
-            }
+            this->recursive_directory_iterator = fs::recursive_directory_iterator(path);
+            this->rec_end = fs::end(recursive_directory_iterator);
+            this->directory_iterator = fs::directory_iterator(path); // store iterator for target directory
+            this->end = fs::end(directory_iterator);
         }
     } catch (const std::runtime_error& e) {
         string error = "No directory found. Invalid path \"" + path + "\"."; 
@@ -58,7 +45,6 @@ FilesystemStream::FilesystemStream(const string& path, bool recursive, const str
     }
 
 }
-
 
 vector<string> FilesystemStream::getBlock(){
     if(txtInput){
@@ -78,8 +64,8 @@ void FilesystemStream::updateSize(long& size, const string& current){
 
 vector<string> FilesystemStream::getBlockIterator(){
 
-    vector<string> vec;
-    long previousSize = sizeof(vector<string>);
+    vector<string> vec; // files to return
+    long previousSize = sizeof(vector<string>); //memory used
 
     string current;
 

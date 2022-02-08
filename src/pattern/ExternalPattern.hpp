@@ -22,10 +22,8 @@
 #include <chrono>
 #include "Pattern.hpp"
 #include "util.hpp"
-//#include "stream.hpp"
 #include "fs_stream.hpp"
 #include "sort.hpp"
-//#include "sort.h"
 
 class ExternalPattern : public Pattern {
     
@@ -87,6 +85,13 @@ class ExternalPattern : public Pattern {
         std::vector<Tuple> currentBlock; // Store current block of files
         std::vector<std::pair<std::pair<std::string, Types>, std::vector<Tuple>>> currentGroup; //Store current block of grouped files
 
+        /**
+         * @brief Construct a new External Pattern object
+         * 
+         * @param path Path to directory or text file
+         * @param blockSize Maximum amount of memory to use
+         * @param recursive True to iterate over subdirectories
+         */
         ExternalPattern(const std::string& path, const std::string& blockSize, bool recursive);
 
         /**
@@ -97,6 +102,12 @@ class ExternalPattern : public Pattern {
          */
         std::string getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables);
 
+        /**
+         * @brief Returns a block of files after a call to getMatching where the block of files
+         * does not use more memory than blockSize.
+         * 
+         * @return std::vector<Tuple> A block of file that are matched from getMatching
+         */
         std::vector<Tuple> getMatchingBlock();
 
         /**
@@ -155,8 +166,21 @@ class ExternalPattern : public Pattern {
          */
         std::string outputName(std::vector<Tuple>& vec);
 
+        /**
+         * @brief Guesses the pattern given a directory or text file.
+         * 
+         * @param path Path to directory or text file
+         * @param variables Variable names. Optional
+         * @param blockSize Maximum amount of memory to consume
+         * @return std::string A guess of the pattern
+         */
         static std::string inferPattern(const std::string& path, std::string& variables, const std::string& blockSize);
 
+        /**
+         * @brief Returns the length of the current group of files
+         * 
+         * @return int Length of current block of files
+         */
         int getGroupLength();
 };
 

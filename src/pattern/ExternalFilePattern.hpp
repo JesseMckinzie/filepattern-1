@@ -74,30 +74,6 @@ class ExternalFilePattern : public ExternalPattern {
         bool endOfFile; // True if end of temp file is reached
         bool recursive; // True if recursive iterator through subdirectories
         int totalFiles; // Total number of matched files (will be deleted)
-   
-
-        /**
-         * @brief Get a map from a .txt file 
-         * 
-         * Gets a map from a txt file that contains variables mapped to values.
-         *
-         * @param infile Input stream
-         * @param mapping Map to be modified
-         * @return true The end of the file has not been reached and the map is modified
-         * @return false The end of the file has been reached and the mao is not modified
-         */
-        //bool getMap(std::fstream& infile, Tuple& mapping);
-
-        /**
-         * @brief Finds values of variables given a file that matches the pattern.
-         *
-         * Finds the value of variables given a matching filepath and returns a map of the 
-         * variables to the respective value. The type of the variable is preserved.
-         * 
-         * @return A map of variables to values from the basename of the filepath.  
-         */
-        //Map matchFilesLoop(Map&, const std::string&, const std::regex&, std::vector<std::string>&);
-
 
         /**
          * @brief Matches files from a directory iterator. 

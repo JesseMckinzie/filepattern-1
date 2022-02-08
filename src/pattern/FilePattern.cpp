@@ -99,24 +99,9 @@ void FilePattern::matchFiles() {
     
     filePatternToRegex(); // Get regex of filepattern
 
-    //Check if valid groupBy variable
-    /*
-    bool validGroup = false;
-    for(int i = 0; i < variables.getNumberOfVariables(); i++){
-        if(variables.getVariable(i) == groupBy) {
-            validGroup = true;
-        }
-    }
-
-    if(!(groupBy == "" || validGroup)) { 
-        throw invalid_argument("groupBy must be a variable that appears in the file pattern");
-    }
-    */
     if(recursive){
        this->matchFilesMultDir();
     } else {
         this->matchFilesOneDir();
     }
-    
-    //this->validGroupedFiles.push_back(validFiles);
 }

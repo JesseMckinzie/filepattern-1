@@ -4,13 +4,13 @@ using namespace std;
 namespace fs = filesystem;
 
 void Pattern::getPathFromPattern(const string& path){
-     /*  path/to/file/channel_{channel:c+}/{color:c+}/img_r{r:d}_c{c:d}   */
 
-    this->path = "";
-    this->filePattern = "";
-    size_t firstBracket = path.find("{"); 
-    if(firstBracket == string::npos) return;
- 
+    this->path = path; 
+    this->filePattern = path;
+    size_t firstBracket = path.find("{"); // find location of first named group
+    if(firstBracket == string::npos) return; // return if none found
+    
+    // find first slash before named group
     while(path[firstBracket] != '/'){
         --firstBracket;
         if(firstBracket == 0) {
@@ -19,10 +19,8 @@ void Pattern::getPathFromPattern(const string& path){
     }
     ++firstBracket;
 
-    this->path = path.substr(0, firstBracket);
-    this->filePattern = path.substr(firstBracket, path.length()-1);
-
-
+    this->path = path.substr(0, firstBracket); // piece of path without named groups becomes the path
+    this->filePattern = path.substr(firstBracket, path.length()-1); // the rest of the path is the pattern
 }
 
 void Pattern::setGroup(const string& group){
@@ -38,67 +36,10 @@ vector<string> Pattern::getVariables(){
 }
 
 void Pattern::filePatternToRegex(){
-    
-    getNewNaming(this->filePattern);
-
-    // regex to match variables
-    std::regex e("(\\{(\\w+):([dc+]+)\\})|(\\(P\\?<(\\w+)>(.+)\\))"); // check for bracket expressions or named groups
-    std::regex group("\\P\\?<(\\w+)>(.+)");
-    std::regex var("\\{(\\w+):([dc+]+)\\}");
-
-    map<char, string> patternMap; // map of variable types to regex equivalent 
-    patternMap['d'] = "[0-9]"; 
-    patternMap['c'] = "[a-zA-Z]";
-    patternMap['+'] = "+";
-    
-    string str, rgx; // temp string and regex
-    vector<pair<string,string>> matches; // map between bracket expression and regex
-    vector<string> variables; // store variable names
-    string patternCopy = this->filePattern; // get a copy of pattern since regex_search is inplace
-    std::smatch sm, m; // regex matches
-
-    string temp;
-    // extract bracket expressions from pattern and store regex
-    while (regex_search(patternCopy, m, e)){
-        temp = m[0];
-        if(temp.rfind("(P?<", 0) == 0) {
-           while (regex_search(temp, sm, group)){
-                rgx = sm[2];
-                rgx.pop_back();
-
-                this->variables.push_back(sm[1]);
-                str = sm[0];
-                str = "(" + str;
-                matches.push_back(make_pair(str, rgx));
-                temp = sm.suffix().str();
-           }
-        } else {
-            while (regex_search(temp, sm, var)){
-                str = sm[2];
-                rgx = "";
-                for(const auto c: str){
-                    rgx += patternMap[c];
-                }
-                this->variables.push_back(sm[1]);
-                matches.push_back(make_pair(sm[0], rgx));
-                temp = sm.suffix().str();
-            }
-        }
-
-
-        patternCopy = m.suffix().str(); 
-    }
-
-    this->regexFilePattern = filePattern;
-
-    // Replace bracket groups with regex capture groups
-    for(const auto& match: matches){
-        this->namedGroups.push_back(match.first);
-
-        // Create capture group
-        str = "(" + match.second + ")";
-        s::replace(this->regexFilePattern, match.first, str);
-    }
+    tuple vars = getRegex(this->filePattern);
+    this->regexFilePattern = get<0>(vars);
+    this->variables = get<1>(vars);
+    this->namedGroups = get<2>(vars);
 }
 
 tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern){
@@ -107,8 +48,8 @@ tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern)
 
     // regex to match variables
     std::regex e("(\\{(\\w+):([dc+]+)\\})|(\\(P\\?<(\\w+)>(.+)\\))"); // check for bracket expressions or named groups
-    std::regex group("\\P\\?<(\\w+)>(.+)");
-    std::regex var("\\{(\\w+):([dc+]+)\\}");
+    std::regex group("\\P\\?<(\\w+)>(.+)"); // check for regex named groups
+    std::regex var("\\{(\\w+):([dc+]+)\\}"); // pattern style of groups (e.g {r:ddd})
 
     map<char, string> patternMap; // map of variable types to regex equivalent 
     patternMap['d'] = "[0-9]"; 
@@ -125,32 +66,33 @@ tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern)
     // extract bracket expressions from pattern and store regex
     while (regex_search(patternCopy, m, e)){
         temp = m[0];
+        // find any named groups with regex style naming
         if(temp.rfind("(P?<", 0) == 0) {
            while (regex_search(temp, sm, group)){
-                rgx = sm[2];
-                rgx.pop_back();
+                rgx = sm[2]; // store regex value in named group
+                rgx.pop_back(); // remove trailing )
 
-                variables.push_back(sm[1]);
-                str = sm[0];
+                variables.push_back(sm[1]); // store variable name
+                str = sm[0]; // store entire group
                 str = "(" + str;
                 matches.push_back(make_pair(str, rgx));
                 temp = sm.suffix().str();
            }
         } else {
+            // get named groups with the filepattern style groups (e.g. {r:ddd})
             while (regex_search(temp, sm, var)){
-                str = sm[2];
-                rgx = "";
+                str = sm[2]; // store variable values (e.g. ddd)
+                rgx = ""; // construct regex
                 for(const auto c: str){
                     rgx += patternMap[c];
                 }
-                variables.push_back(sm[1]);
+                variables.push_back(sm[1]); // store variable name
                 matches.push_back(make_pair(sm[0], rgx));
                 temp = sm.suffix().str();
             }
         }
 
-
-        patternCopy = m.suffix().str(); 
+        patternCopy = m.suffix().str();
     }
 
     string regexFilePattern = pattern;
@@ -175,8 +117,10 @@ Tuple Pattern::getVariableMapMultDir(const string& filePath, const smatch& sm){
     bool matched = false;
     string basename;
     string file = s::getBaseName(filePath);
+    // iterate over matched files, checking if filename already exists
     for(int i = 0; i < validFiles.size(); i++){ 
         basename = s::getBaseName(s::to_string(get<1>(validFiles[i])[0])); // store the basename
+        // if the filename is found, add the filepath to the vector in the second member of the tuple 
         if(basename == file){
             matched = true;
             get<1>(validFiles[i]).push_back(filePath); // Add path to existing mapping
@@ -202,25 +146,18 @@ Tuple Pattern::getVariableMap(const string& filePath, const smatch& sm){
     // Extract capture groups from filename and store in mapping
     for(int i = 1; i < sm.size(); ++i){
         str = sm[i];
+        // conserve variable type
         s::is_number(str) ? get<0>(tup)[variables[i-1]] = stoi(str) : 
                             get<0>(tup)[variables[i-1]] = str;
-        this->variableOccurences[variables[i-1]][get<0>(tup)[variables[i-1]]] += 1;
-        this->uniqueValues[variables[i-1]].insert(get<0>(tup)[variables[i-1]]);
+        this->variableOccurences[variables[i-1]][get<0>(tup)[variables[i-1]]] += 1; // update count of the variable occurence
+        this->uniqueValues[variables[i-1]].insert(get<0>(tup)[variables[i-1]]); // update the unique values for the variable
     }
     
     return tup;
 }
 
-/*
-std::map<string, std::map<Types, int>> Pattern::getOccurences(){
-    return this->variableOccurences;
-}
-*/
-
-
-
-//(variableName, variableValue)
 std::map<string, std::map<Types, int>> Pattern::getOccurences(const vector<tuple<string, vector<Types>>>& mapping){
+    // if no variables request, return all variables
     if(mapping.size() == 0){
         return this->variableOccurences;
     }
@@ -228,16 +165,13 @@ std::map<string, std::map<Types, int>> Pattern::getOccurences(const vector<tuple
     std::map<Types, int> temp;
     std::map<string, std::map<Types, int>> occurences;
     string variable;
+    // loop over vector passed in that contains the variable mapped to value(s)
     for(const auto& tup: mapping){
         if(get<1>(tup).size() == 0){
             occurences[get<0>(tup)] = this->variableOccurences[get<0>(tup)];
         } else {
             for(const auto& value: get<1>(tup)){
                 variable = get<0>(tup);
-                //if(s::is_number(this->variableOccurences[variable][value]){
-                //    value.erase(0, min(value.find_first_not_of('0'), value.size()-1));
-                //}
-
                 temp[value] = this->variableOccurences[get<0>(tup)][value];
             }
             occurences[variable] = temp;
@@ -245,7 +179,6 @@ std::map<string, std::map<Types, int>> Pattern::getOccurences(const vector<tuple
     }
 
     return occurences;
-
 }
 
 string Pattern::getPattern(){
@@ -259,7 +192,6 @@ void Pattern::setPattern(const string& pattern){
 string Pattern::getRegexPattern(){
     return this->regexFilePattern;
 }
-
 
 void Pattern::printVariables(){
     int i = 0;
@@ -276,9 +208,10 @@ void Pattern::printVariables(){
 }
 
 map<string, set<Types>> Pattern::getUniqueValues(const vector<string>& vec){
-    if(vec.size() == 0) return this->uniqueValues;
+    if(vec.size() == 0) return this->uniqueValues; // if no variables are passed, return all variables
 
     map<string, set<Types>> temp;
+    // return variables that were requested
     for(const auto& str: vec){
         temp[str] = uniqueValues[str];
     }
@@ -393,36 +326,6 @@ string Pattern::outputNameHelper(vector<Tuple>& vec){
 
 }
 
-/*
-string Pattern::inferPattern(const string& path, string& variables, const string& blockSize){
-    vector<string> vec;
-
-    if(blockSize == ""){ 
-
-        fs::directory_iterator iterator = fs::directory_iterator(path);
-        string filePath;
-        for(auto& file: iterator){
-            vec.push_back(s::getBaseName(file.path()));
-        }
-
-        return inferPatternInternal(vec, variables);
-    }
-
-    FilesystemStream stream = FilesystemStream(path, false, blockSize);
-
-    vec = stream.getBlock();
-    string pattern = inferPatternInternal(vec, variables);
-    while(vec.size() != 0){
-        vec = stream.getBlock();
-        vec.insert(vec.begin(), pattern);
-
-        pattern = inferPatternInternal(vec, variables);
-    }
-    
-    return pattern;
-}
-*/
-
 string Pattern::inferPatternInternal(vector<string>& files, string& variables, const string& startingPattern){
     variables += "rtczyxp";
     string pattern;
@@ -447,33 +350,32 @@ string Pattern::inferPatternInternal(vector<string>& files, string& variables, c
 }
 
 string Pattern::swSearch(string& pattern, string& filename, const string& variables){
-    string numbers = "0123456789<>"; 
-    string alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@$"; // @ -> c+ and $ -> c
-    smatch sm;
-    string rgxStr;
+    string numbers = "0123456789<>"; // numeric values, '<' -> d and '>' -> d+
+    string alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@$"; // alphabetic values, '@' -> c+ and '$' -> c
+    smatch sm; // store regex group matches
+    string rgxStr; // string version of rgx
     regex rgx; 
     string temp, smStr;
-    int cnt;
     bool match;
 
     //vlist = [(0,0,"", "")]
     for (const auto& v: variables){
-
+        
+        // construct named group
         rgxStr = "\\{(";
         rgxStr += v;
         rgxStr += "):([dc+]+)\\}";
 
-        rgx = regex(rgxStr);
-        match = false;
+        rgx = regex(rgxStr); // regex to match
+        match = false; // match if found
         while(regex_search(pattern, sm, rgx)){
 
             match = true;
             // check if + is in group
             smStr = sm[0];
             if(s::contains(smStr, '+')) {
-                if(sm[2] == "d+") s::replace(pattern, sm[0], ">");// check this
+                if(sm[2] == "d+") s::replace(pattern, sm[0], ">"); 
                 else  s::replace(pattern, sm[0], "@");
-
 
             } else {
                 temp = "";
@@ -481,10 +383,10 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
 
                 if(s::contains(smStr, 'd')){
                     temp.insert(0, s::getCount(sm[0].str(), 'd'), '<');
-                    s::replace(pattern, sm[0], temp);// check this
+                    s::replace(pattern, sm[0], temp);
                 } else {
                     temp.insert(0, s::getCount(sm[0].str(), 'c'), '$');
-                    s::replace(pattern, sm[0], temp);// check this
+                    s::replace(pattern, sm[0], temp);
                 }
             }
         } 
@@ -493,21 +395,23 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
         }
     }
 
+    // scoring function
     map<string, map<string, int>> sab = {
         {"numeric", {
             {"match", 2}, 
             {"penalty", 1}
         }},
         {"alpha", {
-            {"match", 2}, //5
-            {"penalty", 1} //3
+            {"match", 2},
+            {"penalty", 1}
         }},
-        {"char", {
-            {"match", 5}, //5
-            {"penalty", 3} //3
+        {"char", { // larger penalty for non-numeric, non-alphabetic characters
+            {"match", 5},
+            {"penalty", 3} 
         }}
     };
 
+    // scoring matrix creation
     int m = pattern.length();
     int n = filename.length();
     int matrix[m+1][n+1];
@@ -521,6 +425,7 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
     vector<int> scores;
     int s, wi, wj;
 
+    // populate scoring maxtrix
     for(const auto& p: pattern){
         pIsNumeric = count(numbers.begin(), numbers.end(), p);
         pIsCharacter = count(alphabet.begin(), alphabet.end(), p);
@@ -534,6 +439,7 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
             scores.clear();
             scores.push_back(0);
 
+            // generate similaroity score
             if(fIsNumeric){
                 if(pIsNumeric){
                     s = matrix[p_idx][f_idx] + sab["numeric"]["match"];
@@ -556,6 +462,7 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
 
             scores.push_back(s);
 
+            // calculate gap scores
             if (fIsNumeric){
                 if (pIsNumeric) {
                     wi = matrix[p_idx+1][f_idx] - sab["numeric"]["penalty"];
@@ -580,6 +487,7 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
             scores.push_back(wi);
             scores.push_back(wj);
 
+            // assign matrix score
             matrix[p_idx+1][f_idx+1] = *max_element(scores.begin(), scores.end());
 
             ++f_idx;
@@ -588,6 +496,7 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
         ++p_idx;
     }
 
+    // find best score
     int bestScore = matrix[m][n];
     int row       = m;
     int col       = n;
@@ -602,13 +511,16 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
         }
     }
 
+    // traceback, building a new pattern template
     string patternTemplate = ""; //(1, filename[col-1]);
     patternTemplate.push_back(filename[col-1]);
     int lastRow = row;
     int lastCol = col;
     int r, c;
 
-    while(true){
+    while(true){ // loop until best_score == 0 is reached
+
+        // Default to next set of characters
         r = row - 1;
         c = col - 1;
         bestScore = matrix[r][c];
@@ -630,10 +542,12 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
         row = r;
         col = c;
         
+        // Default to the matching value if available
         if(filename[col-1] == pattern[row-1] && lastCol != col && lastRow != row){
             patternTemplate = filename[col-1] + patternTemplate;
         } else {
             
+            // If the values don't match, throw error if non-numeric and non-alphabetic
             if(!count(numbers.begin(), numbers.end(), filename[col-1]) || 
             !count(numbers.begin(), numbers.end(), pattern[row-1])) {
                 if(count(alphabet.begin(), alphabet.end(), filename[col-1]) &&
@@ -651,14 +565,14 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
                     throw runtime_error("Non-numeric, non-alphabetic characters found that do not match");
                 }
 
-            } else if(lastCol != col && lastRow != row){
+            } else if(lastCol != col && lastRow != row){ // progrsssion was made so add a placeholder
                 if(pattern[row-1] == '>'){
                     patternTemplate = '>' + patternTemplate;
                 } else {
                     patternTemplate = '<' + patternTemplate;
                 }
                 
-            } else {
+            } else { // Lengths don't match, so add a place holder
                 patternTemplate = ">" + patternTemplate;
             }
         }
@@ -671,6 +585,8 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
     int vi = 0;
     rgx = "[<>\\$@]+";
     string vdef;
+
+    // Construct a new filepattern
     for (auto i = sregex_iterator(patternTemplate.begin(), patternTemplate.end(), rgx); i != sregex_iterator(); ++i) {
         temp = (*i).str();
 

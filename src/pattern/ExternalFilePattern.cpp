@@ -62,6 +62,19 @@ void ExternalFilePattern::printFiles(){
     }
 }
 
+void ExternalFilePattern::matchFiles() {
+    
+    filePatternToRegex(); // Get regex of filepattern
+
+    this->mapSize = variables.size(); // Store map size for reading from txt file
+    
+    if(recursive){
+        this->matchFilesMultDir();
+    } else {
+        this->matchFilesOneDir();
+    }
+}
+
 void ExternalFilePattern::matchFilesOneDir(){
     vector<string> block;
 
@@ -74,7 +87,6 @@ void ExternalFilePattern::matchFilesOneDir(){
     while(!this->stream.isEmpty()){
 
         block = stream.getBlock();
-        //if(count == 0 && block.size() == 0) throw runtime_error("Block size too small.");
         
         for (const auto& filePath : block) {
             file = s::getBaseName(filePath);
@@ -89,7 +101,7 @@ void ExternalFilePattern::matchFilesOneDir(){
 
 /* In progress - need to find a way to avoid copying file on every write */
 void ExternalFilePattern::matchFilesMultDir(){
-    
+    /*
     string pattern;
     Map mapping;
     Tuple member;
@@ -109,7 +121,7 @@ void ExternalFilePattern::matchFilesMultDir(){
     ifstream infile(validFilesPath);
     Tuple current;
     string temp;
-/*
+
     // iterate over directory and subdirectory in blockSize chunks
     while(!this->stream.isEmpty()){
         block = stream.getBlock(); // get block of files from directory iterator
@@ -163,17 +175,4 @@ void ExternalFilePattern::matchFilesMultDir(){
     */
 }
 
-
-void ExternalFilePattern::matchFiles() {
-    
-    filePatternToRegex(); // Get regex of filepattern
-
-    this->mapSize = variables.size(); // Store map size for reading from txt file
-    
-    if(recursive){
-        this->matchFilesMultDir();
-    } else {
-        this->matchFilesOneDir();
-    }
-}
 

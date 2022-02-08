@@ -41,18 +41,16 @@ ExternalMergeSort::ExternalMergeSort(const Structure& structure,
 
 double ExternalMergeSort::currentSize(const int& stringSize, 
                                       const double& previousSize){
-    return sizeof(string) + stringSize + previousSize;
+    return sizeof(string) + stringSize + previousSize; // update amount of memory being used
 }
     
 void ExternalMergeSort::sortMapFile(){
-    // Buffer size 1 Megabyte (or any number you like)
+
     int vectorCapacity = 0;
     int stringSize = sizeof(string);
 
-    string str; 
     int blockNum = 0;
     string blockName;
-    int count = 0;
 
     ifstream infile(inputFileName);
     vector<Tuple> vec;
@@ -84,7 +82,7 @@ void ExternalMergeSort::sortMapFile(){
     this->mergeMaps();
 }
 
-
+/*This function could be made cleaner by writing each map to a single line in the text file*/
 bool ExternalMergeSort::getMapBlock(ifstream& infile, vector<Tuple>& vec){
 
     Tuple member;
@@ -98,13 +96,13 @@ bool ExternalMergeSort::getMapBlock(ifstream& infile, vector<Tuple>& vec){
     size_t pos;
     Types result;
     map = this->tempMap;
-    
+    // while the memory consumption is under blockSize and infile still has a line
     while(size < blockSize && infile >> str){
         
+        // if map is full, add to block
         if (map.size() == (this->mapSize)) {
             size += sizeof(map) + sizeof(vector<string>);
             
-            //sizeof(Tuple) +
             for(const auto& item : map){
                 size += item.first.length() + s::size(item.second);
             }
@@ -116,22 +114,26 @@ bool ExternalMergeSort::getMapBlock(ifstream& infile, vector<Tuple>& vec){
             get<1>(member).clear();
             infile >> str;
         }
-
+        // split line on : (line is in the form "key:value")
         pos = str.find(":");
         key = str.substr(0, pos);
         valueLength = str.length() - pos;
         value = str.substr(pos+1, valueLength);
 
+        // Conserve variable type (string or int)
         if(s::is_number(value)){
             result = stoi(value);
         } else {
             result = value;
         }
 
-        map[key] = result;
+        map[key] = result; // add key value pair to map
         size += valueLength + pos;
     }
+
     this->tempMap = map;
+
+    // check if end of file
     streampos ptr = infile.tellg();
     if(!(infile >> str)){
         return false;
@@ -143,32 +145,33 @@ bool ExternalMergeSort::getMapBlock(ifstream& infile, vector<Tuple>& vec){
 }
 
 void ExternalMergeSort::sortFile(){
-    // Buffer size 1 Megabyte (or any number you like)
-    int vectorCapacity = 0;
-    int stringSize = sizeof(string);
 
     string str; 
     int blockNum = 0;
     string blockName;
     double previousSize = sizeof(vector<string>);
-    int count = 0;
 
     ifstream file(this->inputFileName);
     if(!file.is_open()){ 
         throw invalid_argument("Cannot find file \"" + inputFileName + "\".");
     }
 
+    // while the text file still has files:
+    //      read in a block of files and sort and then write to output file
     while (getline(file, str)) {
 
-        this->vec.push_back(str);
-        previousSize = currentSize(str.length(), previousSize);
+        this->vec.push_back(str); // add filename to block
+        previousSize = currentSize(str.length(), previousSize); // update amount of memory used
 
+        // check if the amount of memory is below the specified amount and end of file hasn't been reached
         while(previousSize < this->blockSize && !file.eof()){
+            // add more filenames to block
             getline(file,str);
             this->vec.push_back(str);
             previousSize = currentSize(str.length(), previousSize);
         } 
 
+        // sort the block
         sort(this->vec.begin(), this->vec.end(), 
             [](const string& a, const string& b) {return a < b;});
 
@@ -176,12 +179,9 @@ void ExternalMergeSort::sortFile(){
         blockName = to_string(blockNum) + ".txt";;
         this->writeTmpFile(blockName);
 
-        count++;
-        if(count > 100){
-            throw runtime_error("Creating over 100 text files. Ending program");
-        }
-
+        // add txt file name to vector to be merged 
         filesToMerge.push_back(blockName);
+
         //clear vec and continue reading file   
         vec.clear();
         previousSize = sizeof(vector<string>);
@@ -200,7 +200,8 @@ void ExternalMergeSort::writeTmpFile(string& output){
 
 void ExternalMergeSort::writeMapTmpFile(ofstream& file, 
                                         const vector<Tuple>& vec){
-
+    
+    //loop over map, writing the key value pair in the form "key:value\n"
     for(const auto& mapping: vec){
         for(const auto& element: get<0>(mapping)){
             file << element.first << ":" << s::to_string(element.second) << '\n';
@@ -213,18 +214,17 @@ void ExternalMergeSort::writeMapTmpFile(ofstream& file,
 }
 
 void ExternalMergeSort::writeFile(const string& output){
+    // write string to output file
     ofstream out(output);
     for (const auto& element: this->vec) out << element << "\n";
 }
 
 void ExternalMergeSort::merge(){
 
-    // case of 1 file
     string str1, str2;
     string outFile;
     int length;
     int count;
-    int filesWritten = 0;
     int iter = 0;
 
     while(filesToMerge.size() > 1){
@@ -248,10 +248,6 @@ void ExternalMergeSort::merge(){
             outFile = this->tmpdir + to_string(iter) + "_" + to_string(i) + "_" + to_string(i+1) + ".txt"; 
             newFiles.push_back(outFile);
             ofstream outfile(outFile, ios_base::app);
-
-            if(filesWritten > 100){
-                throw runtime_error("Creating over 100 text files. Ending program");
-            }
 
             count = 0;
             while(true){
@@ -335,7 +331,6 @@ void ExternalMergeSort::merge(){
 
 void ExternalMergeSort::mergeMaps(){
 
-    // case of 1 file
     string outFile;
     int length;
     int iter = 0;
@@ -394,6 +389,7 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
     int count = 0;
     Tuple map1, map2;
     while(true){
+        // if first iteration, read in a map from both files
         if(count == 0) {
             m::getMap(file1, map1, this->mapSize); 
             m::getMap(file2, map2, this->mapSize);
@@ -402,8 +398,9 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
 
         // if file1 empty
         if(file1.eof()){
-            //m::writeMap(outfile, map1); // write remaining map
+            // if file2 is also empty
             if(file2.eof()){
+                //close files and break
                 file1.close();
                 file2.close();
                 outfile.close();
@@ -411,12 +408,12 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
             }
 
             // write the rest of file2
-            //m::getMap(file2, map2, this->mapSize);
             m::writeMap(outfile, map2);
             while(m::getMap(file2, map2, this->mapSize)) {
                 m::writeMap(outfile, map2);
             }
 
+            //close files
             file1.close();
             file2.close();
             outfile.close();
@@ -424,12 +421,12 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
 
         } else if(file2.eof()){
             // write the rest of file1
-            //outfile << str1 << '\n';
             m::writeMap(outfile, map2);
             while(m::getMap(file1, map1, this->mapSize)) {
                 m::writeMap(outfile, map1);
             }
 
+            //close files
             file1.close();
             file2.close();
             outfile.close();

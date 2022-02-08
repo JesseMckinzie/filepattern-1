@@ -29,31 +29,53 @@ class Pattern {
         std::string regexFilePattern; // Pattern with capture groups
         std::string path;
         std::vector<std::string> variables; // Store the names of variables from the pattern
-        std::map<std::string, std::map<Types, int>> variableOccurences;
-        std::map<std::string, std::set<Types>> uniqueValues;
+        std::map<std::string, std::map<Types, int>> variableOccurences; // store the number of times a variable value occurs
+        std::map<std::string, std::set<Types>> uniqueValues; // store each unique value for every variable
         std::vector<std::string> namedGroups;
-        std::vector<std::string> tmpDirectories;
+        std::vector<std::string> tmpDirectories; // store paths to all temporary directories used
         bool justPath;
 
-        std::string VARIABLES;
+        std::string VARIABLES; 
 
+        /**
+         * @brief Returns a guess of the filepattern using internal memory.
+         * 
+         * Helper function for child classes. Contains the main loop of inferPattern. Called
+         * after parsing directory or text file input into main memory. Used to process blocks of filenames
+         * when called from external memory classes.
+         * 
+         * @param files List of filenames to guess pattern of
+         * @param variables Name of variables to use. Optional
+         * @param startingPattern Initial pattern. Optional. Used for external memory version
+         * @return std::string Guess of the pattern
+         */
         static std::string inferPatternInternal(std::vector<std::string>& files, std::string& variables, const std::string& startingPattern="");
+        
         void getPathFromPattern(const std::string& path);
 
     public:
         std::vector<Tuple> validFiles; // Store files that match given regex
-        //std::vector<std::vector<Tuple>> validGroupedFiles;
-        std::vector<std::pair<std::pair<std::string, Types> , std::vector<Tuple>>> validGroupedFiles;
-        std::string group;
+        std::vector<std::pair<std::pair<std::string, Types> , std::vector<Tuple>>> validGroupedFiles; // 2D vector to store grouped files
+        std::string group; // current groupBy variable
 
         /**
-         * @brief Convert to pattern to regex.
+         * @brief Convert to pattern to regex and update class variables from the returned 
+         * tuple of getRegex.
          * 
          * Creates a version of the pattern with regex to match files to. For example, 
          * if the pattern contains {variable:d}, this is changed to [0-9] in the regex pattern.
          */
         void filePatternToRegex();
 
+        /**
+         * @brief Get the regex version of the filepattern. 
+         * 
+         * Converts filePattern to new naming style if the old version is used.
+         * 
+         * @param pattern Pattern to get regex version of
+         * @return std::tuple<std::string, std::vector<std::string>, std::vector<std::string>> Tuple containing the
+         * the regex version of the file pattern, the variables found, and the named groups.
+         */
         static std::tuple<std::string, std::vector<std::string>, std::vector<std::string>> getRegex(std::string& pattern);
 
         /**
@@ -125,15 +147,50 @@ class Pattern {
          */
         void setGroup(const std::string& group);
 
+        /**
+         * @brief Returns the number of times each unique value for each variable occurs.
+         * 
+         * @param mapping Variable(s) mapped to value(s) to get the number of occurences
+         * @return std::map<std::string, std::map<Types, int>> Number of occurences for each variable
+         */
         std::map<std::string, std::map<Types, int>> getOccurences(const std::vector<std::tuple<std::string, std::vector<Types>>>& mapping);
-        //std::map<std::string, std::map<Types, int>> getOccurences();
 
+        /**
+         * @brief Returns the unique values for each variables.
+         * 
+         * @param mapping Vector of variables to get the unique values of. If the vector is empty, all variables will be returned.
+         * @return std::map<std::string, std::set<Types>>  Unique values of the variables.
+         */
         std::map<std::string, std::set<Types>> getUniqueValues(const std::vector<std::string>& mapping);
 
+        /**
+         * @brief Get the new naming style for an old pattern from version 1 of filepattern.
+         * 
+         * @param pattern Pattern to get the new naming style of.
+         */
         static void getNewNaming(std::string& pattern);
 
+        /**
+         * @brief Main loop of outputName. Finds the output name for a vector of files.
+         * 
+         * @param vec Vector of files.
+         * @return std::string A name which captures the variable values of all the files in vec.
+         */
         std::string outputNameHelper(std::vector<Tuple>& vec);
 
+        /**
+         * @brief Creates the output name for the outputName method.
+         * 
+         * Creates the output name using the min and max values found by outputNameHelper.
+         * 
+         * @param min Minimum value of the variable
+         * @param max Maximum value of the variable
+         * @param var Name of the variable
+         * @param outputName Current output name
+         * @param idx Index of the namedGroup
+         * @param temp temporary string to use
+         * @param patternRegex pattern to match the filename to
+         */
         void replaceOutputName(Tuple& min, 
                                Tuple& max, 
                                const std::string& var, 
@@ -142,9 +199,28 @@ class Pattern {
                                std::string& temp, 
                                const std::regex& patternRegex);
 
-        //static std::string inferPattern(const std::string& path, std::string& variables, const std::string& blockSize="");
-        //static std::string inferPattern(std::vector<std::string>& vec, std::string& variables);
+        /**
+         * @brief Smith-Waterson search used in inferPattern.
+         * 
+         * This function uses a modified
+         * `Smith-Waterman <https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm>`_
+         * to update the input pattern so that it will operate on the filename. This
+         * algorithm assumes that only numeric and alphabetic values might change and all text in the
+         * filename should be identical.
+         * 
+         * This function should not be called directly, but from inferPatternHelper.
+         * 
+         * @param pattern 
+         * @param filename 
+         * @param variables 
+         * @return std::string 
+         */
         static std::string swSearch(std::string& pattern, std::string& filename, const std::string& variables);
 
+        /**
+         * @brief Returns paths to all the temporary directories used in external memory classes.
+         * 
+         * @return std::vector<std::string> Vector of paths to temporary directories used.
+         */
         std::vector<std::string> getTmpDirs();
 };

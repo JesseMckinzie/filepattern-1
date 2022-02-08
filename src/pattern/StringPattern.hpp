@@ -3,14 +3,28 @@
 
 class StringPattern : public InternalPattern {
     public:
-        StringPattern(const std::string&, const std::string&);
+        
         /**
-         * Stores and prints the valid filenames from the target directory. 
+         * @brief Constructor of StringPattern. 
+         * 
+         * @param fileName Path to text file
+         * @param filePattern Pattern to match line of text file to
+         */
+        StringPattern(const std::string& fileName, const std::string& filePattern);
+
+        /**
+         * @brief Match lines of text file to the pattern.
+         * 
          */
         void matchFiles();
+
+        /**
+         * @brief Read file into main memory.
+         * 
+         */
         void readFile();
 
     private:
-        std::vector<std::string> files;
-        std::string fileName;
+        std::vector<std::string> files; // Vector of filenames
+        std::string fileName; // path to txt file
 };
