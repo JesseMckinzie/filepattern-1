@@ -41,6 +41,10 @@ extensions = [
     'autodocsumm'
 ]
 
+install_requires = [
+    'gnu>=8.0'
+]
+
 napoleon_use_param = True
 
 # Add any paths that contain templates here, relative to this directory.
