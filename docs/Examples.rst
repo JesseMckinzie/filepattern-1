@@ -103,8 +103,9 @@ The output of this case is:
     'path/to/root/direcotry/GFP/img_r001_c001.tif',
     'path/to/root/direcotry/TXREAD/img_r001_c001.tif'])
 
-
-<h3 id="group-by"> Group By </h3>
+~~~~~~~~
+Group By
+~~~~~~~~
 
 Say the images need to be processed in a specific order, for example by the row number. With the directory 
 
@@ -136,6 +137,7 @@ the images can be returned in groups where `r` is held constant by passing the p
 
 
 The output is:
+
 .. code-block:: bash
 
     [({'c': 1, 'channel': 'DAPI', 'file': 0, 'r': 1},
