@@ -7,4 +7,4 @@ python:
   setup_py_install: true
 
 compiler:
-  spec: gcc@8
+  spec: gcc@8.5.0
