@@ -17,6 +17,7 @@ In each of these filenames, there are three descriptors of the image: the row, t
 To have `filepattern` guess what the pattern is for a directory, the static method `infer_pattern` can be used:
 
 .. code-block:: python
+
     from pattern import FilePattern as fp 
 
     path = 'path/to/directory'
@@ -29,6 +30,7 @@ To have `filepattern` guess what the pattern is for a directory, the static meth
 The result is:
 
 .. code-block:: bash
+
     img_r00{r:d}_c00{c:d}_{t:c+}.tif
 
 
@@ -38,6 +40,7 @@ To retrieve the matched files, an iterator is called on the `FilePattern` object
 as input in the constructor.
 
 .. code-block:: python
+
     from pattern import FilePattern as fp
     import pprint
 
@@ -52,6 +55,7 @@ as input in the constructor.
 
 The output is:
 .. code-block:: bash
+
     ({'c': 1, 'channel': 'DAPI', 'r': 1},
     ['path/to/direcotry/img_r001_c001_DAPI.tif'])
     ({'c': 1, 'channel': 'TXREAD', 'r': 1},
@@ -63,6 +67,7 @@ The output is:
 As shown in this example, the output is a tuple where the first member is a map between the group name supplied in the pattern and the value of the group for each file name. The second member of the tuple is a vector containing the path to the matched file. The second member is stored in a vector for the case where a directory is supplied with multiple subdirectories. In this case, a third optional parameter can be passed to the constructor. If the third parameter is set to `True`, a recursive directory iterator will be used, which iterates over all subdirectories. If the basename of two files from two different subdirectories match, ```filepattern``` will add the path of the file to the vector in the existing tuple rather than creating a new tuple. For example, consider the directory with the structure 
 
 .. code-block:: bash
+
     /root_directory
         /DAPI
             img_r001_c001.tif
@@ -74,6 +79,7 @@ As shown in this example, the output is a tuple where the first member is a map 
 
 In this case, the subdirectories are split by the channel. Recursive matching can be used as shown below.
 .. code-block:: python
+
     from pattern import FilePattern as fp
     import pprint
 
@@ -90,6 +96,7 @@ In this case, the subdirectories are split by the channel. Recursive matching ca
 The output of this case is:
 
 .. code-block:: bash
+
     ({'c': 1, 'r': 1},
     ['path/to/root/direcotry/DAPI/img_r001_c001.tif',
     'path/to/root/direcotry/GFP/img_r001_c001.tif',
@@ -101,6 +108,7 @@ The output of this case is:
 Say the images need to be processed in a specific order, for example by the row number. With the directory 
 
 .. code-block:: bash
+
     img_r001_c001_DAPI.tif
     img_r002_c001_DAPI.tif
     img_r001_c001_TXREAD.tif
@@ -112,6 +120,7 @@ Say the images need to be processed in a specific order, for example by the row 
 the images can be returned in groups where `r` is held constant by passing the parameter ```group_by='r'``` to the object iterator.
 
 .. code-block:: python
+
     from pattern import FilePattern as fp
     import pprint
 
@@ -127,6 +136,7 @@ the images can be returned in groups where `r` is held constant by passing the p
 
 The output is:
 .. code-block:: bash
+
     [({'c': 1, 'channel': 'DAPI', 'file': 0, 'r': 1},
     ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_DAPI.tif']),
     ({'c': 1, 'channel': 'TXREAD', 'file': 0, 'r': 1},
@@ -146,6 +156,7 @@ The output is:
 To get files where the variable matches a value, the ```get_matching``` method is used. For example, if only files from the TXREAD channel are needed, ```get_matching(channel=['TXREAD']``` is called. 
 
 .. code-block:: python
+
     filepath = "/home/ec2-user/Dev/FilePattern/data/example"
 
     pattern = "img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif"
@@ -159,6 +170,7 @@ To get files where the variable matches a value, the ```get_matching``` method i
 
 The output is:
 .. code-block:: bash
+
     [({'c': 1, 'channel': 'TXREAD', 'r': 1},
     ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif']),
     ({'c': 1, 'channel': 'TXREAD', 'r': 2},
@@ -168,6 +180,7 @@ The output is:
 ## StringPattern
 StringPattern contains all the functionalility of FilePattern, except it takes in a text file as an input rather than a directory and matches each line to the pattern. For example, a text file containing
 .. code-block:: bash
+
     img_r001_c001_DAPI.tif
     img_r001_c001_TXREAD.tif
     img_r001_c001_GFP.tif
@@ -176,6 +189,7 @@ StringPattern contains all the functionalility of FilePattern, except it takes i
 can be matched to the pattern ```img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif``` with:
 
 .. code-block:: python
+
     from pattern import StringPattern as sp
     import pprint
 
@@ -193,6 +207,7 @@ can be matched to the pattern ```img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif``` with:
 The ouput is:
 
 .. code-block:: bash
+
     ({'c': 1, 'channel': 'DAPI', 'r': 1}, 
     ['img_r001_c001_DAPI.tif'])
     ({'c': 1, 'channel': 'TXREAD', 'r': 1}, 
@@ -208,6 +223,7 @@ The ouput is:
 `VectorPattern` is a class in `filepattern` which takes in a stitching vector as input rather than a directory. A stitching vector, contained within a text file, has the following form,
 
 .. code-block:: bash
+
     file: x01_y01_wx0_wy0_c1.ome.tif; corr: 0; position: (0, 0); grid: (0, 0);
     file: x02_y01_wx0_wy0_c1.ome.tif; corr: 0; position: (3496, 0); grid: (3, 0);
     file: x03_y01_wx0_wy0_c1.ome.tif; corr: 0; position: (6992, 0); grid: (6, 0);
@@ -217,6 +233,7 @@ The ouput is:
 `VectorPattern` is called from `filepattern` with 
 
 .. code-block:: python
+
     from pattern import VectorPattern as vp 
 
     filepath = 'path/to/stitching/vector.txt'
@@ -231,6 +248,7 @@ The ouput is:
 
 The output is:
 .. code-block:: bash
+
     ({'correlation': 0, 'gridX': 0, 'gridY': 0, 'posX': 0, 'posY': 0, 'x': 1},
     ['x01_y01_wx0_wy0_c1.ome.tif'])
     ({'correlation': 0, 'gridX': 3, 'gridY': 0, 'posX': 3496, 'posY': 0, 'x': 2},
@@ -247,6 +265,7 @@ As shown in the output, `VectorPattern` not only captures the specified variable
 `ExternalFilePattern` is an external memory version of `filepattern`, i.e. it utilizes disk memory along with main memory. It has the same functionality as FilePattern, however it takes in an addition parameter called `block_size`, which limits the amount of main memory used by `filepattern`. Consider a directory containing the files:
 
 .. code-block:: bash
+
     img_r001_c001_DAPI.tif
     img_r001_c001_TXREAD.tif
     img_r001_c001_GFP.tif
@@ -255,6 +274,7 @@ As shown in the output, `VectorPattern` not only captures the specified variable
 `ExternalFilePattern` can be used to processes this directory with only one file in memory as:
 
 .. code-block:: python
+
     from pattern import FilePattern as fp
     import pprint
 
@@ -272,6 +292,7 @@ As shown in the output, `VectorPattern` not only captures the specified variable
 The output from this example is:
 
 .. code-block:: bash
+
     ({'c': 1, 'channel': 'DAPI', 'r': 1},
     ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_DAPI.tif'])
     ({'c': 1, 'channel': 'TXREAD', 'r': 1},
@@ -286,6 +307,7 @@ Note that the ```block_size``` argument is provided in bytes (B) in this example
 `ExternalFilePattern`contains the [group_by](#group-by) functionalility as described in [FilePattern](#filepattern). The output of `group_by` is the same as `FilePatten`.
 
 .. code-block:: python
+
     for file in files(group_by="r"):
         pprint.pprint(file)
 
@@ -297,6 +319,7 @@ The output remains identical to `FilePattern`.
 `ExternalFilePattern` also contains the `get_matching` functionality. To call `get_matching`, the following is used:
 
 ..code-block:: python
+
     files.get_matching(channel=['TXREAD'])
 
     for matching in files.get_matching_block()
@@ -305,6 +328,7 @@ The output remains identical to `FilePattern`.
 where the output is returned in blocks of `block_size`. The output is:
 
 .. code-block:: bash
+
     ({'c': 1, 'channel': 'TXREAD', 'r': 1},
     ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif'])
 
