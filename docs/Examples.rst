@@ -1,9 +1,12 @@
-<h2 id="filepattern-section"> FilePattern </h2> 
+========
+Examples
+========
 
 FilePattern iterates over a directory, matching filenames to a suplied ```filepattern```. The syntax of the ```filepattern``` is best described by example. Consider a direcotry
 containing the following files, 
 
 .. code-block:: bash
+
     img_r001_c001_DAPI.tif
     img_r001_c001_TXREAD.tif
     img_r001_c001_GFP.tif
