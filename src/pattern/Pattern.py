@@ -1,5 +1,5 @@
 from . import FilePattern, StringPattern, VectorPattern 
-import re, shutil
+import re
 
 class Pattern:
     def __init__(self, path: str, pattern: str='', block_size: str ='', recursive: bool=False):
