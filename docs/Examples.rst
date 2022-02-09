@@ -180,6 +180,7 @@ To get files where the variable matches a value, the ``get_matching`` method is 
 
 The output is:
 
+
 .. code-block:: bash
 
     [({'c': 1, 'channel': 'TXREAD', 'r': 1},
