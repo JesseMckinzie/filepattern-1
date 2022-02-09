@@ -1,9 +1,17 @@
 build:
   os: ubuntu-20.04
   image: latest
-  tools:
-    gcc: "8.3.1"
 
 python:
   version: 3.7
   setup_py_install: true
+
+packages:
+  all:
+    compiler: [gcc, clang]
+    providers:
+      mpi: [openmpi]
+      blas: [openblas]
+      lapack: [openblas]
+  cmake:
+    compiler: [clang]
