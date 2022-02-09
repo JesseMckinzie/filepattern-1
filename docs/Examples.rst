@@ -14,7 +14,7 @@ containing the following files,
 
 In each of these filenames, there are three descriptors of the image: the row, the column, and the channel. To match these files, the pattern ``img_r{r:ddd}_c{c:ddd}_{channel:c+}`` can be used. In this pattern, the nameed groups are contained within the curly brackets, where the variable name is before the colon and the value is after the colon. For the value, the descriptors `d` and `c` are used, which represent a digit and a character, respectively. In the example pattern, three `d`'s are used to catpure three digits. The `+` after `c` denotes that one or more characters will be captured, equivelantly to `[a-zA-z]+` in a regular expression. The `+` symbol may be used after either `d` or `c`. 
 
-To have `filepattern` guess what the pattern is for a directory, the static method `infer_pattern` can be used:
+To have ``filepattern`` guess what the pattern is for a directory, the static method ``infer_pattern`` can be used:
 
 .. code-block:: python
 
@@ -34,9 +34,9 @@ The result is:
     img_r00{r:d}_c00{c:d}_{t:c+}.tif
 
 
-Note that the `infer_pattern` method is also included in `VectorPattern` and `StringPattern` to guess the patterns from stitching vectors and text files, respectively. 
+Note that the ``infer_pattern`` method is also included in ``VectorPattern`` and ``StringPattern`` to guess the patterns from stitching vectors and text files, respectively. 
 
-To retrieve the matched files, an iterator is called on the `FilePattern` object, as shown below. A user specified custom pattern, such as the one below, or the guessed pattern can be
+To retrieve the matched files, an iterator is called on the ``FilePattern`` object, as shown below. A user specified custom pattern, such as the one below, or the guessed pattern can be
 as input in the constructor.
 
 .. code-block:: python
@@ -64,7 +64,12 @@ The output is:
     ['path/to/direcotry/img_r001_c001_GFP.tif'])
 
 
-As shown in this example, the output is a tuple where the first member is a map between the group name supplied in the pattern and the value of the group for each file name. The second member of the tuple is a vector containing the path to the matched file. The second member is stored in a vector for the case where a directory is supplied with multiple subdirectories. In this case, a third optional parameter can be passed to the constructor. If the third parameter is set to `True`, a recursive directory iterator will be used, which iterates over all subdirectories. If the basename of two files from two different subdirectories match, ``filepattern`` will add the path of the file to the vector in the existing tuple rather than creating a new tuple. For example, consider the directory with the structure 
+As shown in this example, the output is a tuple where the first member is a map between the group name supplied in the 
+pattern and the value of the group for each file name. The second member of the tuple is a vector containing the path to the matched file. 
+The second member is stored in a vector for the case where a directory is supplied with multiple subdirectories. In this case, a third optional 
+parameter can be passed to the constructor. If the third parameter is set to ``True``, a recursive directory iterator will be used, which 
+iterates over all subdirectories. If the basename of two files from two different subdirectories match, ``filepattern`` will add the path of the 
+file to the vector in the existing tuple rather than creating a new tuple. For example, consider the directory with the structure 
 
 .. code-block:: bash
 
@@ -119,7 +124,7 @@ Say the images need to be processed in a specific order, for example by the row 
     img_r002_c001_GFP.tif
 
 
-the images can be returned in groups where `r` is held constant by passing the parameter ``group_by='r'`` to the object iterator.
+the images can be returned in groups where ``r`` is held constant by passing the parameter ``group_by='r'`` to the object iterator.
 
 .. code-block:: python
 
@@ -153,8 +158,9 @@ The output is:
     ({'c': 1, 'channel': 'TXREAD', 'file': 0, 'r': 2},
     ['/home/ec2-user/Dev/FilePattern/data/example/img_r002_c001_TXREAD.tif'])]
 
-
-<h3 id="get-matching"> Get Matching </h3>
+~~~~~~~~~~~~
+Get Matching
+~~~~~~~~~~~~
 
 To get files where the variable matches a value, the ``get_matching`` method is used. For example, if only files from the TXREAD channel are needed, ``get_matching(channel=['TXREAD']`` is called. 
 
@@ -219,11 +225,11 @@ The ouput is:
     ['img_r001_c001_GFP.tif']`)
 
 
-`StringPattern` also contains the [group_by](#group-by) and [get_matching](#get-matching) functionality as outlined in the [FilePattern](#filepattern-section) section. 
+``StringPattern`` also contains the [group_by](#group-by) and [get_matching](#get-matching) functionality as outlined in the [FilePattern](#filepattern-section) section. 
 
 ## VectorPattern
 
-`VectorPattern` is a class in `filepattern` which takes in a stitching vector as input rather than a directory. A stitching vector, contained within a text file, has the following form,
+``VectorPattern`` is a class in `filepattern` which takes in a stitching vector as input rather than a directory. A stitching vector, contained within a text file, has the following form,
 
 .. code-block:: bash
 
@@ -233,7 +239,7 @@ The ouput is:
     file: x04_y01_wx0_wy0_c1.ome.tif; corr: 0; position: (10488, 0); grid: (9, 0);
 
 
-`VectorPattern` is called from `filepattern` with 
+``VectorPattern`` is called from ``filepattern`` with 
 
 .. code-block:: python
 
@@ -261,11 +267,13 @@ The output is:
     ({'correlation': 0, 'gridX': 9, 'gridY': 0, 'posX': 10488, 'posY': 0, 'x': 4},
     ['x04_y01_wx0_wy0_c1.ome.tif'])
 
-As shown in the output, `VectorPattern` not only captures the specified variables from the pattern, but also captures the variables supplied in the stitching vector. 
+As shown in the output, ``VectorPattern`` not only captures the specified variables from the pattern, but also captures the variables supplied in the stitching vector. 
 
 ## ExternalFilePattern
 
-`ExternalFilePattern` is an external memory version of `filepattern`, i.e. it utilizes disk memory along with main memory. It has the same functionality as FilePattern, however it takes in an addition parameter called `block_size`, which limits the amount of main memory used by `filepattern`. Consider a directory containing the files:
+``ExternalFilePattern`` is an external memory version of ``filepattern``, i.e. it utilizes disk memory along with main memory. It has the same 
+functionality as FilePattern, however it takes in an addition parameter called ``block_size``, which limits the amount of main memory used by 
+``filepattern``. Consider a directory containing the files:
 
 .. code-block:: bash
 
@@ -274,7 +282,7 @@ As shown in the output, `VectorPattern` not only captures the specified variable
     img_r001_c001_GFP.tif
 
 
-`ExternalFilePattern` can be used to processes this directory with only one file in memory as:
+``ExternalFilePattern`` can be used to processes this directory with only one file in memory as:
 
 .. code-block:: python
 
@@ -307,7 +315,7 @@ Note that the ``block_size`` argument is provided in bytes (B) in this example, 
 
 <h3 id="group-by-external"> Group by </h3>
 
-`ExternalFilePattern`contains the [group_by](#group-by) functionalility as described in [FilePattern](#filepattern). The output of `group_by` is the same as `FilePatten`.
+``ExternalFilePattern``contains the [group_by](#group-by) functionalility as described in [FilePattern](#filepattern). The output of ``group_by`` is the same as ``FilePatten``.
 
 .. code-block:: python
 
@@ -315,11 +323,11 @@ Note that the ``block_size`` argument is provided in bytes (B) in this example, 
         pprint.pprint(file)
 
 
-The output remains identical to `FilePattern`.
+The output remains identical to ``FilePattern``.
 
 <h3 id="get-matching-external"> Get Matching </h3>
 
-`ExternalFilePattern` also contains the `get_matching` functionality. To call `get_matching`, the following is used:
+``ExternalFilePattern`` also contains the ``get_matching`` functionality. To call ``get_matching``, the following is used:
 
 .. code-block:: python
 
@@ -328,7 +336,7 @@ The output remains identical to `FilePattern`.
     for matching in files.get_matching_block()
         pprint.pprint(matching)
 
-where the output is returned in blocks of `block_size`. The output is:
+where the output is returned in blocks of ``block_size``. The output is:
 
 .. code-block:: bash
 
@@ -338,4 +346,4 @@ where the output is returned in blocks of `block_size`. The output is:
 
 ## ExternalStringPattern and ExternalVectorPattern
 
-`StringPattern` and `VectorPattern` also contain external memory versiosn, which can be called the with the same method as `ExternalFilePattern`, with the exception of calling the `StringPattern` or  `VectorPattern` constructors.
+``StringPattern`` and ``VectorPattern`` also contain external memory versiosn, which can be called the with the same method as ``ExternalFilePattern``, with the exception of calling the ``StringPattern`` or  ``VectorPattern`` constructors.
