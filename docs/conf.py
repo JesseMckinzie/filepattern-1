@@ -22,11 +22,6 @@ sys.setrecursionlimit(1500)
 project = 'filepattern2'
 author = 'Jesse McKinzie'
 
-# The full version, including alpha/beta/rc tags
-with open(str(Path(__file__).parent.parent.parent.joinpath('VERSION')),'r') as fr:
-    version = fr.readline()
-    release = version
-
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
