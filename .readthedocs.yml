@@ -1,6 +1,8 @@
 build:
   os: ubuntu-20.04
   image: latest
+  tools:
+    gnu: "8.3.1"
 
 python:
   version: 3.7
