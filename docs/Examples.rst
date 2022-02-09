@@ -54,6 +54,7 @@ as input in the constructor.
         pprint.pprint(file)
 
 The output is:
+
 .. code-block:: bash
 
     ({'c': 1, 'channel': 'DAPI', 'r': 1},
@@ -178,6 +179,7 @@ To get files where the variable matches a value, the ``get_matching`` method is 
 
 
 The output is:
+
 .. code-block:: bash
 
     [({'c': 1, 'channel': 'TXREAD', 'r': 1},
@@ -188,6 +190,7 @@ The output is:
 
 ## StringPattern
 StringPattern contains all the functionalility of FilePattern, except it takes in a text file as an input rather than a directory and matches each line to the pattern. For example, a text file containing
+
 .. code-block:: bash
 
     img_r001_c001_DAPI.tif
@@ -256,6 +259,7 @@ The ouput is:
 
 
 The output is:
+
 .. code-block:: bash
 
     ({'correlation': 0, 'gridX': 0, 'gridY': 0, 'posX': 0, 'posY': 0, 'x': 1},
