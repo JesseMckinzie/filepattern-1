@@ -31,8 +31,7 @@ extensions = [
     'sphinx_rtd_theme',
     'sphinx.ext.napoleon',
     'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'autodocsumm'
+    'sphinx.ext.autosummary'
 ]
 
 install_requires = [
