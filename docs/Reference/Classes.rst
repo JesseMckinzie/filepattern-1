@@ -1,4 +1,8 @@
-.. autosummary::
-    :toctree: stubs 
+=======
+Classes
+=======
 
-    pattern.Pattern
+.. autosummary::
+   :toctree: stubs
+
+   pattern.Pattern

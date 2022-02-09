@@ -1,5 +1,5 @@
 ============================
-Class and Function Reference
+Class Reference
 ============================
 
 .. toctree::
