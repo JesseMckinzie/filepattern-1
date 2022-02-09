@@ -6,12 +6,5 @@ python:
   version: 3.7
   setup_py_install: true
 
-packages:
-  all:
-    compiler: [gcc, clang]
-    providers:
-      mpi: [openmpi]
-      blas: [openblas]
-      lapack: [openblas]
-  cmake:
-    compiler: [clang]
+compiler:
+  spec: gcc@8
