@@ -78,6 +78,7 @@ As shown in this example, the output is a tuple where the first member is a map 
 
 
 In this case, the subdirectories are split by the channel. Recursive matching can be used as shown below.
+
 .. code-block:: python
 
     from pattern import FilePattern as fp
@@ -318,7 +319,7 @@ The output remains identical to `FilePattern`.
 
 `ExternalFilePattern` also contains the `get_matching` functionality. To call `get_matching`, the following is used:
 
-..code-block:: python
+.. code-block:: python
 
     files.get_matching(channel=['TXREAD'])
 
