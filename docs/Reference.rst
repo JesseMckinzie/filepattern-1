@@ -2,7 +2,7 @@
 Class Reference
 ============================
 
-.. toctree::
+.. toctree:: 
    :maxdepth: 1
    :caption: Contents:
 
