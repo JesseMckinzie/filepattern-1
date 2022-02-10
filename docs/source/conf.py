@@ -67,8 +67,8 @@ autodoc_default_options = {
     'members': True,
     'inherited-members': True,
     'special-members': '__getitem__,__call__,__setitem__',
-    'show-inheritance': True
-    # 'autosummary': True
+    'show-inheritance': True,
+    'autosummary': True
     # 'exclude-members': '__weakref__'
 }
 
