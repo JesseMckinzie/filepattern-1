@@ -1,6 +1,6 @@
-=================
-Classes and Stuff
-=================
+=======
+Classes
+=======
 
 .. autosummary::
    :toctree: stubs
