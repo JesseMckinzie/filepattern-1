@@ -13,19 +13,15 @@
 import os
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
-sys.setrecursionlimit(1500)
+sys.path.insert(0, os.path.abspath('../src'))
+#sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
+#sys.setrecursionlimit(1500)
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'filepattern'
-author = 'Nicholas J Schaub'
-
-# The full version, including alpha/beta/rc tags
-with open(str(Path(__file__).parent.parent.parent.joinpath('VERSION')),'r') as fr:
-    version = fr.readline()
-    release = version
+project = 'filepattern2'
+author = 'Jesse McKinzie'
 
 # -- General configuration ---------------------------------------------------
 
@@ -33,12 +29,13 @@ with open(str(Path(__file__).parent.parent.parent.joinpath('VERSION')),'r') as f
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx_rtd_theme',
     'sphinx.ext.napoleon',
     'sphinx.ext.autodoc',
-    'sphinx_autodoc_typehints',
-    'sphinx.ext.autosummary',
-    'autodocsumm'
+    'sphinx.ext.autosummary'
+]
+
+install_requires = [
+    'gnu>=8.0'
 ]
 
 napoleon_use_param = True
@@ -86,7 +83,7 @@ master_doc = 'index'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'sphinx_rtd_theme'
+#html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
