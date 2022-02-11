@@ -13,15 +13,14 @@
 import os
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
-sys.setrecursionlimit(1500)
+sys.path.insert(0, os.path.abspath('../../src'))
 #sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
 #sys.setrecursionlimit(1500)
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'pattern'
+project = 'filepattern2'
 author = 'Jesse McKinzie'
 
 # -- General configuration ---------------------------------------------------
