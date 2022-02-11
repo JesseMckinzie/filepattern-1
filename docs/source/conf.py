@@ -13,14 +13,15 @@
 import os
 import sys
 from pathlib import Path
-sys.path.insert(0, os.path.abspath('../../src/pattern'))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
+sys.setrecursionlimit(1500)
 #sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
 #sys.setrecursionlimit(1500)
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'filepattern2'
+project = 'pattern'
 author = 'Jesse McKinzie'
 
 # -- General configuration ---------------------------------------------------
@@ -29,8 +30,10 @@ author = 'Jesse McKinzie'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinx_rtd_theme',
     'sphinx.ext.napoleon',
     'sphinx.ext.autodoc',
+    'sphinx_autodoc_typehints',
     'sphinx.ext.autosummary',
     'autodocsumm'
 ]
