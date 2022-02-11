@@ -2,8 +2,7 @@
 Classes
 =======
 
-.. autosummary::
-   :toctree: stubs
+.. currentmodule:: pattern 
 
    filepattern.FilePattern
    filepattern.VectorPattern
