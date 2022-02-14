@@ -39,7 +39,7 @@ extensions = [
 ]
 
 install_requires = [
-    'gnu>=8.0'
+    'gcc>=8.0'
 ]
 
 napoleon_use_param = True
