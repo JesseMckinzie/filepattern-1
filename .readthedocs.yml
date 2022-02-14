@@ -7,7 +7,13 @@ build:
 sphinx:
   configuration: docs/source/conf.py
 
+submodules:
+  include:
+    - lib/
+
 python:
   version: "3.7"
   install:
     - requirements: docs/requirements.txt
+    - method: setuptools
+      path: .
