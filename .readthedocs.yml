@@ -3,6 +3,7 @@ build:
   image: latest
   apt_packages:
     - cmake
+    - gnu@8
 
 sphinx:
   configuration: docs/source/conf.py
