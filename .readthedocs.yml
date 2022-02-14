@@ -2,7 +2,7 @@ version: 2
 build:
   image: latest
   tools:
-    gnu: latest
+    gcc: latest
   apt_packages:
     - cmake
 
