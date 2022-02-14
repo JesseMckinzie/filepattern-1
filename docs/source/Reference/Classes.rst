@@ -2,9 +2,8 @@
 Classes
 =======
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+.. autosummary::
+   :toctree: stubs
 
    filepattern.FilePattern
    filepattern.VectorPattern
