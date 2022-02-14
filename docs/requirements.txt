@@ -4,4 +4,3 @@ sphinx
 sphinx_rtd_theme
 autodocsumm
 sphinx-autodoc-typehints
-./source/pattern-0.1.1-cp37-cp37m-linux_x86_64.whl
