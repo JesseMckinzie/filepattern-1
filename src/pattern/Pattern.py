@@ -1,4 +1,4 @@
-#from . import FilePattern, StringPattern, VectorPattern 
+from . import FilePattern, StringPattern, VectorPattern 
 import re
 
 class Pattern:
