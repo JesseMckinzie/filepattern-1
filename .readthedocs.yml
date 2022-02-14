@@ -6,7 +6,6 @@ build:
     python: "3.7"
   apt_packages:
     - cmake
-    - gcc@8
 
 sphinx:
   configuration: docs/source/conf.py
