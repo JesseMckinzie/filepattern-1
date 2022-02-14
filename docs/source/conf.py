@@ -42,13 +42,7 @@ install_requires = [
     'gcc>=8.0'
 ]
 
-class Mock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
-        return MagicMock()
-
-MOCK_MODULES = ['backend']
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+autodoc_mock_imports = ["backend"]
 
 napoleon_use_param = True
 
