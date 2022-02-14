@@ -1,6 +1,5 @@
 cmake==3.21.3
 setuptools-scm==6.3.2
-gcc==8.0.0
 sphinx
 sphinx_rtd_theme
 autodocsumm
