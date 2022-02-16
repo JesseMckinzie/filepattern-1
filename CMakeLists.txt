@@ -3,13 +3,13 @@ cmake_minimum_required(VERSION 3.2)
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # require at least gcc 4.8
   if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0)
-      message(FATAL_ERROR "GCC version must be at least 4.8!")
+      message(FATAL_ERROR "GCC version must be at least 8.0!")
   endif()
 endif()
 
-project(pattern)
+project(filepattern2)
 # Set source directory
-set(SOURCE_DIR "src/pattern")
+set(SOURCE_DIR "src/filepattern2")
 #Tell CMake that headers are also in SOURCE_DIR
 include_directories(${SOURCE_DIR})
 
@@ -38,6 +38,3 @@ pybind11_add_module(backend MODULE ${SOURCES} "${SOURCE_DIR}/bindings.cpp"
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   target_link_libraries(backend PRIVATE stdc++fs)
 endif()
-
-
-#target_link_libraries(backend PRIVATE stdc++fs)

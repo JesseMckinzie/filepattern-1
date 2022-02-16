@@ -66,7 +66,7 @@ class CMakeBuild(build_ext):
         print()  # Add an empty line for cleaner output\
         
 setup(
-    name='pattern',
+    name='filepattern2',
     version='0.1.1',
     author='Jesse McKinzie',
     description='Hybrid Python/C++ filepattern with external memory algorithms',
@@ -78,7 +78,7 @@ setup(
     package_dir={'':'src'},
     # add an extension module named 'python_cpp_example' to the package 
     # 'python_cpp_example'
-    ext_modules=[CMakeExtension('pattern/backend')],
+    ext_modules=[CMakeExtension('filepattern2/backend')],
     # add custom build_ext command
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
