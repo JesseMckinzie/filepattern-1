@@ -1,4 +1,4 @@
-from pattern import StringPattern as sp
+from filepattern2 import StringPattern as sp
 import os
 import pprint
 

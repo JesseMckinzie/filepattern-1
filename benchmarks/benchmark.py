@@ -1,5 +1,5 @@
 import filepattern
-from pattern import ExternalFilePattern as fp 
+from filepattern2 import ExternalFilePattern as fp 
 import time
 
 path = 'FilePattern/benchmarks/test_data/data1000000'
