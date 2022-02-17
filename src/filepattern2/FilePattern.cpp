@@ -35,6 +35,7 @@ FilePattern::FilePattern(const string& path, const string& filePattern, bool rec
     
 
     this->matchFiles();
+    this->sortFiles();
 }
 
 void FilePattern::printFiles(){

@@ -297,3 +297,7 @@ string ExternalPattern::inferPattern(const string& path, string& variables, cons
 int ExternalPattern::getGroupLength(){
     return this->currentGroup.size();
 }
+
+void ExternalPattern::sortFiles(){
+
+}

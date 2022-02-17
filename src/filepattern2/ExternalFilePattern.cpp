@@ -19,6 +19,12 @@ ExternalPattern(path, blockSize, recursive) {
     this->tmpDirectories.push_back(validFilesPath);
     this->firstCall = true; // first call to next() has not occured
     this->matchFiles(); // match files to pattern
+    ExternalMergeSort sort = ExternalMergeSort(std_map, 
+                                               this->validFilesPath, 
+                                               this->validFilesPath,
+                                               stream.getBlockSizeStr(),
+                                               "",
+                                               stream.mapSize);
     //this->next();
     this->groupStream.open(stream.getValidFilesPath());
     this->infile.open(validFilesPath); // open temp file for the valid files

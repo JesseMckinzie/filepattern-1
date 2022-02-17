@@ -104,3 +104,9 @@ string InternalPattern::inferPattern(const string& path, string& variables){
 string InternalPattern::inferPattern(vector<string>& vec, string& variables){
     return inferPatternInternal(vec, variables);
 }
+
+void InternalPattern::sortFiles(){
+    sort(this->validFiles.begin(), this->validFiles.end(), [](Tuple& m1, Tuple& m2){
+        return get<1>(m1)[0] < get<1>(m2)[0];
+    });
+}

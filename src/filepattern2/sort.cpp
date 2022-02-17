@@ -62,10 +62,16 @@ void ExternalMergeSort::sortMapFile(){
             break;
         }
         // sort block
-        sort(vec.begin(), vec.end(), 
-            [&sortVariable = as_const(sortVariable)](Tuple& a, Tuple& b) {
-                return get<0>(a)[sortVariable] < get<0>(b)[sortVariable];
-        });
+        if(this->sortVariable == ""){
+            sort(vec.begin(), vec.end(), [](Tuple& a, Tuple& b) {
+                return get<1>(a)[0] < get<1>(b)[0];
+            });
+        } else {
+            sort(vec.begin(), vec.end(), 
+                [&sortVariable = as_const(sortVariable)](Tuple& a, Tuple& b) {
+                    return get<0>(a)[sortVariable] < get<0>(b)[sortVariable];
+            });
+        }
 
         //write to file
         blockName = tmpdir + to_string(blockNum) + ".txt";;
@@ -432,6 +438,16 @@ void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& f
             outfile.close();
             break; 
 
+        } else if(this->sortVariable == ""){
+            if(get<1>(map1)[0] <= get<1>(map2)[0]) {
+                            //write str1 to output
+                m::writeMap(outfile, map1);
+                m::getMap(file1, map1, this->mapSize); 
+            } else {
+                //write str2 to output
+                m::writeMap(outfile, map2);
+                m::getMap(file2, map2, this->mapSize);
+            }
         } else if(get<0>(map1)[this->sortVariable] <= get<0>(map2)[this->sortVariable]){
             //write str1 to output
             m::writeMap(outfile, map1);
