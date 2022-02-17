@@ -1,4 +1,4 @@
-from pattern import FilePattern as fp
+from filepattern2 import FilePattern as fp
 import os
 import pprint
 

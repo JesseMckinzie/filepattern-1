@@ -1,7 +1,7 @@
 import unittest
-from pattern import FilePattern as fp
-from pattern import StringPattern as sp
-from pattern import ExternalFilePattern as efp
+from filepattern2 import FilePattern as fp
+from filepattern2 import StringPattern as sp
+from filepattern2 import ExternalFilePattern as efp
 import filepattern
 import os
 import pprint

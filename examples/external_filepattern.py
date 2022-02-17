@@ -1,4 +1,4 @@
-from pattern import ExternalFilePattern as efp
+from filepattern2 import ExternalFilePattern as efp
 import os
 import pprint
 

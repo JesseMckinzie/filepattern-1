@@ -1,6 +1,6 @@
 import unittest, json
 from pathlib import Path
-from pattern import Pattern
+from filepattern2 import Pattern
 
 """
 NOTE: Run the file "generate_data.py" in /tests and in "examples" before running this file.
