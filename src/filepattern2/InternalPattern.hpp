@@ -37,6 +37,9 @@ class InternalPattern : public Pattern {
                              Types& temp);
     
     public:
+
+        void sortFiles();
+
         /**
          * @brief Group matched files by a variable.
          * 

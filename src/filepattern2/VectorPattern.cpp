@@ -12,6 +12,7 @@ VectorPattern::VectorPattern(const string& path, const string& filePattern){
     this->regexFilePattern = ""; // Regex version of pattern
 
     this->matchFiles(); // match lines of stitching vector to the pattern
+    this->sortFiles();
 }
 
 void VectorPattern::matchFiles(){   

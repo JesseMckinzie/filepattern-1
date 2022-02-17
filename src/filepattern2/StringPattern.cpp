@@ -9,6 +9,7 @@ StringPattern::StringPattern(const string& fileName, const string& filePattern) 
     this->regexFilePattern = "";
     this->readFile(); // read file into memory
     this->matchFiles(); // match files to pattern
+    this->sortFiles();
 }
 
 void StringPattern::readFile(){

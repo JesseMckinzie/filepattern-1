@@ -182,6 +182,8 @@ class ExternalPattern : public Pattern {
          * @return int Length of current block of files
          */
         int getGroupLength();
+
+        void sortFiles();
 };
 
 #endif

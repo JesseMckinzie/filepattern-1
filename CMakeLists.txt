@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 
+set(CMAKE_CXX_COMPILER "/usr/local/bin/g++")
+
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # require at least gcc 4.8
   if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0)
