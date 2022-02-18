@@ -55,7 +55,7 @@ Note that the ``infer_pattern`` can also guess the patterns from stitching vecto
 To retrieve files from a directory that match the ``filepattern``, an iterator is called on the `FilePattern` object, as shown below. A user specified custom pattern, such as the one below, or the guessed pattern can beas input in the constructor.
 
 ```python
-from pattern import FilePattern as fp
+import filepattern2 as fp
 import pprint
 
 filepath = "path/to/directory"
