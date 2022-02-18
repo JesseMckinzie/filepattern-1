@@ -1,7 +1,7 @@
-from . import FilePattern, StringPattern, VectorPattern 
+from . import FilePatternBackend, StringPattern, VectorPattern 
 import re
 
-class Pattern:
+class FilePattern:
     def __init__(self, path: str, pattern: str='', block_size: str ='', recursive: bool=False):
         """Constructor of the Pattern class. The path arugment can either be a directory, a text file,
         or a stitching vector. Passing in the optional arguement `block_size` will 
@@ -29,7 +29,7 @@ class Pattern:
             else:
                 self._file_pattern = StringPattern.StringPattern(path, pattern, block_size=block_size)
         else:
-            self._file_pattern = FilePattern.FilePattern(path, pattern, block_size=block_size, recursive=recursive)
+            self._file_pattern = FilePatternBackend.FilePatternBackend(path, pattern, block_size=block_size, recursive=recursive)
 
     def get_matching(self, **kwargs) -> list:
         """Get all filenames matching specific values

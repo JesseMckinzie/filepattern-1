@@ -1,6 +1,6 @@
 from . import ExternalFilePattern, InternalFilePattern
 
-class FilePattern:
+class FilePatternBackend:
     """
     Class to create either a `InternalFilePattern` or `ExternalFilePattern` object based on
     whether the arguement `block_size` is passed to the constrctor. If `block_size` is a nonempty 

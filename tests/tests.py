@@ -23,7 +23,7 @@ class TestFilePattern(unittest.TestCase):
 
         for pattern in self.patterns:
             old_files = filepattern.FilePattern(self.path, self.old_pattern)
-            files = fp.Pattern(self.path, pattern)
+            files = fp.FilePattern(self.path, pattern)
 
             old_result = []
             result = []
@@ -53,7 +53,7 @@ class TestFilePattern(unittest.TestCase):
             for i in range(0, self.MAX_NUM):
 
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.Pattern(self.path, pattern)
+                files = fp.FilePattern(self.path, pattern)
 
                 nums.append(i)
 
@@ -101,7 +101,7 @@ class TestFilePattern(unittest.TestCase):
     def test_group_by(self):
         for pattern in self.patterns:
             old_files = filepattern.FilePattern(self.path, self.old_pattern)
-            files = fp.Pattern(self.path, pattern)
+            files = fp.FilePattern(self.path, pattern)
 
             old_result = []
             result = []
@@ -139,7 +139,7 @@ class TestFilePattern(unittest.TestCase):
 
         for pattern in self.patterns:
             old_files = filepattern.FilePattern(old_path, self.old_pattern)
-            files = fp.Pattern(path, pattern, recursive=True)
+            files = fp.FilePattern(path, pattern, recursive=True)
 
             old_result = []
             result = []
@@ -183,7 +183,7 @@ class TestStringPattern(unittest.TestCase):
     def test_file_pattern(self):
         for pattern in self.patterns:
             old_files = filepattern.FilePattern(self.path, self.old_pattern)
-            files = fp.Pattern(self.filepath, pattern)
+            files = fp.FilePattern(self.filepath, pattern)
 
             old_result = []
             result = []
@@ -207,7 +207,7 @@ class TestStringPattern(unittest.TestCase):
             for i in range(0, self.MAX_NUM):
 
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.Pattern(self.filepath, pattern)
+                files = fp.FilePattern(self.filepath, pattern)
 
                 nums.append(i)
 
@@ -255,7 +255,7 @@ class TestStringPattern(unittest.TestCase):
     def test_group_by(self):
         for pattern in self.patterns:
             old_files = filepattern.FilePattern(self.path, self.old_pattern)
-            files = fp.Pattern(self.filepath, pattern)
+            files = fp.FilePattern(self.filepath, pattern)
 
             old_result = []
             result = []
@@ -304,7 +304,7 @@ class TestExternalFilePattern(unittest.TestCase):
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.Pattern(self.path, pattern, block_size=block_size)
+                files = fp.FilePattern(self.path, pattern, block_size=block_size)
 
                 old_result = []
                 result = []
@@ -330,7 +330,7 @@ class TestExternalFilePattern(unittest.TestCase):
                 for i in range(0, self.MAX_NUM):
 
                     old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                    files = fp.Pattern(self.path, pattern, block_size=block_size)
+                    files = fp.FilePattern(self.path, pattern, block_size=block_size)
 
                     nums.append(i)
 
@@ -392,7 +392,7 @@ class TestExternalFilePattern(unittest.TestCase):
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.Pattern(self.path, pattern, block_size=block_size)
+                files = fp.FilePattern(self.path, pattern, block_size=block_size)
 
                 old_result = []
                 result = []
@@ -450,7 +450,7 @@ class TestExternalStringPattern(unittest.TestCase):
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.Pattern(self.string_path, pattern, block_size=block_size)
+                files = fp.FilePattern(self.string_path, pattern, block_size=block_size)
 
                 old_result = []
                 result = []
@@ -477,7 +477,7 @@ class TestExternalStringPattern(unittest.TestCase):
                 for i in range(0, self.MAX_NUM):
 
                     old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                    files = fp.Pattern(self.string_path, pattern, block_size=block_size)
+                    files = fp.FilePattern(self.string_path, pattern, block_size=block_size)
 
                     nums.append(i)
 
@@ -539,7 +539,7 @@ class TestExternalStringPattern(unittest.TestCase):
         for pattern in self.patterns:
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
-                files = fp.Pattern(self.string_path, pattern, block_size=block_size)
+                files = fp.FilePattern(self.string_path, pattern, block_size=block_size)
 
                 old_result = []
                 result = []

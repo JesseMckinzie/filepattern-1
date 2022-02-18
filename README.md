@@ -92,6 +92,7 @@ As shown in this example, the output is a tuple where the first member is a map 
 ```
 
 In this case, the subdirectories are split by the channel. Recursive matching can be used as shown below.
+
 ```python
 import filepattern2 as fp
 import pprint
@@ -220,7 +221,7 @@ The ouput is:
  ['img_r001_c001_GFP.tif'])
 ```
 
- also contains the [group_by](#group-by) and [get_matching](#get-matching) functionality as outlined in the [FilePattern](#filepattern-section) section. 
+ After calling ``filepattern`` on a text file,  the [group_by](#group-by) and [get_matching](#get-matching) functionality can be used the same as outlined in the [FilePattern](#filepattern-section) section. 
 
 ## Stitching vectors
 
@@ -326,6 +327,6 @@ where the output is returned in blocks of `block_size`. The output is:
  ['/home/ec2-user/Dev/FilePattern/data/example/img_r001_c001_TXREAD.tif'])
 ```
 
-### Out of core: text files and stitching vectors
+## Out of Core: text files and stitching vectors
 
 Out of core processing can also be used for stitching vectors and text files. To utilize this functionality, call ``filepattern`` the same way as described previously, but add in the ``block_size`` parameter, as described in the (Out of Core)[#out-of-core] section.
