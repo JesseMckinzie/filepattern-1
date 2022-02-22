@@ -32,7 +32,7 @@ pattern = 'img_r{r:ddd}_c{c:ddd}_{channel:c+}.tif'
 
 data_path = path
 
-files = fp.Pattern(data_path, pattern)
+files = fp.FilePattern2(data_path, pattern)
 
 results = []
 for file in files():

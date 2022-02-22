@@ -78,7 +78,7 @@ setup(
     package_dir={'':'src'},
     # add an extension module named 'python_cpp_example' to the package 
     # 'python_cpp_example'
-    ext_modules=[CMakeExtension('pattern/backend')],
+    ext_modules=[CMakeExtension('filepattern2/backend')],
     # add custom build_ext command
     cmdclass=dict(build_ext=CMakeBuild),
     zip_safe=False,
