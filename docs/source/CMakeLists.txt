@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(pattern)
+project(filepattern2)
 # Set source directory
-set(SOURCE_DIR "src/pattern")
+set(SOURCE_DIR "src/filepattern2")
 #Tell CMake that headers are also in SOURCE_DIR
 include_directories(${SOURCE_DIR})
 
