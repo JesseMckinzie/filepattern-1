@@ -15,7 +15,7 @@ extract all images containing such a naming pattern, filter by the row or column
 
 To install `filepattern2`:
 
-1. Clone repository with ```--recursive-submodules```
+1. Clone repository with ```--recurse-submodules```
 2. cd to the folder and then run ```pip install .```
   
 After installation, use "import filepattern2" to import the module into Python.
