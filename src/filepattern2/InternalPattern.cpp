@@ -110,3 +110,21 @@ void InternalPattern::sortFiles(){
         return get<1>(m1)[0] < get<1>(m2)[0];
     });
 }
+
+/*
+vector<Tuple> InternalPattern::getFilesFromOutputName(const string& outputName, const vector<string>& vars) {
+
+    regex outputGroup("\([0-9a-zA-Z]+)-[0-9a-zA-Z]+\)");
+
+    smatch sm;
+    if(regex_search(outputName, sm, outputGroup)){
+        // find any named groups with regex style naming
+        cout << "sm: " << endl;
+
+        for(const auto& match: sm){
+            cout << match << endl;
+        }
+        cout << endl;
+    }
+}
+*/
