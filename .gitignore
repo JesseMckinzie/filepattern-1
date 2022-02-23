@@ -7,10 +7,10 @@ __pycache__/
 *.so
 
 # Mac
-**/.DS_Store
+.DS_Store
 
 # Docs
-*.readthedocs.yml
+.readthedocs.yml
 
 # Distribution / packaging
 .Python
