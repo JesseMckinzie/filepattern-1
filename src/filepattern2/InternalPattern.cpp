@@ -111,6 +111,7 @@ void InternalPattern::sortFiles(){
     });
 }
 
+/*
 vector<Tuple> InternalPattern::getFilesFromOutputName(const string& outputName, const vector<string>& vars) {
 
     regex outputGroup("\([0-9a-zA-Z]+)-[0-9a-zA-Z]+\)");
@@ -126,3 +127,4 @@ vector<Tuple> InternalPattern::getFilesFromOutputName(const string& outputName, 
         cout << endl;
     }
 }
+*/
