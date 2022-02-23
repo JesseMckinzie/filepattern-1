@@ -2,6 +2,27 @@ from . import FilePatternBackend, StringPattern, VectorPattern
 import re
 
 class FilePattern:
+    """
+    Class to create a FilePattern object.
+    
+    This class take in in 4 arguements: path, pattern, block_size, and recurisve. For the path,
+    either a path to a directory, text file, or stitching vector may be provided. ``filepattern2`` will
+    then match the filenames in the directory, or each line of the text file, to the provided ``pattern``.
+    
+    The ``block_size`` parameter allows for out of core processing, which consume ``block_size`` amount of memory at most.
+    
+    The ``recursive`` parameter enables recursive iteration of subdirectories when a directory is passed as ``path``. In 
+    this case ``filepattern2`` will iteratre over the subdirectories, storing filenames with the same basename in the same
+    group. 
+    
+    
+    Args:
+            path: Path to directory or text file
+            pattern: Pattern to compare each filename to
+            block_size: Maximum amount of RAM to consume at once. Defaults to "".
+            recursive: Iterate over subdirectories. Defaults to False.
+    """
+    
     def __init__(self, path: str, pattern: str='', block_size: str ='', recursive: bool=False):
         """Constructor of the Pattern class. The path arugment can either be a directory, a text file,
         or a stitching vector. Passing in the optional arguement `block_size` will 
@@ -129,20 +150,9 @@ class FilePattern:
         
 
     def __call__(self, group_by=None):
-        """Iterate thorugh files parsed using a filepattern 
-        
-        This method returns an iterable of filenames matched to the filepattern. If 
-        a group_by variable is provided, lists of files where the variable is held constant are 
-        returned on each call. 
-        
-        Args: 
-            group_by: List of variables to group filenames by.
-        """
         
         return self._file_pattern.__call__(group_by)
 
     def __iter__(self):
-        """Returns an iterator of files matched to the pattern
-        """
         return self._file_pattern.__iter__()
         
