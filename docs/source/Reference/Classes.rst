@@ -7,3 +7,4 @@ Classes
 
    filepattern2.FilePattern
    
+   filepattern2.functions
