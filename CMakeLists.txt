@@ -11,7 +11,7 @@ endif()
 
 project(filepattern2)
 # Set source directory
-set(SOURCE_DIR "src/filepattern2")
+set(SOURCE_DIR "src/filepattern2/cpp")
 #Tell CMake that headers are also in SOURCE_DIR
 include_directories(${SOURCE_DIR})
 
