@@ -10,6 +10,7 @@
 #include "ExternalStringPattern.hpp"
 #include "VectorPattern.hpp"
 #include "ExternalVectorPattern.hpp"
+#include <iostream>
 
 namespace py = pybind11;
 
@@ -29,9 +30,13 @@ PYBIND11_MODULE(backend, m){
         .def("getUniqueValues", &Pattern::getUniqueValues)
         .def("getTmpDirs", &Pattern::getTmpDirs)
         .def_readonly("group", &Pattern::group)
+        .def_readonly("validFiles", &Pattern::validFiles)
         .def("__iter__", [](const Pattern &v){ 
             if(v.group != "") return py::make_iterator(v.validGroupedFiles.begin(), v.validGroupedFiles.end());
-            else return py::make_iterator(v.validFiles.begin(), v.validFiles.end());}, 
+            else{ 
+                return py::make_iterator(v.validFiles.begin(), v.validFiles.end());
+            }
+            }, 
             py::keep_alive<0, 1>()); // Keep vector alive while iterator is used 
 
     py::class_<InternalPattern, Pattern>(m, "InternalPattern")
