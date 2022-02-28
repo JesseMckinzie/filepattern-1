@@ -35,11 +35,11 @@ class TestFilePattern(unittest.TestCase):
 
             self.assertEqual(len(old_result), len(result)) 
             
-            print("old result: ")
-            pprint.pprint(old_result)
+            #print("old result: ")
+            #pprint.pprint(old_result)
             
-            print("new result: ")
-            pprint.pprint(result)
+            #rint("new result: ")
+            #pprint.pprint(result)
 
             for i in range(len(old_result)):
                 self.assertEqual(old_result[i][0]["r"], result[i][0]["r"]) 

@@ -6,4 +6,3 @@ Classes
    :toctree: stubs
 
    filepattern2.FilePattern
-   

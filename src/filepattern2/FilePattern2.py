@@ -1,7 +1,156 @@
-from . import FilePatternBackend, StringPattern, VectorPattern 
+#from . import FilePatternBackend, StringPattern, VectorPattern 
+from . import backend
 import re
 
-class FilePattern:
+class PatternObject():
+    
+    def __init__(self, file_pattern, block_size):
+        self._file_pattern = file_pattern
+        self._block_size = block_size
+    
+    def get_matching(self, **kwargs) -> list:
+        """Get all filenames matching specific values
+    
+        Args:
+            **kwargs: One of the variables contained in the pattern 
+
+        Returns:
+            List of matching files
+        """
+        
+        mapping = []
+        for key, value in kwargs.items():
+            mapping.append((key, value))
+    
+        if(self._block_size == ''):
+            try:
+                return self._file_pattern.getMatching(mapping)
+            except Exception as e:
+                print(e)
+        else:
+            return self._get_matching_out_of_core(mapping)
+    
+    def _get_matching_out_of_core(self, mapping):
+            try: 
+                self._file_pattern.getMatching(mapping)
+
+                while(True):
+                    matching = self._get_matching_block()
+                    if(len(matching) == 0):
+                        break
+
+                    for match in matching:
+                        yield match
+
+            except ValueError as e:
+                print(e)
+    
+    def _get_matching_block(self) -> list:
+        """
+        Returns block of mathing files of size less than or equal to block_size.
+
+        Must be called after making a call to get_matching.
+
+        @return list Block of matching files.
+        """
+
+        try:
+            return self._file_pattern.getMatchingBlock()
+        except ValueError as e:
+            print(e)
+
+
+    def get_occurences(self, mapping):
+        """
+        Returns the unique values for each variable along with the number of occurences for each value.
+        
+        Args: 
+            **kwargs: Each keyword arguement must be a variable. If no arguements are supplied, the occurences
+            for every variable will be returned. 
+            
+        Returns:
+            Dictionary of variables mapped to values where each value is mapped to the number of occurences.
+        """
+
+        return self._file_pattern.getOccurences(mapping)
+    
+    def get_unique_values(self, vec) -> list:
+        """Returns the unique values for each variable.
+        
+        This method returns a dictionary of provided variables to a list of all unique occurences. If no variables are provided,
+        all variables will be returned.   
+        
+        Args: 
+            **args: Variables to get the occurences of. All variables will be returned if no arguments are provided.
+            
+        Returns:
+            Dictionary of variables mapped to values.
+        """
+
+        return self._file_pattern.getUniqueValues(vec)
+
+    def output_name(self, files: list=[]) -> str:
+        """Returns a single filename that captures variables from a list of files.
+        
+        Given a list of files, this method will return a single filename that captures the variables from each
+        file in the list. If a variable is constant through the list, the variable value will be in the returned 
+        name. If a variable is not constant, the minimum and maximum values will appear in the returned name in
+        the form "(min-max)". 
+        
+        Args:
+            files: List of files to get a single filename of.
+        
+        Returns:
+            A string that captures the variable values from each file in files.
+
+        """
+
+        return self._file_pattern.outputName(files)
+    
+    def __call__(self, group_by=''):
+        """Iterate thorugh files parsed using a filepattern 
+        
+        This method returns an iterable of filenames matched to the filepattern. If 
+        a group_by variable is provided, lists of files where the variable is held constant are 
+        returned on each call. 
+        
+        Args: 
+            group_by: List of variables to group filenames by.
+        """
+        if(self._block_size == ''):
+            if(group_by != ''):
+                self._file_pattern.groupBy(group_by)
+            return self
+            
+        if(group_by != ''):
+            self._file_pattern.setGroup(group_by)
+
+        return self
+
+    def __len__(self):
+        return self._file_pattern.currentBlockLength()
+
+    def __iter__(self):
+        """Returns an iterator of files matched to the pattern
+        """
+        if(self._block_size == ''):
+            for file in self._file_pattern.__iter__():
+                yield file
+        else:
+            while(True):
+                
+                for block in self._file_pattern.__iter__():
+                    
+                    if(len(self) == 0):
+                        break
+                    
+                    yield block
+                    
+                if(len(self) == 0):
+                    break   
+    
+    
+class FilePattern(PatternObject):
     """
     Class to create a FilePattern object.
     
@@ -42,33 +191,33 @@ class FilePattern:
         """
         
         if(path.endswith('.txt')):
+            
             with open(path) as infile:
                 line = infile.readline().rstrip()
             
             if(re.match(r'file\: .+?; corr\: .+?; position\: .+?; grid\: .+?;', line)):
-                self._file_pattern = VectorPattern.VectorPattern(path, pattern, block_size=block_size)
+                if(block_size == ''):
+                    self._file_pattern = backend.InternalVectorPattern(path, pattern)
+                else:
+                    self._file_pattern = backend.ExternalVectorPattern(path, pattern, block_size)
+                #self._file_pattern = backend.InternalVectorPattern(path, pattern) if block_size == '' \
+                #                    else backend.ExternalVectorPattern(path, pattern, block_size=block_size)
             else:
-                self._file_pattern = StringPattern.StringPattern(path, pattern, block_size=block_size)
+                if(block_size == ''):
+                    self._file_pattern = backend.StringPattern(path, pattern)
+                else:
+                    self._file_pattern = backend.ExternalStringPattern(path, pattern, block_size)
+                #self._file_pattern = backend.StringPattern(path, pattern) if block_size == '' \
+                #                    else backend.ExternalStringPattern(path, pattern, block_size=block_size)
         else:
-            self._file_pattern = FilePatternBackend.FilePatternBackend(path, pattern, block_size=block_size, recursive=recursive)
-
-    def get_matching(self, **kwargs) -> list:
-        """Get all filenames matching specific values
+            if(block_size == ''):
+                self._file_pattern = backend.FilePattern(path, pattern, recursive)
+            else:
+                self._file_pattern = backend.ExternalFilePattern(path, pattern, block_size, recursive)
+            #self._file_pattern = backend.FilePattern(path, pattern, recursive) if block_size == '' \
+            #                    else backend.ExternalFilePattern(path, pattern, recursive = recursive, block_size=block_size)
         
-        Args:
-            **kwargs: One of the variables contained in the pattern 
-
-        Returns:
-            List of matching files
-        """
-        try:
-            mapping = []
-            for key, value in kwargs.items():
-                mapping.append((key, value))
-
-            return self._file_pattern.get_matching(mapping)
-        except ValueError as e:
-            print(e)
+        super().__init__(self._file_pattern, block_size)
 
     def get_occurences(self, **kwargs):
         """
@@ -86,7 +235,7 @@ class FilePattern:
         for key, value in kwargs.items():
             mapping.append((key, value))
 
-        return self._file_pattern.get_occurences(mapping)
+        return super(FilePattern, self).get_occurences(mapping)
     
     def get_unique_values(self, *args) -> list:
         """Returns the unique values for each variable.
@@ -104,7 +253,7 @@ class FilePattern:
         for str in args:
             vec.append(str)
 
-        return self._file_pattern.get_unique_values(vec)
+        return super().get_unique_values(vec)
 
     def output_name(self, files: list=[]) -> str:
         """Returns a single filename that captures variables from a list of files.
@@ -122,33 +271,9 @@ class FilePattern:
 
         """
 
-        return self._file_pattern.output_name(files)
-    
+        return super().output_name(files)
 
-    def infer_pattern(path: str="", files: list=[], variables: str="", block_size: str=""):
-        """Returns a guess of a pattern given path to a directory of files or a list of files.
-        
-        Args:
-            path: The path to a directory of files. Defualts to "".
-            files: A list of files. Defualts to [].
-            variables: A string of variables. If an empty string, variable names will be provided. Defaults to "".
-            block_size: An string that specifies a maximum amount of RAM to consume. If "", no limit will be imposed. Defaults to "". 
-        
-        Returns:
-            A string that is a guess of the pattern for the supplied filenames.
-        """
-        if(path.endswith('.txt')):
-            with open(path) as infile:
-                line = infile.readline().rstrip()
-            
-            if(re.match(r'file\: .+?; corr\: .+?; position\: .+?; grid\: .+?;', line)):
-                return VectorPattern.VectorPattern.infer_pattern(path=path, variables=variables, block_size=block_size)
-            else:
-                return StringPattern.StringPattern.infer_pattern(path=path, files=files, variables=variables, block_size=block_size)
-        else:
-            return FilePattern.FilePattern.infer_pattern(path=path, files=files, variables=variables, block_size=block_size)
-        
-
+"""
     def __call__(self, group_by=None):
         
         return self._file_pattern.__call__(group_by)
@@ -156,3 +281,4 @@ class FilePattern:
     def __iter__(self):
         return self._file_pattern.__iter__()
         
+"""
