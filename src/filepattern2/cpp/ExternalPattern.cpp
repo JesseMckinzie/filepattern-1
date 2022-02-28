@@ -78,7 +78,7 @@ void ExternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
 
 string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
     // construct temporary directory path
-    this->fp_tmpdir = fs::temp_directory_path();
+    this->fp_tmpdir = fs::temp_directory_path().string();
     this->fp_tmpdir += "/filepattern_" + s::getTimeString() + "/";
 
     this->tmpDirectories.push_back(this->fp_tmpdir);

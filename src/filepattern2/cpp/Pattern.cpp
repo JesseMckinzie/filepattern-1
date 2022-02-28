@@ -412,8 +412,8 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
     };
 
     // scoring matrix creation
-    int m = pattern.length();
-    int n = filename.length();
+    const int m = pattern.length();
+    const int n = filename.length();
     int matrix[m+1][n+1];
     fill(matrix[0], matrix[0] + (m+1) * (n+1), 0);
 
