@@ -4,7 +4,7 @@ using namespace std;
 
 Stream::Stream(const string& blockSize, const bool isInfer) {
     this->isInfer = isInfer;
-    this->tmpdir = fs::temp_directory_path();
+    this->tmpdir = fs::temp_directory_path().string();
     this->tmpdir += "/fs_stream_tmp_" + s::getTimeString() + "/";
     this->blockSizeStr = blockSize;
     this->blockSize = Block::parseblockSize(blockSize);
