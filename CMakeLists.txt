@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.2)
 
 #set(CMAKE_CXX_COMPILER "/usr/local/bin/g++") #For mac only
 #set(CMAKE_C_COMPILER "C:/MinGW/bin/gcc.exe")
-set(CMAKE_CXX_COMPILER "C:/MinGW/bin/g++.exe")
+#set(CMAKE_CXX_COMPILER "C:/MinGW/bin/g++.exe")
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # require at least gcc 4.8
@@ -10,6 +10,8 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
       message(FATAL_ERROR "GCC version must be at least 8.0!")
   endif()
 endif()
+
+#set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 
 project(filepattern2)
 # Set source directory
