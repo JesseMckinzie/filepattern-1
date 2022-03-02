@@ -15,7 +15,7 @@ ExternalMergeSort::ExternalMergeSort(const Structure& structure,
     this->blockSizeStr = blockSize;
     this->blockSize = Block::parseblockSize(blockSize);
     this->mapSize = mapSize;
-    tmpdir = fs::temp_directory_path(); // Find temporary directory
+    tmpdir = fs::temp_directory_path().string(); // Find temporary directory
 
     this->tmpdir += "/extern_sort_tmp_" + s::getTimeString() + "/"; // temp directory
     // remove files from directory if already exits

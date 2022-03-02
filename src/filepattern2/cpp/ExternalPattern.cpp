@@ -68,8 +68,10 @@ void ExternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
 
 
         // clear contents of matching.txt
-        fclose(fopen(matching.c_str(), "w"));
-
+        FILE* tempFile;
+        fopen_s(&tempFile, matching.c_str(), "w");
+        fclose(tempFile);
+        
         ifstream in(matchingCopy); 
         ofstream out(matching);
         this->getMatchingLoop(in, out, variable, values, temp, tempMap);

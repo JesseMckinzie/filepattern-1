@@ -15,21 +15,7 @@
  * 
  */
 
-#pragma once
-#include <regex>
-#include <tuple>
-#include <variant>
-#include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <map>
-#include <chrono>
-#include <filesystem>
-#include <iostream>
-
-typedef std::variant<int, std::string> Types;
-typedef std::map<std::string, Types> Map;
-typedef std::tuple<Map , std::vector<std::string>> Tuple;
+#include "util.hpp"
 
 /**
  * @brief Functions for std::strings and Types.
