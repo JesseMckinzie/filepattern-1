@@ -4,7 +4,7 @@ using namespace std;
 
 FilesystemStream::FilesystemStream(const string& path, bool recursive, const string& blockSize, const bool isInfer){
     this->isInfer = isInfer; // Is a call from inferPattern (handles memory footprint calculation different if true)
-    this->tmpdir = fs::temp_directory_path(); // temp directory to store txt files
+    this->tmpdir = fs::temp_directory_path().string(); // temp directory to store txt files
     this->tmpdir += "/fs_stream_tmp_" + s::getTimeString() + "/"; // path to temp directory
     this->blockSizeStr = blockSize; // string version of blockSize
     this->blockSize = Block::parseblockSize(blockSize); // parse string to long
