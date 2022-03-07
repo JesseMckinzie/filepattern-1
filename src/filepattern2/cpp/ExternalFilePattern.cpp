@@ -94,7 +94,8 @@ void ExternalFilePattern::matchFilesOneDir(){
 
         block = stream.getBlock();
         
-        for (const auto& filePath : block) {
+        for (auto& filePath : block) {
+            replace(filePath.begin(), filePath.end(), '\\', '/');
             file = s::getBaseName(filePath);
 
             if(regex_match(file, sm, patternRegex)){
