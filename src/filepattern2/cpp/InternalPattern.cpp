@@ -95,7 +95,7 @@ string InternalPattern::inferPattern(const string& path, string& variables){
     fs::directory_iterator iterator = fs::directory_iterator(path);
     string filePath;
     for(auto& file: iterator){
-        vec.push_back(s::getBaseName(file.path()));
+        vec.push_back(s::getBaseName(file.path().string()));
     }
 
     return inferPatternInternal(vec, variables);

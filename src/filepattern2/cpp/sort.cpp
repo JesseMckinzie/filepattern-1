@@ -15,7 +15,7 @@ ExternalMergeSort::ExternalMergeSort(const Structure& structure,
     this->blockSizeStr = blockSize;
     this->blockSize = Block::parseblockSize(blockSize);
     this->mapSize = mapSize;
-    tmpdir = fs::temp_directory_path(); // Find temporary directory
+    tmpdir = fs::temp_directory_path().string(); // Find temporary directory
 
     this->tmpdir += "/extern_sort_tmp_" + s::getTimeString() + "/"; // temp directory
     // remove files from directory if already exits
@@ -39,8 +39,8 @@ ExternalMergeSort::ExternalMergeSort(const Structure& structure,
 }
 
 
-double ExternalMergeSort::currentSize(const int& stringSize, 
-                                      const double& previousSize){
+long ExternalMergeSort::currentSize(const int& stringSize, 
+                                      const long& previousSize){
     return sizeof(string) + stringSize + previousSize; // update amount of memory being used
 }
     
@@ -373,6 +373,8 @@ void ExternalMergeSort::mergeMaps(){
         m::writeMap(outfile, map1);
         get<1>(map1).clear();
     }
+    file.close();
+    outfile.close();
 }  
 
 void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& fileName2, const string& outFile){

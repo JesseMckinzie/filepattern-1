@@ -58,6 +58,7 @@ void FilePattern::matchFilesOneDir(){
     for (const auto& entry : this->iterator) {
         // Get the current file
         filePath = entry.path().string();
+        replace(filePath.begin(), filePath.end(), '\\', '/');
         file = s::getBaseName(filePath);
         if(regex_match(file, sm, patternRegex)){
             validFiles.push_back(getVariableMap(filePath, sm)); // write to txt file
@@ -78,11 +79,11 @@ void FilePattern::matchFilesMultDir(){
     string file, filePath;
     // Iterate over directories and subdirectories
     for (const auto& entry : this->recursiveIterator) {
+        filePath = entry.path().string();
+        replace(filePath.begin(), filePath.end(), '\\', '/');
         if(this->justPath){
-            filePath = entry.path().string();
             file = s::eraseSubStr(filePath, this->path);
         } else {
-            filePath = entry.path().string();
             file = s::getBaseName(filePath);
         }
         

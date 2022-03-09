@@ -36,6 +36,9 @@ vector<string> Pattern::getVariables(){
 }
 
 void Pattern::filePatternToRegex(){
+    replace(path.begin(), path.end(), '\\', '/');
+    replace(filePattern.begin(), filePattern.end(), '\\', '/');
+
     tuple vars = getRegex(this->filePattern);
     this->regexFilePattern = get<0>(vars);
     this->variables = get<1>(vars);

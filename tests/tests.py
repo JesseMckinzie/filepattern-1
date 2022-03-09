@@ -1,5 +1,6 @@
 import unittest
-import generate_data
+
+#import generate_data
 #from pattern import FilePattern as fp
 #from pattern import StringPattern as sp
 import filepattern2 as fp
@@ -44,7 +45,7 @@ class TestFilePattern(unittest.TestCase):
             for i in range(len(old_result)):
                 self.assertEqual(old_result[i][0]["r"], result[i][0]["r"]) 
                 self.assertEqual(old_result[i][0]["c"], result[i][0]["c"])
-                self.assertEqual(str(old_result[i][0]['file']), result[i][1][0])
+                self.assertEqual(str(os.path.basename(old_result[i][0]['file'])), os.path.basename(result[i][1][0]))
 
 
     def test_get_matching(self):
@@ -65,7 +66,7 @@ class TestFilePattern(unittest.TestCase):
                 for i in range(len(old_result)):                
                     self.assertEqual(old_result[i]["r"], result[i][0]["r"]) 
                     self.assertEqual(old_result[i]["c"], result[i][0]["c"])
-                    self.assertEqual(str(old_result[i]['file']), result[i][1][0])
+                    self.assertEqual(str(os.path.basename(old_result[i]['file'])), os.path.basename(result[i][1][0]))
 
                 old_result = old_files.get_matching(C=[i])
                 result = files.get_matching(c=[i])
@@ -75,7 +76,7 @@ class TestFilePattern(unittest.TestCase):
                 for i in range(len(old_result)):                
                     self.assertEqual(old_result[i]["r"], result[i][0]["r"]) 
                     self.assertEqual(old_result[i]["c"], result[i][0]["c"])
-                    self.assertEqual(str(old_result[i]['file']), result[i][1][0])
+                    self.assertEqual(str(os.path.basename(old_result[i]['file'])), os.path.basename(result[i][1][0]))
 
                 old_result = old_files.get_matching(R=nums)
                 result = files.get_matching(r=nums)
@@ -85,7 +86,7 @@ class TestFilePattern(unittest.TestCase):
                 for i in range(len(old_result)): 
                     self.assertEqual(old_result[i]["r"], result[i][0]["r"]) 
                     self.assertEqual(old_result[i]["c"], result[i][0]["c"])
-                    self.assertEqual(str(old_result[i]['file']), result[i][1][0])
+                    self.assertEqual(str(os.path.basename(old_result[i]['file'])), os.path.basename(result[i][1][0]))
 
                 old_result = old_files.get_matching(C=nums)
                 result = files.get_matching(c=nums)
@@ -95,7 +96,7 @@ class TestFilePattern(unittest.TestCase):
                 for i in range(len(old_result)): 
                     self.assertEqual(old_result[i]["r"], result[i][0]["r"]) 
                     self.assertEqual(old_result[i]["c"], result[i][0]["c"])
-                    self.assertEqual(str(old_result[i]['file']), result[i][1][0])
+                    self.assertEqual(str(os.path.basename(old_result[i]['file'])), os.path.basename(result[i][1][0]))
 
 
     def test_group_by(self):
@@ -118,7 +119,7 @@ class TestFilePattern(unittest.TestCase):
                 for j in range(len(old_result[i])):
                     self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
                     self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
-                    self.assertEqual(str(old_result[i][j]['file']), result[i][1][j][1][0])
+                    self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), os.path.basename(result[i][1][j][1][0]))
 
             for file in old_files(group_by="r"):
                 old_result.append(file)
@@ -131,7 +132,7 @@ class TestFilePattern(unittest.TestCase):
                 for j in range(len(old_result[i])):
                     self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
                     self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
-                    self.assertEqual(str(old_result[i][j]['file']), result[i][1][j][1][0])
+                    self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), os.path.basename(result[i][1][j][1][0]))
 
     def test_recursive_filepattern(self):
         path = self.root_directory + '/test_data/recursive_data'
@@ -157,7 +158,7 @@ class TestFilePattern(unittest.TestCase):
             for i in range(len(old_result)): 
                 self.assertEqual(old_result[i][0]["r"], result[i][0]["r"]) 
                 self.assertEqual(old_result[i][0]["c"], result[i][0]["c"])
-                self.assertEqual(str(old_result[i][0]['file']), result[i][1][0])
+                self.assertEqual(str(os.path.basename(old_result[i][0]['file'])), os.path.basename(result[i][1][0]))
 
             basename = ''
             # test that all basenames in vector of paths are the same
@@ -296,7 +297,7 @@ class TestExternalFilePattern(unittest.TestCase):
 
     patterns = ['img_r{r:ddd}_c{c:ddd}.tif']#, 'img_r{r:d+}_c{c:d+}.tif']
 
-    block_sizes = ['300 MB']#, '300 KB'] # first value is to process in multiple blocks and second is to proces in one block
+    block_sizes = ['300 KB']#, '300 KB'] # first value is to process in multiple blocks and second is to proces in one block
 
     MAX_NUM = 1
 
@@ -305,10 +306,10 @@ class TestExternalFilePattern(unittest.TestCase):
             for block_size in self.block_sizes:
                 old_files = filepattern.FilePattern(self.path, self.old_pattern)
                 files = fp.FilePattern(self.path, pattern, block_size=block_size)
-
+                
                 old_result = []
                 result = []
-
+                
                 for file in old_files():
                     old_result.append(file)
 
@@ -320,8 +321,9 @@ class TestExternalFilePattern(unittest.TestCase):
                 for i in range(len(old_result)):
                     self.assertEqual(old_result[i][0]["r"], result[i][0]["r"]) 
                     self.assertEqual(old_result[i][0]["c"], result[i][0]["c"])
-                    self.assertEqual(str(old_result[i][0]['file']), result[i][1][0])
-
+                    self.assertEqual(str(os.path.basename(old_result[i][0]['file'])), os.path.basename(result[i][1][0]))
+                    
+                    
 
     def test_get_matching(self):
         for pattern in self.patterns:
@@ -345,7 +347,7 @@ class TestExternalFilePattern(unittest.TestCase):
                     for i in range(len(old_result)):                
                         self.assertEqual(old_result[i]["r"], result[i][0]["r"]) 
                         self.assertEqual(old_result[i]["c"], result[i][0]["c"])
-                        self.assertEqual(str(old_result[i]['file']), result[i][1][0])
+                        self.assertEqual(str(os.path.basename(old_result[i]['file'])),os.path.basename(result[i][1][0]))
 
                     old_result = old_files.get_matching(C=[i])
                     result = []
@@ -357,7 +359,7 @@ class TestExternalFilePattern(unittest.TestCase):
                     for i in range(len(old_result)):                
                         self.assertEqual(old_result[i]["r"], result[i][0]["r"]) 
                         self.assertEqual(old_result[i]["c"], result[i][0]["c"])
-                        self.assertEqual(str(old_result[i]['file']), result[i][1][0])
+                        self.assertEqual(str(os.path.basename(old_result[i]['file'])), os.path.basename(result[i][1][0]))
 
                     old_result = old_files.get_matching(R=nums)
                     #files.get_matching(r=nums)
@@ -371,7 +373,7 @@ class TestExternalFilePattern(unittest.TestCase):
                     for i in range(len(old_result)): 
                         self.assertEqual(old_result[i]["r"], result[i][0]["r"]) 
                         self.assertEqual(old_result[i]["c"], result[i][0]["c"])
-                        self.assertEqual(str(old_result[i]['file']), result[i][1][0])
+                        self.assertEqual(str(os.path.basename(old_result[i]['file'])), os.path.basename(result[i][1][0]))
 
                     old_result = old_files.get_matching(C=nums)
                     #files.get_matching(c=nums)
@@ -385,7 +387,7 @@ class TestExternalFilePattern(unittest.TestCase):
                     for i in range(len(old_result)): 
                         self.assertEqual(old_result[i]["r"], result[i][0]["r"]) 
                         self.assertEqual(old_result[i]["c"], result[i][0]["c"])
-                        self.assertEqual(str(old_result[i]['file']), result[i][1][0])
+                        self.assertEqual(str(os.path.basename(old_result[i]['file'])), os.path.basename(result[i][1][0]))
 
 
     def test_group_by(self):
@@ -396,14 +398,14 @@ class TestExternalFilePattern(unittest.TestCase):
 
                 old_result = []
                 result = []
-
+                
                 # group by "c" instead of "r" since we changed how group by works
                 for file in old_files(group_by="c"):
                     old_result.append(file)
 
                 for file in files(group_by="r"):
                     result.append(file)
-
+                  
                 self.assertEqual(len(old_result), len(result)) 
                 for i in range(len(old_result)):
                    self.assertEqual(len(old_result[i]), len(result[i][1])) 
@@ -412,17 +414,18 @@ class TestExternalFilePattern(unittest.TestCase):
                     for j in range(len(old_result[i])):
                         self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
                         self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
-                        self.assertEqual(str(old_result[i][j]['file']), result[i][1][j][1][0])
+                        self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), os.path.basename(result[i][1][j][1][0]))
 
                 result = []
                 old_result = []
-
+                
                 for file in old_files(group_by="r"):
                     old_result.append(file)
 
 
                 for file in files(group_by="c"):
-                    result.append(file)                    
+                    result.append(file)         
+                
 
                 self.assertEqual(len(old_result), len(result)) 
 
@@ -430,7 +433,8 @@ class TestExternalFilePattern(unittest.TestCase):
                     for j in range(len(old_result[i])):
                         self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
                         self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
-                        self.assertEqual(str(old_result[i][j]['file']), result[i][1][j][1][0])
+                        self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), os.path.basename(result[i][1][j][1][0]))
+
 
 class TestExternalStringPattern(unittest.TestCase):
     root_directory = os.path.dirname(os.path.realpath(__file__))
@@ -442,7 +446,7 @@ class TestExternalStringPattern(unittest.TestCase):
 
     patterns = ['img_r{r:ddd}_c{c:ddd}.tif']#, 'img_r{r:d+}_c{c:d+}.tif']
 
-    block_sizes = ['300 MB']#, '300 KB'] # first value is to process in multiple blocks and second is to proces in one block
+    block_sizes = ['200 MB']#, '300 KB'] # first value is to process in multiple blocks and second is to proces in one block
 
     MAX_NUM = 1
 
@@ -468,8 +472,8 @@ class TestExternalStringPattern(unittest.TestCase):
                     self.assertEqual(old_result[i][0]["c"], result[i][0]["c"])
                     self.assertEqual(str(os.path.basename(old_result[i][0]['file'])), result[i][1][0])
 
-
-
+    
+   
     def test_get_matching(self):
         for pattern in self.patterns:
             nums = []
@@ -580,14 +584,11 @@ class TestExternalStringPattern(unittest.TestCase):
                         self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
                         self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
                         self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), result[i][1][j][1][0])
-
+  
 if __name__ == '__main__':
 
-    root_directory = os.path.dirname(os.path.realpath(__file__))
-    directory = root_directory + '/test_data'
+    #root_directory = os.path.dirname(os.path.realpath(__file__))
+    #directory = root_directory + '/test_data'
 
-    if(not os.path.isdir(directory)):
-        generate_data.generate_data()
-        generate_data.generate_channel_data()
 
     unittest.main()

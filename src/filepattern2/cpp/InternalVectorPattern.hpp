@@ -1,7 +1,13 @@
 #include "InternalPattern.hpp"
 #include "VectorPattern.hpp"
 
-class InternalVectorPattern: public VectorPattern, public InternalPattern {
+class InternalVectorPattern: public InternalPattern {
+    private:
+        std::string path; // path to stitching vector
+        std::regex STITCH_REGEX; // regex to match stitching vector line
+        std::vector<std::string> STITCH_VARIABLES; // variable names for stitching vector 
+        std::ifstream infile; // stream to read in stitching vector
+
     public:
     /**
      * @brief Constructor of InternalVectorPattern.
