@@ -3,13 +3,13 @@
 using namespace std;
 
 InternalVectorPattern::InternalVectorPattern(const string& path, const string& pattern){
-    this->path = path; // store path to target directory
+    Pattern::path = path; // store path to target directory
 
-    this->infile.open(path);
-    if(!infile.is_open) throw invalid_argument("Invalid path \"" + path + "\".");
+    this->infile.open(Pattern::path);
+    if(!infile.is_open()) throw invalid_argument("Invalid path \"" + Pattern::path + "\".");
 
-    this->filePattern = filePattern; // cast input string to regex
-    this->regexFilePattern = ""; // Regex version of pattern
+    Pattern::filePattern = pattern; // cast input string to regex
+    Pattern::regexFilePattern = ""; // Regex version of pattern
 
     VectorPattern::matchFiles();
 }

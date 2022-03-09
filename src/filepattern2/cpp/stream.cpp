@@ -4,7 +4,7 @@ using namespace std;
 
 Stream::Stream(const string& blockSize, const bool isInfer) {
     this->isInfer = isInfer;
-    this->tmpdir = fs::temp_directory_path();
+    this->tmpdir = fs::temp_directory_path().string();
     this->tmpdir += "/fs_stream_tmp_" + s::getTimeString() + "/";
     this->blockSizeStr = blockSize;
     this->blockSize = Block::parseblockSize(blockSize);
@@ -38,6 +38,8 @@ void Stream::writeBlock(const vector<string>& vec){
 void Stream::writeValidFiles(const Tuple& mapping){
     counter++;
     ofstream file(validFiles, ios_base::app);
+    cout << "stream comments added" << endl;
+    /*
     for(const auto& element: get<0>(mapping)){
         file << element.first << ":" << s::to_string(element.second) << '\n';
     }
@@ -52,6 +54,7 @@ void Stream::writeValidFiles(const Tuple& mapping){
         this->mapSize = get<0>(mapping).size();
         this->infile.open(validFiles);
     }
+    */
 }
 
 vector<Tuple> Stream::getValidFilesBlock(){

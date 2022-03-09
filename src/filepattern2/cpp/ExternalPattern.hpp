@@ -94,6 +94,8 @@ class ExternalPattern : public Pattern {
          */
         ExternalPattern(const std::string& path, const std::string& blockSize, bool recursive);
 
+        ~ExternalPattern();
+
         /**
          * @brief Returns files that match the value of variable. Needs to be updated to match old version input. 
          * 

@@ -13,6 +13,11 @@ stream(FilesystemStream(path, recursive, blockSize)){
     this->groupStream.open(stream.getValidFilesPath());
 }
 
+ExternalPattern::~ExternalPattern() {
+    this->infile.close();
+    this->groupStream.close();
+}
+
 
 void ExternalPattern::getMatchingLoop(ifstream& infile, 
                                       ofstream& outfile,
@@ -68,8 +73,11 @@ void ExternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
 
 
         // clear contents of matching.txt
-        fclose(fopen(matching.c_str(), "w"));
-
+        std::ofstream ofs;
+        ofs.open(matching, std::ofstream::out | std::ofstream::trunc);
+        ofs.close();
+       
+        
         ifstream in(matchingCopy); 
         ofstream out(matching);
         this->getMatchingLoop(in, out, variable, values, temp, tempMap);
@@ -79,7 +87,8 @@ void ExternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
 string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
     // construct temporary directory path
     this->fp_tmpdir = fs::temp_directory_path().string();
-    this->fp_tmpdir += "/filepattern_" + s::getTimeString() + "/";
+    if (s::endsWith(fp_tmpdir, "\\")) this->fp_tmpdir.pop_back();
+    this->fp_tmpdir += slash + "filepattern_" + s::getTimeString() + slash;
 
     this->tmpDirectories.push_back(this->fp_tmpdir);
 
@@ -94,7 +103,7 @@ string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& 
 
     // create a path to store matching files
     this->matching = fp_tmpdir + "matching.txt";
-    this->matchingCopy = fp_tmpdir + "/temp.txt";
+    this->matchingCopy = fp_tmpdir + slash + "temp.txt";
     if(fs::exists(matching)) {
 
         fs::remove(matching);
@@ -201,6 +210,17 @@ void ExternalPattern::nextGroup(){
 
 void ExternalPattern::next(){
     this->currentBlock = this->getValidFilesBlock(); // get block of valid files
+    /*
+    cout << "--------------------------" << endl << "next: " << endl;
+    for (auto& tup : this->currentBlock) {
+        for (auto& p : get<0>(tup)) {
+            cout << p.first << ": " << s::to_string(p.second) << endl;
+        }
+        for (auto& s : get<1>(tup)) {
+            cout << s << endl;
+        }
+    }
+    */
 }
 
 int ExternalPattern::currentBlockLength(){
