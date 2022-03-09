@@ -60,8 +60,6 @@ void FilePattern::matchFilesOneDir(){
         filePath = entry.path().string();
         replace(filePath.begin(), filePath.end(), '\\', '/');
         file = s::getBaseName(filePath);
-        cout << "filePath: " << filePath << endl;
-        cout << "file: " << file << endl;
         if(regex_match(file, sm, patternRegex)){
             validFiles.push_back(getVariableMap(filePath, sm)); // write to txt file
         }

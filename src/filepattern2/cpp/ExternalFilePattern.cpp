@@ -6,40 +6,41 @@ ExternalFilePattern::ExternalFilePattern(const string& path, const string& fileP
 ExternalPattern(path, blockSize, recursive) {
 
     this->path = path; // store path to target directory
-    this->stream = {path, true, blockSize};
+   // this->stream = {path, true, blockSize};
     this->blockSize = Block::parseblockSize(blockSize);
     this->fp_tmpdir = "";
-
+   
     this->filePattern = filePattern; // cast input string to regex
     this->regexFilePattern = ""; // Regex equivalent of the pattern
     this->recursive = recursive; // Recursive directory iteration
     this->totalFiles = 0; // Number of files matched (to be removed)
     this->mapSize = 0; //To be updated later in program, set for compiling
     this->validFilesPath = stream.getValidFilesPath(); // Store path to valid files txt file
-    this->tmpDirectories.push_back(validFilesPath);
+    
+   this->tmpDirectories.push_back(validFilesPath);
     this->firstCall = true; // first call to next() has not occured
     this->matchFiles(); // match files to pattern
+
     ExternalMergeSort sort = ExternalMergeSort(std_map, 
                                                this->validFilesPath, 
                                                this->validFilesPath,
                                                stream.getBlockSizeStr(),
                                                "",
                                                stream.mapSize);
-    //this->next();
+
     this->groupStream.open(stream.getValidFilesPath());
     this->infile.open(validFilesPath); // open temp file for the valid files
     this->endOfFile = false; // end of valid files 
-
-    
-    
 }
 
 ExternalFilePattern::~ExternalFilePattern(){
+    this->infile.close();
     for(auto& dir: this->tmpDirectories){
         if(dir != "") d::remove_dir(dir);
 
     }
-    //d::remove_dir(this->validFilesPath);
+   
+    //d::remove_dir(this->validFilesPath
     //if(this->fp_tmpdir != "") d::remove_dir(this->fp_tmpdir);
 }
 
@@ -47,6 +48,7 @@ ExternalFilePattern::~ExternalFilePattern(){
 void ExternalFilePattern::printFiles(){
     bool after = false;
     vector<Tuple> files;
+
     while(true){
         files = stream.getValidFilesBlock();
         for(const auto& file: files){
@@ -69,9 +71,9 @@ void ExternalFilePattern::printFiles(){
 }
 
 void ExternalFilePattern::matchFiles() {
-    
-    filePatternToRegex(); // Get regex of filepattern
 
+    filePatternToRegex(); // Get regex of filepattern
+    
     this->mapSize = variables.size(); // Store map size for reading from txt file
     
     if(recursive){
@@ -79,6 +81,7 @@ void ExternalFilePattern::matchFiles() {
     } else {
         this->matchFilesOneDir();
     }
+   
 }
 
 void ExternalFilePattern::matchFilesOneDir(){
@@ -91,18 +94,19 @@ void ExternalFilePattern::matchFilesOneDir(){
     int count = 0;
     // iterate over files    
     while(!this->stream.isEmpty()){
-
         block = stream.getBlock();
         
         for (auto& filePath : block) {
             replace(filePath.begin(), filePath.end(), '\\', '/');
             file = s::getBaseName(filePath);
-
+            
             if(regex_match(file, sm, patternRegex)){
                 stream.writeValidFiles(getVariableMap(filePath, sm)); // write to txt file
                 ++count;
             }
+            
         }
+        
     }
 }
 

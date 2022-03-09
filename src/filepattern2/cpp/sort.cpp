@@ -373,6 +373,8 @@ void ExternalMergeSort::mergeMaps(){
         m::writeMap(outfile, map1);
         get<1>(map1).clear();
     }
+    file.close();
+    outfile.close();
 }  
 
 void ExternalMergeSort::twoWayMergeMaps(const string& fileName1, const string& fileName2, const string& outFile){

@@ -2,48 +2,57 @@
 
 using namespace std;
 
-FilesystemStream::FilesystemStream(const string& path, bool recursive, const string& blockSize, const bool isInfer){
+FilesystemStream::FilesystemStream(const string& path, bool recursive, const string& blockSize, const bool isInfer) {
     this->isInfer = isInfer; // Is a call from inferPattern (handles memory footprint calculation different if true)
     this->tmpdir = fs::temp_directory_path().string(); // temp directory to store txt files
-    this->tmpdir += "/fs_stream_tmp_" + s::getTimeString() + "/"; // path to temp directory
+    if (s::endsWith(tmpdir, "\\")) this->tmpdir.pop_back();
+    this->tmpdir += slash + "fs_stream_tmp_" + s::getTimeString() + slash; // path to temp directory
     this->blockSizeStr = blockSize; // string version of blockSize
     this->blockSize = Block::parseblockSize(blockSize); // parse string to long
-    
+
     this->empty = false; // no more files
     this->validFiles = tmpdir + "validFiles.txt"; // path to txt file to store matched files
-    this->counter = 0; 
+    this->counter = 0;
 
     bool created = fs::create_directory(tmpdir); // create temp directory
     //throw error if temp directory cannot be created
     if (!created) {
         throw runtime_error("Could not create temporary file.");
     }
+    fs::permissions(this->tmpdir, fs::perms::all);
 
-    this->outName = tmpdir + "/temp.txt";
+    this->outName = tmpdir + slash + "temp.txt";
     this->infile.open(validFiles);
-   
+    this->infile.close();
+
     this->recurisve = false;
 
     try {
         // handle text file or directory based on path name
-        if(s::endsWith(path, ".txt")){
+        if (s::endsWith(path, ".txt")) {
             this->txtInput = true;
             this->inputfile.open(path);
-            if(!inputfile.is_open()){
+            if (!inputfile.is_open()) {
                 throw invalid_argument("Invalid path \"" + path + "\".");
             }
-        } else {
+        }
+        else {
             txtInput = false;
             this->recursive_directory_iterator = fs::recursive_directory_iterator(path);
             this->rec_end = fs::end(recursive_directory_iterator);
             this->directory_iterator = fs::directory_iterator(path); // store iterator for target directory
             this->end = fs::end(directory_iterator);
         }
-    } catch (const std::runtime_error& e) {
-        string error = "No directory found. Invalid path \"" + path + "\"."; 
+    }
+    catch (const std::runtime_error& e) {
+        string error = "No directory found. Invalid path \"" + path + "\".";
         throw std::runtime_error(error);
     }
+}
 
+FilesystemStream::~FilesystemStream() {
+    this->infile.close();
+    d::remove_dir(this->tmpdir);
 }
 
 vector<string> FilesystemStream::getBlock(){
@@ -172,6 +181,7 @@ void FilesystemStream::writeBlock(const vector<string>& vec){
 void FilesystemStream::writeValidFiles(const Tuple& mapping){
     counter++;
     ofstream file(validFiles, ios_base::app);
+  
     for(const auto& element: get<0>(mapping)){
         file << element.first << ":" << s::to_string(element.second) << '\n';
     }
@@ -179,6 +189,7 @@ void FilesystemStream::writeValidFiles(const Tuple& mapping){
     for(const auto& element: get<1>(mapping)){
         file << element << ",";
     } 
+
     file << '\n';
     file.close();
     validFilesEmpty = false;
@@ -186,6 +197,7 @@ void FilesystemStream::writeValidFiles(const Tuple& mapping){
         this->mapSize = get<0>(mapping).size();
         this->infile.open(validFiles);
     }
+    
 }
 
 vector<Tuple> FilesystemStream::getValidFilesBlock(){
@@ -248,6 +260,7 @@ vector<Tuple> FilesystemStream::getValidFilesBlock(){
     streampos ptr = infile.tellg();
     if(!(this->infile >> str)){
         validFilesEmpty = true;
+        this->infile.close();
     }
     //ptr +=1;
     infile.seekg(ptr, ios::beg);

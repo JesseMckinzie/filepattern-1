@@ -6,7 +6,7 @@ ExternalStringPattern::ExternalStringPattern(const string& path, const string& f
 ExternalPattern(path, blockSize, false) {
 
     this->path = path; // store path to target directory
-    this->stream = {path, true, blockSize};
+    //this->stream = {path, true, blockSize};
     this->blockSize = Block::parseblockSize(blockSize);
     this->fp_tmpdir = "";
 
