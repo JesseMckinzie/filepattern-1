@@ -43,8 +43,6 @@ void Pattern::filePatternToRegex(){
     this->regexFilePattern = get<0>(vars);
     this->variables = get<1>(vars);
     this->namedGroups = get<2>(vars);
-    cout << "regexFilePattern: " << regexFilePattern << endl;
-    cout << "path: " << this->path << endl;
 }
 
 tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern){

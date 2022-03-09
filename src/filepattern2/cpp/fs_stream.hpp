@@ -24,6 +24,8 @@ namespace fs = std::filesystem;
 class FilesystemStream {
 
     public:
+        int counter; // for debugging (to be removed) 
+        int mapSize; // size of maps in stream
     
         /**
          * @brief Construct a new Filesystem Stream object.
@@ -35,10 +37,9 @@ class FilesystemStream {
          * @param blockSize Maximum size of memory the stream will consume at a time
          */
         FilesystemStream(const std::string& path, bool recursive=false, const std::string& blockSize="50 MB", const bool isInfer=false);
-        int counter; // for debugging (to be removed) 
-        int mapSize; // size of maps in stream
 
-        //~FilesystemStream();
+        ~FilesystemStream();
+
         /**
          * @brief Get a block of filenames that consumes at most blockSize of main memory.
          * 
