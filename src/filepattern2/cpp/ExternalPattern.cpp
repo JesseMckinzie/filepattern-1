@@ -73,9 +73,10 @@ void ExternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
 
 
         // clear contents of matching.txt
-        FILE* tempFile;
-        fopen_s(&tempFile, matching.c_str(), "w");
-        fclose(tempFile);
+        std::ofstream ofs;
+        ofs.open(matching, std::ofstream::out | std::ofstream::trunc);
+        ofs.close();
+       
         
         ifstream in(matchingCopy); 
         ofstream out(matching);
