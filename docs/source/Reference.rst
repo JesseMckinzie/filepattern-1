@@ -6,4 +6,5 @@ Class and Function Reference
    :maxdepth: 2
    :caption: Contents:
 
-   Reference/ClassesR
+   Reference/Classes
+   Reference/Functions
