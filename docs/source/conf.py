@@ -46,7 +46,7 @@ install_requires = [
 autodoc_mock_imports = ["backend"]
 
 subprocess.call('cd .. ; doxygen', shell=True)
-html_extra_path = ['../doc/html']
+#html_extra_path = ['../doc/html']
 
 napoleon_use_param = True
 
@@ -86,7 +86,7 @@ autodoc_default_options = {
 autosummary_generate = True
 
 # Set the master doc
-master_doc = 'Examples'
+master_doc = 'index'
 
 # -- Options for HTML output -------------------------------------------------
 
