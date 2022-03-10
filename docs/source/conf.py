@@ -51,7 +51,7 @@ install_requires = [
 autodoc_mock_imports = ["backend"]
 
 subprocess.call('doxygen', shell=True)
-html_extra_path = ['html']
+#html_extra_path = ['html']
 
 napoleon_use_param = True
 
