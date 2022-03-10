@@ -20,7 +20,7 @@ The `filepattern` utility was inspired by the naming convention found in the
 stitching algorithm.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
    :caption: Contents:
 
    Examples
