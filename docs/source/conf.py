@@ -87,7 +87,6 @@ autosummary_generate = True
 # Set the master doc
 master_doc = 'main'
 
-html_extra_path = ['../doc/html']
 
 # -- Options for HTML output -------------------------------------------------
 
