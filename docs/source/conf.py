@@ -21,7 +21,7 @@ import httpolice.inputs
 import httpolice.reports.html
 sys.path.insert(0, os.path.abspath('../..'))
 #sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
-sys.setrecursionlimit(3000)
+#sys.setrecursionlimit(3000)
 #sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
 #sys.setrecursionlimit(1500)
 
@@ -91,7 +91,7 @@ autodoc_default_options = {
 autosummary_generate = True
 
 # Set the master doc
-master_doc = 'home'
+master_doc = 'index'
 
 # -- Options for HTML output -------------------------------------------------
 
