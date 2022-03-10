@@ -21,4 +21,3 @@ not limited to image data, and can handle filenames with any extension.
 
    Examples
    Reference
-   Backend
