@@ -87,7 +87,7 @@ autosummary_generate = True
 # Set the master doc
 master_doc = 'First'
 
-
+html_extra_path = ['../doc/html']
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
