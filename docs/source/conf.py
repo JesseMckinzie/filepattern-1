@@ -14,6 +14,11 @@ import os
 import sys
 from pathlib import Path
 import subprocess
+import shutil
+import io
+import httpolice
+import httpolice.inputs
+import httpolice.reports.html
 sys.path.insert(0, os.path.abspath('../..'))
 #sys.path.insert(0, str(Path(__file__).parent.parent.parent.absolute()))
 #sys.setrecursionlimit(1500)
@@ -47,6 +52,14 @@ autodoc_mock_imports = ["backend"]
 
 subprocess.call('cd .. ; doxygen', shell=True)
 html_extra_path = ['../html']
+
+
+html_path = '../html'
+if os.path.exists(html_path):
+    shutil.rmtree(html_path)
+
+with io.open('../html/cpp.html', 'wb') as notices_file:
+    httpolice.reports.html.list_notices(notices_file)
 
 napoleon_use_param = True
 
