@@ -16,7 +16,7 @@ convention. Although `filepattern` was born to wield against image data, it is
 not limited to image data, and can handle filenames with any extension.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
    :caption: Contents:
 
    Examples
