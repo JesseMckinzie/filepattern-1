@@ -50,15 +50,15 @@ install_requires = [
 
 autodoc_mock_imports = ["backend"]
 
-subprocess.call('cd .. ; doxygen', shell=True)
-html_extra_path = ['../html']
+subprocess.call('doxygen', shell=True)
+html_extra_path = ['html']
 
 
-html_path = '../html'
+html_path = 'html'
 if os.path.exists(html_path):
     shutil.rmtree(html_path)
 
-with io.open('../html/cpp.html', 'wb') as notices_file:
+with io.open('html/cpp.html', 'wb') as notices_file:
     httpolice.reports.html.list_notices(notices_file)
 
 napoleon_use_param = True
