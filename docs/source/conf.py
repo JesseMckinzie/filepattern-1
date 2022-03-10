@@ -47,8 +47,6 @@ autodoc_mock_imports = ["backend"]
 
 subprocess.call('doxygen', shell=True)
 
-#html_extra_path = ['../doc/html']
-
 napoleon_use_param = True
 
 # Add any paths that contain templates here, relative to this directory.
@@ -87,7 +85,9 @@ autodoc_default_options = {
 autosummary_generate = True
 
 # Set the master doc
-master_doc = 'index'
+master_doc = 'main'
+
+html_extra_path = ['../doc/html']
 
 # -- Options for HTML output -------------------------------------------------
 
