@@ -85,7 +85,7 @@ autodoc_default_options = {
 autosummary_generate = True
 
 # Set the master doc
-master_doc = 'Examples'
+master_doc = 'First'
 
 
 # -- Options for HTML output -------------------------------------------------
