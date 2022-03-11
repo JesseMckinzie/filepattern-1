@@ -24,8 +24,8 @@ add_subdirectory(lib/pybind11)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-pybind11_add_module(backend MODULE ${SOURCES} "${SOURCE_DIR}/bindings.cpp" 
-                                              "${SOURCE_DIR}/pattern.cpp" 
+pybind11_add_module(backend MODULE ${SOURCES} ${SOURCE_DIR}/bindings.cpp
+                                              ${SOURCE_DIR}/pattern.cpp
                                               "${SOURCE_DIR}/internal/internal_pattern.cpp" 
                                               "${SOURCE_DIR}/internal/filepattern.cpp"
                                               "${SOURCE_DIR}/internal/stringpattern.cpp"
