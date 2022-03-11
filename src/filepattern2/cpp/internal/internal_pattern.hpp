@@ -5,7 +5,7 @@
 #include <vector>
 #include <regex>
 #include <map>
-#include "../Pattern.hpp"
+#include "../pattern.hpp"
 #include "../util/util.hpp"
 
 class InternalPattern : public Pattern {
