@@ -106,6 +106,6 @@ else:
         # 'python_cpp_example'
         ext_modules=[CMakeExtension('filepattern2/backend')],
         # add custom build_ext command
-        cmdclass=dict(build_ext=CMakeBuild),
+        #cmdclass=dict(build_ext=CMakeBuild),
         zip_safe=False,
     )
