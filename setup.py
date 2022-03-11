@@ -93,7 +93,7 @@ else:
     setup(
         name='filepattern2',
         version=versioneer.get_version(),
-        cmdclass=versioneer.get_cmdclass(),
+        #cmdclass=versioneer.get_cmdclass(),
         author='Jesse McKinzie',
         description='Hybrid Python/C++ filepattern with external memory algorithms',
         long_description='',
@@ -106,6 +106,6 @@ else:
         # 'python_cpp_example'
         ext_modules=[CMakeExtension('filepattern2/backend')],
         # add custom build_ext command
-        #cmdclass=dict(build_ext=CMakeBuild),
+        cmdclass=dict(build_ext=CMakeBuild),
         zip_safe=False,
     )
