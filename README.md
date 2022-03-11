@@ -7,7 +7,7 @@ a directory containing segmented images where the name contains information such
 extract all images containing such a naming pattern, filter by the row or column value, or group files by one or more of the affermentioned variables. 
 
 ## Summary
-* [Read the Docs](https://filepattern2.readthedocs.io/en/latest/Home.html)
+* [Read the Docs](https://filepattern2.readthedocs.io/en/latest/hierarchy.html)
 
 ## Install
 
