@@ -6,10 +6,10 @@
 #include "internal/internal_pattern.hpp"
 #include "internal/filepattern.hpp"
 #include "internal/stringpattern.hpp"
+#include "internal/vectorpattern.hpp"
 #include "external/external_pattern.hpp"
 #include "external/external_filepattern.hpp"
 #include "external/external_stringpattern.hpp"
-#include "internal/vectorpattern.hpp"
 #include "external/external_vectorpattern.hpp"
 
 
