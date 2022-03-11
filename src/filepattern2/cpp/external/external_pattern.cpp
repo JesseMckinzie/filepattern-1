@@ -1,4 +1,4 @@
-#include "ExternalPattern.hpp"
+#include "external_pattern.hpp"
 
 using namespace std;
 

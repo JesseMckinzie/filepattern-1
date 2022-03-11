@@ -1,4 +1,4 @@
-#include "FilePattern.hpp"
+#include "filepattern.hpp"
 #include <chrono>
 
 using namespace std;

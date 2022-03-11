@@ -1,4 +1,4 @@
-#include "ExternalStringPattern.hpp"
+#include "external_stringpattern.hpp"
 
 using namespace std;
 

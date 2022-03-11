@@ -20,10 +20,10 @@
 #include <map>
 #include <tuple>
 #include <chrono>
-#include "Pattern.hpp"
-#include "util.hpp"
-#include "fs_stream.hpp"
-#include "sort.hpp"
+#include "../pattern.hpp"
+#include "../util/util.hpp"
+#include "../util/fs_stream.hpp"
+#include "../util/sort.hpp"
 
 class ExternalPattern : public Pattern {
     

@@ -5,13 +5,11 @@ if(APPLE)
 endif()
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  # require at least gcc 4.8
+  # require at least gcc 8.0
   if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0)
       message(FATAL_ERROR "GCC version must be at least 8.0!")
   endif()
 endif()
-
-#set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 
 project(filepattern2)
 # Set source directory
@@ -27,18 +25,18 @@ add_subdirectory(lib/pybind11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 pybind11_add_module(backend MODULE ${SOURCES} "${SOURCE_DIR}/bindings.cpp" 
-                                              "${SOURCE_DIR}/Pattern.cpp" 
-                                              "${SOURCE_DIR}/InternalPattern.cpp" 
-                                              "${SOURCE_DIR}/FilePattern.cpp"
-                                              "${SOURCE_DIR}/StringPattern.cpp"
-                                              "${SOURCE_DIR}/VectorPattern.cpp"
-                                              "${SOURCE_DIR}/ExternalPattern.cpp"
-                                              "${SOURCE_DIR}/ExternalFilePattern.cpp"
-                                              "${SOURCE_DIR}/ExternalStringPattern.cpp"
-                                              "${SOURCE_DIR}/ExternalVectorPattern.cpp"
-                                              "${SOURCE_DIR}/fs_stream.cpp"
-                                              "${SOURCE_DIR}/sort.cpp"
-                                              "${SOURCE_DIR}/vector_parser.cpp"
+                                              "${SOURCE_DIR}/pattern.cpp" 
+                                              "${SOURCE_DIR}/internal/internal_pattern.cpp" 
+                                              "${SOURCE_DIR}/internal/filepattern.cpp"
+                                              "${SOURCE_DIR}/internal/stringpattern.cpp"
+                                              "${SOURCE_DIR}/internal/vectorpattern.cpp"
+                                              "${SOURCE_DIR}/external/external_pattern.cpp"
+                                              "${SOURCE_DIR}/external/external_filepattern.cpp"
+                                              "${SOURCE_DIR}/external/external_stringpattern.cpp"
+                                              "${SOURCE_DIR}/external/external_vectorpattern.cpp"
+                                              "${SOURCE_DIR}/util/fs_stream.cpp"
+                                              "${SOURCE_DIR}/util/sort.cpp"
+                                              "${SOURCE_DIR}/util/vector_parser.cpp"
                                             )
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

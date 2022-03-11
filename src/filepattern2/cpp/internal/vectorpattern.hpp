@@ -1,7 +1,7 @@
 #pragma once
-#include "InternalPattern.hpp"
-#include "vector_parser.hpp"
-#include "util.hpp"
+#include "internal_pattern.hpp"
+#include "../util/vector_parser.hpp"
+#include "../util/util.hpp"
 
 
 class VectorPattern: public InternalPattern {

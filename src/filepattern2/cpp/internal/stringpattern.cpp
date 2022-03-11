@@ -1,4 +1,4 @@
-#include "StringPattern.hpp"
+#include "stringpattern.hpp"
 #include <fstream>
 
 using namespace std;

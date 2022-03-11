@@ -1,5 +1,5 @@
-#include "InternalPattern.hpp"
-#include "VectorPattern.hpp"
+#include "internal_pattern.hpp"
+#include "vectorpattern.hpp"
 
 class InternalVectorPattern: public InternalPattern {
     private:

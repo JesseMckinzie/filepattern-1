@@ -1,4 +1,4 @@
-#include "ExternalVectorPattern.hpp"
+#include "external_vectorpattern.hpp"
 
 using namespace std;
 

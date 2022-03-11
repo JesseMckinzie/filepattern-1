@@ -5,8 +5,8 @@
 #include <vector>
 #include <regex>
 #include <map>
-#include "Pattern.hpp"
-#include "util.hpp"
+#include "../Pattern.hpp"
+#include "../util/util.hpp"
 
 class InternalPattern : public Pattern {
 

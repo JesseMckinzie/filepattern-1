@@ -10,9 +10,8 @@
  * 
  */
 
-#ifndef ExternalFilePattern_H
-#define ExternalFilePattern_H
-#include "ExternalPattern.hpp"
+#pragma once
+#include "external_pattern.hpp"
 
 //namespace fs = std::filesystem;
 
@@ -95,4 +94,3 @@ class ExternalFilePattern : public ExternalPattern {
         void matchFilesMultDir();
 
 };
-#endif

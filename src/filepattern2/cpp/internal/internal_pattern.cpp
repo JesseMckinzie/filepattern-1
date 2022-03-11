@@ -1,4 +1,4 @@
-#include "InternalPattern.hpp"
+#include "internal_pattern.hpp"
 
 using namespace std;
 

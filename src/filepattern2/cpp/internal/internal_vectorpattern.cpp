@@ -1,4 +1,4 @@
-#include "InternalVectorPattern.hpp"
+#include "internal_vectorpattern.hpp"
 
 using namespace std;
 
