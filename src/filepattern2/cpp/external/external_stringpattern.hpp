@@ -11,7 +11,7 @@
  */
 
 #pragma once
-#include "ExternalPattern.hpp"
+#include "external_pattern.hpp"
 
 
 class ExternalStringPattern : public ExternalPattern {

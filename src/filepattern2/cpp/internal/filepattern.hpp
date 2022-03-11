@@ -9,7 +9,7 @@
  */
 
 #pragma once 
-#include "InternalPattern.hpp"
+#include "internal_pattern.hpp"
 
 namespace fs = std::filesystem;
 

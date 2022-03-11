@@ -1,16 +1,17 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/operators.h>
-#include "Pattern.hpp"
-#include "InternalPattern.hpp"
-#include "FilePattern.hpp"
-#include "StringPattern.hpp"
-#include "ExternalPattern.hpp"
-#include "ExternalFilePattern.hpp"
-#include "ExternalStringPattern.hpp"
-#include "VectorPattern.hpp"
-#include "ExternalVectorPattern.hpp"
 #include <iostream>
+#include "pattern.hpp"
+#include "internal/internal_pattern.hpp"
+#include "internal/filepattern.hpp"
+#include "internal/stringpattern.hpp"
+#include "external/external_pattern.hpp"
+#include "external/external_filepattern.hpp"
+#include "external/external_stringpattern.hpp"
+#include "internal/vectorpattern.hpp"
+#include "external/external_vectorpattern.hpp"
+
 
 namespace py = pybind11;
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "InternalPattern.hpp"
+#include "internal_pattern.hpp"
 
 class StringPattern : public InternalPattern {
     public:

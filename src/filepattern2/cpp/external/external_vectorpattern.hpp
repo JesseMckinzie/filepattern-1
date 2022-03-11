@@ -1,8 +1,8 @@
 #pragma once
-#include "ExternalPattern.hpp"
-#include "vector_parser.hpp"
-#include "block.hpp"
-#include "util.hpp"
+#include "external_pattern.hpp"
+#include "../util/vector_parser.hpp"
+#include "../util/block.hpp"
+#include "../util/util.hpp"
 
 
 class ExternalVectorPattern: public ExternalPattern {
