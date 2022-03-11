@@ -17,8 +17,8 @@
 #include <regex>
 #include <map>
 #include <set>
-#include "fs_stream.hpp"
-#include "util.hpp"
+#include "util/fs_stream.hpp"
+#include "util/util.hpp"
 
 class Pattern {
     
