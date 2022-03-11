@@ -1,4 +1,4 @@
-#include "Pattern.hpp"
+#include "pattern.hpp"
 
 using namespace std;
 namespace fs = filesystem;
