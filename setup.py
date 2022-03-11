@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import sysconfig
+import versioneer
 import platform
 import subprocess
 
@@ -12,7 +13,8 @@ from setuptools.command.build_ext import build_ext
 if platform.system() == "Windows":
     setup(
         name='filepattern2',
-        version='0.1.1',
+        version=versioneer.get_version(),
+        cmdclass=versioneer.get_cmdclass(),
         author='Jesse McKinzie',
         description='Hybrid Python/C++ filepattern with external memory algorithms',
         long_description='',
@@ -90,7 +92,8 @@ else:
             
     setup(
         name='filepattern2',
-        version='0.1.1',
+        version=versioneer.get_version(),
+        cmdclass=versioneer.get_cmdclass(),
         author='Jesse McKinzie',
         description='Hybrid Python/C++ filepattern with external memory algorithms',
         long_description='',
