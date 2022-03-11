@@ -1,1 +1,2 @@
-recursive-include src backend.pyd
+recursive-include src backend.pydinclude versioneer.py
+include src/filepattern2/_version.py
