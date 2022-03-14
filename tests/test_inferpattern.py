@@ -50,7 +50,7 @@ class TestInference():
 
 class TestExternalInference():
 
-    path = 'test_data/data'
+    path = 'tests/test_data/data'
     def test_fp_single_block(self):
         pattern = fp.infer_pattern(path=self.path, block_size='1 GB')
         
@@ -62,25 +62,25 @@ class TestExternalInference():
         assert pattern == 'img_r00{r:d}_c00{t:d}_{c:c+}.tif'
         
     def test_sp_single_block(self):
-        path = 'test_data/sp_data.txt'
+        path = 'tests/test_data/sp_data.txt'
         pattern = fp.infer_pattern(path=path, block_size='1 GB')
         
         assert pattern == 'img_r00{r:d}_c00{t:d}_{c:c+}.tif'
         
     def test_sp_multi_block(self):
-        path = 'test_data/sp_data.txt'
+        path = 'tests/test_data/sp_data.txt'
         pattern = fp.infer_pattern(path=path, block_size='900 B')
         
         assert pattern == 'img_r00{r:d}_c00{t:d}_{c:c+}.tif'
     
     def test_vp_single_block(self):
-        path = 'test_vectorpattern_data.txt'
+        path = 'tests/test_vectorpattern_data.txt'
         pattern = fp.infer_pattern(path=path, block_size='1 GB')
         
         assert pattern == 'x{r:dd}_y{t:dd}_wx{c:d}_wy{z:d}_c1.ome.tif'
                 
     def test_vp_multi_block(self):
-        path = 'test_vectorpattern_data.txt'
+        path = 'tests/test_vectorpattern_data.txt'
         pattern = fp.infer_pattern(path=path, block_size='1 KB')
         
         assert pattern == 'x{r:dd}_y{t:dd}_wx{c:d}_wy{z:d}_c1.ome.tif'
