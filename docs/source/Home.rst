@@ -21,4 +21,4 @@ not limited to image data, and can handle filenames with any extension.
 
    Examples
    Reference
-   `Backend <https://filepattern2.readthedocs.io/en/latest/hierarchy.html>`_
+   Backend
