@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.2)
 
-if(APPLE)
-  set(CMAKE_CXX_COMPILER "/usr/local/bin/g++")
-endif()
+#if(APPLE)
+#  set(CMAKE_CXX_COMPILER "/usr/local/bin/g++")
+#endif()
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
   # require at least gcc 8.0
