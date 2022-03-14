@@ -33,12 +33,6 @@ class TestFilePattern():
 
             assert len(old_result) == len(result)
             
-            #print("old result: ")
-            #pprint.pprint(old_result)
-            
-            #rint("new result: ")
-            #pprint.pprint(result)
-
             for i in range(len(old_result)):
                 assert old_result[i][0]["r"] == result[i][0]["r"]
                 assert old_result[i][0]["c"] == result[i][0]["c"]
