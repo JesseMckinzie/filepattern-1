@@ -290,7 +290,7 @@ class TestVectorPattern(unittest.TestCase):
     
     root_directory = os.path.dirname(os.path.realpath(__file__))
 
-    path = root_directory + '/stitching-vector-61b3a82d6fa1f65bf8cc2448-img-global-positions-1.txt'
+    path = root_directory + '/test_vectorpattern_data.txt'
     
     old_pattern = 'x{xx}_y{yy}_wx{z}_wy{r}_c{c}.ome.tif'
     
@@ -683,7 +683,7 @@ class TestExternalVectorPattern(unittest.TestCase):
     
     root_directory = os.path.dirname(os.path.realpath(__file__))
 
-    path = root_directory + '/stitching-vector-61b3a82d6fa1f65bf8cc2448-img-global-positions-1.txt'
+    path = root_directory + '/test_vectorpattern_data.txt'
     
     old_pattern = 'x{xx}_y{yy}_wx{z}_wy{r}_c{c}.ome.tif'
     
