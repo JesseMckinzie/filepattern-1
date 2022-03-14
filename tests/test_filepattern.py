@@ -770,3 +770,4 @@ class TestExternalVectorPattern():
                     for key in result[i][0]:
                         assert str(old_result[i][key]) == str(result[i][0][key]) # Old version stores value as string 
                     assert os.path.basename(old_result[i]['file']) == os.path.basename(result[i][1][0])            
+                    
