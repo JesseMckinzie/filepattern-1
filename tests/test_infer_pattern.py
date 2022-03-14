@@ -82,13 +82,13 @@ class ExternalInferenceTest(unittest.TestCase):
         self.assertEqual(pattern, 'img_r00{r:d}_c00{t:d}_{c:c+}.tif')
     
     def test_vp_single_block(self):
-        path = 'tests/stitching-vector-61b3a82d6fa1f65bf8cc2448-img-global-positions-1.txt'
+        path = 'tests/test_vectorpattern_data.txt'
         pattern = fp.infer_pattern(path=path, block_size='1 GB')
         
         self.assertEqual(pattern, 'x{r:dd}_y{t:dd}_wx{c:d}_wy{z:d}_c1.ome.tif')
                 
     def test_vp_multi_block(self):
-        path = 'tests/stitching-vector-61b3a82d6fa1f65bf8cc2448-img-global-positions-1.txt'
+        path = 'tests/test_vectorpattern_data.txt'
         pattern = fp.infer_pattern(path=path, block_size='1 KB')
         
         self.assertEqual(pattern, 'x{r:dd}_y{t:dd}_wx{c:d}_wy{z:d}_c1.ome.tif')
