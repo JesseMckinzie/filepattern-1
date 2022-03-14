@@ -32,7 +32,7 @@ jobs:
 
       - name: Install cibuildwheel
         run: |
-          python -m pip install cibuildwheel==2.1.1
+          python -m pip install wheel
       - name: Build wheels for CPython 3.9
         run: |
           python -m cibuildwheel --output-dir dist
@@ -77,5 +77,5 @@ jobs:
         run: python -m twine upload dist/*.whl
         env:
           TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.TWINE_API_KEY }}
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
           TWINE_REPOSITORY: testpypi
