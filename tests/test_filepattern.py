@@ -1,11 +1,8 @@
 import unittest
-
-#import generate_data
-#from pattern import FilePattern as fp
-#from pattern import StringPattern as sp
 import filepattern2 as fp
 import filepattern
 import os
+from operator import itemgetter
 import pprint
 
 class TestFilePattern(unittest.TestCase):
@@ -288,6 +285,103 @@ class TestStringPattern(unittest.TestCase):
                     self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
                     self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), result[i][1][j][1][0])
 
+
+class TestVectorPattern(unittest.TestCase):
+    
+    root_directory = os.path.dirname(os.path.realpath(__file__))
+
+    path = root_directory + '/stitching-vector-61b3a82d6fa1f65bf8cc2448-img-global-positions-1.txt'
+    
+    old_pattern = 'x{xx}_y{yy}_wx{z}_wy{r}_c{c}.ome.tif'
+    
+    patterns = ['x{x:dd}_y{y:dd}_wx{z:d}_wy{r:d}_c{c:d}.ome.tif', old_pattern]
+    
+    MAX_NUM = 9
+
+    def test_file_pattern(self):
+
+        for pattern in self.patterns:
+            old_files = filepattern.VectorPattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern)
+
+            old_result = []
+            result = []
+
+            for file in old_files():
+                old_result.append(file)
+            for file in files():
+                result.append(file)
+
+            self.assertEqual(len(old_result), len(result)) 
+            
+            old_result = sorted(old_result, key=lambda k: k[0]['file'])
+            
+            for i in range(len(old_result)):
+                for key in result[i][0]:
+                    self.assertEqual(int(old_result[i][0][key]), result[i][0][key]) 
+                self.assertEqual(str(os.path.basename(old_result[i][0]['file'])), os.path.basename(result[i][1][0]))
+
+    def test_get_matching(self):
+         for pattern in self.patterns:
+            nums = []
+            for i in range(0, self.MAX_NUM):
+
+                old_files = filepattern.VectorPattern(self.path, self.old_pattern)
+                files = fp.FilePattern(self.path, pattern)
+
+                nums.append(i)
+
+                old_result = old_files.get_matching(R=[i])
+                result = files.get_matching(r=[i])
+
+                self.assertEqual(len(old_result), len(result)) 
+
+                #pprint.pprint(result)
+                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
+                
+                
+                for i in range(len(old_result)):
+                    for key in result[i][0]:
+                        self.assertEqual(str(old_result[i][key]), str(result[i][0][key])) # Old version stores value as string 
+                    self.assertEqual(os.path.basename(old_result[i]['file']), os.path.basename(result[i][1][0]))
+
+                old_result = old_files.get_matching(C=[i])
+                result = files.get_matching(c=[i])
+
+                self.assertEqual(len(old_result), len(result)) 
+                
+                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
+
+                for i in range(len(old_result)):
+                    for key in result[i][0]:
+                        self.assertEqual(old_result[i][0][key], result[i][0][key]) 
+                    self.assertEqual(str(os.path.basename(old_result[i][0]['file'])), os.path.basename(result[i][1][0]))
+
+                old_result = old_files.get_matching(R=nums)
+                result = files.get_matching(r=nums)
+
+                self.assertEqual(len(old_result), len(result)) 
+
+                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
+
+                for i in range(len(old_result)):
+                    for key in result[i][0]:
+                        self.assertEqual(str(old_result[i][key]), str(result[i][0][key])) # Old version stores value as string 
+                    self.assertEqual(os.path.basename(old_result[i]['file']), os.path.basename(result[i][1][0]))
+
+                old_result = old_files.get_matching(C=nums)
+                result = files.get_matching(c=nums)
+
+                self.assertEqual(len(old_result), len(result)) 
+                
+                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
+
+                for i in range(len(old_result)):
+                    for key in result[i][0]:
+                        self.assertEqual(str(old_result[i][key]), str(result[i][0][key])) # Old version stores value as string 
+                    self.assertEqual(os.path.basename(old_result[i]['file']), os.path.basename(result[i][1][0]))
+
+
 class TestExternalFilePattern(unittest.TestCase):
     root_directory = os.path.dirname(os.path.realpath(__file__))
 
@@ -295,9 +389,9 @@ class TestExternalFilePattern(unittest.TestCase):
 
     old_pattern = 'img_r{rrr}_c{ccc}.tif'
 
-    patterns = ['img_r{r:ddd}_c{c:ddd}.tif']#, 'img_r{r:d+}_c{c:d+}.tif']
+    patterns = ['img_r{r:ddd}_c{c:ddd}.tif', 'img_r{r:d+}_c{c:d+}.tif']
 
-    block_sizes = ['300 KB']#, '300 KB'] # first value is to process in multiple blocks and second is to proces in one block
+    block_sizes = ['300 KB']
 
     MAX_NUM = 1
 
@@ -444,9 +538,9 @@ class TestExternalStringPattern(unittest.TestCase):
 
     old_pattern = 'img_r{rrr}_c{ccc}.tif'
 
-    patterns = ['img_r{r:ddd}_c{c:ddd}.tif']#, 'img_r{r:d+}_c{c:d+}.tif']
+    patterns = ['img_r{r:ddd}_c{c:ddd}.tif', 'img_r{r:d+}_c{c:d+}.tif']
 
-    block_sizes = ['200 MB']#, '300 KB'] # first value is to process in multiple blocks and second is to proces in one block
+    block_sizes = ['300 KB']
 
     MAX_NUM = 1
 
@@ -511,7 +605,6 @@ class TestExternalStringPattern(unittest.TestCase):
                         self.assertEqual(str(os.path.basename(old_result[i]['file'])), result[i][1][0])
 
                     old_result = old_files.get_matching(R=nums)
-                    #files.get_matching(r=nums)
                     
                     result = []
                     for match in files.get_matching(r=nums):
@@ -584,6 +677,103 @@ class TestExternalStringPattern(unittest.TestCase):
                         self.assertEqual(old_result[i][j]["r"], result[i][1][j][0]["r"]) 
                         self.assertEqual(old_result[i][j]["c"], result[i][1][j][0]["c"])
                         self.assertEqual(str(os.path.basename(old_result[i][j]['file'])), result[i][1][j][1][0])
+
+
+class TestExternalVectorPattern(unittest.TestCase):
+    
+    root_directory = os.path.dirname(os.path.realpath(__file__))
+
+    path = root_directory + '/stitching-vector-61b3a82d6fa1f65bf8cc2448-img-global-positions-1.txt'
+    
+    old_pattern = 'x{xx}_y{yy}_wx{z}_wy{r}_c{c}.ome.tif'
+    
+    patterns = ['x{x:dd}_y{y:dd}_wx{z:d}_wy{r:d}_c{c:d}.ome.tif', old_pattern]
+    
+    MAX_NUM = 9
+
+    def test_file_pattern(self):
+
+        for pattern in self.patterns:
+            old_files = filepattern.VectorPattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern)
+
+            old_result = []
+            result = []
+
+            for file in old_files():
+                old_result.append(file)
+            for file in files():
+                result.append(file)
+
+            self.assertEqual(len(old_result), len(result)) 
+            
+            old_result = sorted(old_result, key=lambda k: k[0]['file'])
+            
+            for i in range(len(old_result)):
+                for key in result[i][0]:
+                    self.assertEqual(int(old_result[i][0][key]), result[i][0][key]) 
+                self.assertEqual(str(os.path.basename(old_result[i][0]['file'])), os.path.basename(result[i][1][0]))
+
+    def test_get_matching(self):
+         for pattern in self.patterns:
+            nums = []
+            for i in range(0, self.MAX_NUM):
+
+                old_files = filepattern.VectorPattern(self.path, self.old_pattern)
+                files = fp.FilePattern(self.path, pattern)
+
+                nums.append(i)
+
+                old_result = old_files.get_matching(R=[i])
+                result = files.get_matching(r=[i])
+
+                self.assertEqual(len(old_result), len(result)) 
+
+                #pprint.pprint(result)
+                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
+                
+                
+                for i in range(len(old_result)):
+                    for key in result[i][0]:
+                        self.assertEqual(str(old_result[i][key]), str(result[i][0][key])) # Old version stores value as string 
+                    self.assertEqual(os.path.basename(old_result[i]['file']), os.path.basename(result[i][1][0]))
+
+                old_result = old_files.get_matching(C=[i])
+                result = files.get_matching(c=[i])
+
+                self.assertEqual(len(old_result), len(result)) 
+                
+                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
+
+                for i in range(len(old_result)):
+                    for key in result[i][0]:
+                        self.assertEqual(old_result[i][0][key], result[i][0][key]) 
+                    self.assertEqual(str(os.path.basename(old_result[i][0]['file'])), os.path.basename(result[i][1][0]))
+
+                old_result = old_files.get_matching(R=nums)
+                result = files.get_matching(r=nums)
+
+                self.assertEqual(len(old_result), len(result)) 
+
+                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
+
+                for i in range(len(old_result)):
+                    for key in result[i][0]:
+                        self.assertEqual(str(old_result[i][key]), str(result[i][0][key])) # Old version stores value as string 
+                    self.assertEqual(os.path.basename(old_result[i]['file']), os.path.basename(result[i][1][0]))
+
+                old_result = old_files.get_matching(C=nums)
+                result = files.get_matching(c=nums)
+
+                self.assertEqual(len(old_result), len(result)) 
+                
+                old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
+
+                for i in range(len(old_result)):
+                    for key in result[i][0]:
+                        self.assertEqual(str(old_result[i][key]), str(result[i][0][key])) # Old version stores value as string 
+                    self.assertEqual(os.path.basename(old_result[i]['file']), os.path.basename(result[i][1][0]))                        
+
   
 if __name__ == '__main__':
 
