@@ -4,14 +4,15 @@ import filepattern
 import os
 from operator import itemgetter
 import pprint
+import test_generate_filepattern_data
 
 class TestFilePattern():
 
-    #root_directory = os.path.dirname(os.path.realpath(__file__))
+    test_generate_filepattern_data.main()
 
-    #path = root_directory + '/test_data/data100'
-    
-    path = 'tests/test_data/data100'
+    root_directory = os.path.dirname(os.path.realpath(__file__))
+
+    path = root_directory + '/test_data/data100'
 
     old_pattern = 'img_r{rrr}_c{ccc}.tif'
 
