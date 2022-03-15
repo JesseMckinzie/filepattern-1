@@ -7,9 +7,11 @@ import pprint
 
 class TestFilePattern():
 
-    root_directory = os.path.dirname(os.path.realpath(__file__))
+    #root_directory = os.path.dirname(os.path.realpath(__file__))
 
-    path = root_directory + '/test_data/data100'
+    #path = root_directory + '/test_data/data100'
+    
+    path = 'tests/test_data/data100'
 
     old_pattern = 'img_r{rrr}_c{ccc}.tif'
 
