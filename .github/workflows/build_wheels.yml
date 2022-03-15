@@ -16,6 +16,7 @@ jobs:
         cibw_archs: ["auto"]
 
     steps:
+  
       - uses: actions/checkout@v2
         name: Check out
         with:
@@ -29,6 +30,10 @@ jobs:
       - name: Install cibuildwheel
         run: |
           python -m pip install cibuildwheel==2.1.1
+
+      - name: Install gcc
+        run: |
+          brew install gcc-8
 
       - name: Build wheels for CPython 3.9
         run: |
