@@ -111,6 +111,15 @@ void InternalPattern::sortFiles(){
     });
 }
 
+void getItem(tuple key){
+    for(auto p : key) cout << p << endl;
+    
+    //if(key < 0) return validFiles[validFiles.size()-key];
+
+    //return validFiles[key];
+}
+
+
 /*
 vector<Tuple> InternalPattern::getFilesFromOutputName(const string& outputName, const vector<string>& vars) {
 
