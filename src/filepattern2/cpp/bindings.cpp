@@ -44,6 +44,7 @@ PYBIND11_MODULE(backend, m){
         .def("groupBy", &InternalPattern::groupBy)
         .def("getMatching", &InternalPattern::getMatching)
         .def("outputName", &InternalPattern::outputName)
+        .def("getItem", &InternalPattern::getItem)
         .def_static("inferPattern", py::overload_cast<std::vector<std::string>&, std::string&>(&InternalPattern::inferPattern))
         .def_static("inferPattern", py::overload_cast<const std::string&, std::string&>(&InternalPattern::inferPattern));
 

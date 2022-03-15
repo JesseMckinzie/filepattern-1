@@ -147,6 +147,12 @@ class PatternObject:
 
                 if len(self) == 0:
                     break
+                
+    def __getitem__(self, key):
+        if(type(key) == int): slc = key, None, None
+        else: slc = key.start, key.stop, key.step
+        
+        self._file_pattern.getItem(slc)
 
 
 class FilePattern(PatternObject):

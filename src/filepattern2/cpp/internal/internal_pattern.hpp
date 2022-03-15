@@ -68,6 +68,8 @@ class InternalPattern : public Pattern {
          * @return std::string 
          */
         std::string outputName(std::vector<Tuple>& vec);
+
+        void getItem(const int key);
         
         /**
          * @brief Returns the guess of a pattern given a path to a directory or text file.
@@ -86,5 +88,7 @@ class InternalPattern : public Pattern {
          * @return std::string Guess of the pattern
          */
         static std::string inferPattern(std::vector<std::string>& vec, std::string& variables);
+
+
 
 };
