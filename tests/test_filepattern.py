@@ -8,7 +8,8 @@ import test_generate_filepattern_data
 
 class TestFilePattern():
 
-    test_generate_filepattern_data.main()
+    test_generate_filepattern_data.generate_data()
+    test_generate_filepattern_data.generate_channel_data()
 
     root_directory = os.path.dirname(os.path.realpath(__file__))
 
