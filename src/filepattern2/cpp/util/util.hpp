@@ -29,6 +29,7 @@
 #include <utility>
 #include <cstring>
 #include <iostream>
+#include <regex>
 
 typedef std::variant<int, std::string> Types;
 typedef std::map<std::string, Types> Map;
@@ -98,7 +99,8 @@ namespace s {
      * @return false String is not a number
      */
     inline bool is_number(const std::string& s) {
-        return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
+        //return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
+        return std::regex_match(s, std::regex("^-?[0-9]\\d*(\\.\\d+)?$"));
     }
 
     /**
@@ -439,4 +441,32 @@ namespace d {
         catch (std::filesystem::filesystem_error& e) {}
     }
 
+}
+
+namespace v {
+
+    inline std::vector<Tuple> sliceVector(std::vector<Tuple>& vec, int start, int stop, int step){
+
+        std::vector<Tuple> slice;
+        for(int i = start; i < stop; i += step){
+            slice.push_back(vec[i]);
+        }
+        return slice;
+    }
+}
+
+namespace f {
+    /**
+     * https://stackoverflow.com/questions/5207550/in-c-is-there-a-way-to-go-to-a-specific-line-in-a-text-file
+     */ 
+    inline std::ifstream& goToLine(std::ifstream& file, unsigned int num){
+
+        file.seekg(std::ios::beg);
+
+        for(int i=0; i < num - 1; ++i){
+            file.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
+        }
+        
+        return file;
+    }
 }
