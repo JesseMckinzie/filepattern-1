@@ -69,7 +69,11 @@ class InternalPattern : public Pattern {
          */
         std::string outputName(std::vector<Tuple>& vec);
 
-        void getItem(const int key);
+        Tuple getItem(int key);
+
+        std::vector<Tuple> getItemList(std::vector<int> key);
+
+        std::vector<Tuple> getSlice(std::vector<Types>& key);
         
         /**
          * @brief Returns the guess of a pattern given a path to a directory or text file.
