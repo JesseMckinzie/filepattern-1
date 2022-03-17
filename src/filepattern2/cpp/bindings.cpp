@@ -45,6 +45,8 @@ PYBIND11_MODULE(backend, m){
         .def("getMatching", &InternalPattern::getMatching)
         .def("outputName", &InternalPattern::outputName)
         .def("getItem", &InternalPattern::getItem)
+        .def("getSlice", &InternalPattern::getSlice)
+        .def("getItemList", &InternalPattern::getItemList)
         .def_static("inferPattern", py::overload_cast<std::vector<std::string>&, std::string&>(&InternalPattern::inferPattern))
         .def_static("inferPattern", py::overload_cast<const std::string&, std::string&>(&InternalPattern::inferPattern));
 
@@ -67,7 +69,10 @@ PYBIND11_MODULE(backend, m){
         .def("currentBlockLength", &ExternalPattern::currentBlockLength)
         .def("outputName", &ExternalPattern::outputName)
         .def("getGroupLength", &ExternalPattern::getGroupLength)
-        .def("inferPattern", &ExternalPattern::inferPattern);
+        .def("inferPattern", &ExternalPattern::inferPattern)
+        .def("getItem", &ExternalPattern::getItem)
+        .def("getSlice", &ExternalPattern::getSlice)
+        .def("getItemList", &ExternalPattern::getItemList);
         
 
     py::class_<ExternalFilePattern, ExternalPattern>(m, "ExternalFilePattern")

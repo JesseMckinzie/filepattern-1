@@ -149,10 +149,16 @@ class PatternObject:
                     break
                 
     def __getitem__(self, key):
-        if(type(key) == int): slc = key, None, None
-        else: slc = key.start, key.stop, key.step
+        print(key)
+        if(type(key) == int): return self._file_pattern.getItem(key)
+        if(type(key) == list): return self._file_pattern.getItemList(key)
         
-        self._file_pattern.getItem(slc)
+        slc = [key.start, key.stop, key.step]
+        if(slc[0] == None): slc[0] = 'None'
+        if(slc[1] == None): slc[1] = 'None'
+        if(slc[2] == None): slc[2] = 'None'
+        
+        return self._file_pattern.getSlice(slc)
 
 
 class FilePattern(PatternObject):
