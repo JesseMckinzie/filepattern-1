@@ -23,7 +23,7 @@ jobs:
               
       - name: Install gcc
         run: |
-          brew install gcc-8
+          brew install gcc@8
 
       - uses: actions/setup-python@v3
         name: Install Python
