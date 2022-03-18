@@ -150,6 +150,7 @@ vector<string> FilesystemStream::getBlockTxt(){
     this->inputfile >> str;
     this->updateSize(size, str);
     vec.push_back(str);
+    ++this->validFilesSize;
     size = this->currentSize(str.length(), size);
 
     while(size < this->blockSize && this->inputfile >> str){
@@ -314,7 +315,6 @@ Tuple FilesystemStream::getFileByIndex(int i) {
     for(int j = 0; j < this->mapSize; ++j){
 
         getline(in, str);
-        cout << str << endl;
 
         pos = str.find(":");
         key = str.substr(0, pos);
@@ -332,7 +332,6 @@ Tuple FilesystemStream::getFileByIndex(int i) {
 
     in >> str;
     Tuple temp;
-    cout << "str: " << str << endl;
 
     get<0>(temp) = map;
     str.pop_back(); // remove trailing comma

@@ -152,7 +152,7 @@ vector<Tuple> InternalPattern::getSlice(vector<Types>& key){
         if(i > validFiles.size() || (j > validFiles.size() && j >=0)) throw invalid_argument("Index out of range.");
         if(i > j && j >= 0) throw invalid_argument("Invalid range.");
 
-        if(j < 0) j += validFiles.size();
+        if(j < 0) j += validFiles.size() + 1;
 
         return v::sliceVector(this->validFiles, i, j, 1);
     }
