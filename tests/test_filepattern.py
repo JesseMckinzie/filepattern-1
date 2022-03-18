@@ -161,7 +161,51 @@ class TestFilePattern():
                 basename = os.path.basename(mapping[1][0])
                 for filepath in mapping[1]:
                     assert basename == os.path.basename(filepath)
+    
+    def test_get_item(self):
+        
+        for pattern in self.patterns:
+            old_files = filepattern.FilePattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern)
 
+            old_result = []
+            result = []
+
+            for file in old_files():
+                old_result.append(file)
+            
+            result = files[0:-1]
+
+            assert len(old_result) == len(result)
+            
+            for i in range(len(old_result)):
+                assert old_result[i][0]["r"] == result[i][0]["r"]
+                assert old_result[i][0]["c"] == result[i][0]["c"]
+                assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
+
+            assert old_result[0][0]["r"] == files[0][0]["r"]
+            assert old_result[0][0]["c"] == files[0][0]["c"]                                                    
+            assert str(os.path.basename(old_result[0][0]['file'])) == os.path.basename(files[0][1][0])
+            
+            indices = [1, 15, 25, 37]
+            result_slice = files[indices]
+            
+            for i in range(len(result_slice)):
+                assert old_result[indices[i]][0]["r"] == result_slice[i][0]["r"]
+                assert old_result[indices[i]][0]["c"] == result_slice[i][0]["c"]
+                assert str(os.path.basename(old_result[indices[i]][0]['file'])) == os.path.basename(result_slice[i][1][0])
+                
+            assert old_result[indices[-1]][0]["r"] == result_slice[-1][0]["r"]
+            assert old_result[indices[-1]][0]["c"] == result_slice[-1][0]["c"]
+            assert str(os.path.basename(old_result[indices[-1]][0]['file'])) == os.path.basename(result_slice[-1][1][0])
+            
+            result_slice = files[1::2]
+            old_result_slice = old_result[1::2]
+            for i in range(0, len(old_result_slice)):
+                assert old_result_slice[i][0]["r"] == result_slice[i][0]["r"]
+                assert old_result_slice[i][0]["c"] == result_slice[i][0]["c"]
+                assert str(os.path.basename(old_result_slice[i][0]['file'])) == os.path.basename(result_slice[i][1][0])
+                
 class TestStringPattern():
 
     root_directory = os.path.dirname(os.path.realpath(__file__))
@@ -282,7 +326,49 @@ class TestStringPattern():
                     assert old_result[i][j]["r"] == result[i][1][j][0]["r"] 
                     assert old_result[i][j]["c"] == result[i][1][j][0]["c"]
                     assert str(os.path.basename(old_result[i][j]['file'])) == result[i][1][j][1][0]
+    def test_get_item(self):
+        
+        for pattern in self.patterns:
+            old_files = filepattern.FilePattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.filepath, pattern)
 
+            old_result = []
+            result = []
+
+            for file in old_files():
+                old_result.append(file)
+            
+            result = files[0:-1]
+
+            assert len(old_result) == len(result)
+            
+            for i in range(len(old_result)):
+                assert old_result[i][0]["r"] == result[i][0]["r"]
+                assert old_result[i][0]["c"] == result[i][0]["c"]
+                assert str(os.path.basename(old_result[i][0]['file'])) == result[i][1][0]
+
+            assert old_result[0][0]["r"] == files[0][0]["r"]
+            assert old_result[0][0]["c"] == files[0][0]["c"]                                                    
+            assert str(os.path.basename(old_result[0][0]['file'])) == files[0][1][0]
+            
+            indices = [1, 15, 25, 37]
+            result_slice = files[indices]
+            
+            for i in range(len(result_slice)):
+                assert old_result[indices[i]][0]["r"] == result_slice[i][0]["r"]
+                assert old_result[indices[i]][0]["c"] == result_slice[i][0]["c"]
+                assert str(os.path.basename(old_result[indices[i]][0]['file'])) == result_slice[i][1][0]
+                
+            assert old_result[indices[-1]][0]["r"] == result_slice[-1][0]["r"]
+            assert old_result[indices[-1]][0]["c"] == result_slice[-1][0]["c"]
+            assert str(os.path.basename(old_result[indices[-1]][0]['file'])) == result_slice[-1][1][0]
+            
+            result_slice = files[1::2]
+            old_result_slice = old_result[1::2]
+            for i in range(0, len(old_result_slice)):
+                assert old_result_slice[i][0]["r"] == result_slice[i][0]["r"]
+                assert old_result_slice[i][0]["c"] == result_slice[i][0]["c"]
+                assert str(os.path.basename(old_result_slice[i][0]['file'])) == result_slice[i][1][0]
 
 class TestVectorPattern():
     
@@ -378,7 +464,52 @@ class TestVectorPattern():
                     for key in result[i][0]:
                         assert str(old_result[i][key]) == str(result[i][0][key]) # Old version stores value as string 
                     assert os.path.basename(old_result[i]['file']) == os.path.basename(result[i][1][0])
+                    
+    def test_get_item(self):          
+        for pattern in self.patterns:
+        
+            old_files = filepattern.VectorPattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern)
 
+            old_result = []
+            result = []
+
+            for file in old_files():
+                old_result.append(file)
+            old_result = sorted(old_result, key=lambda k: k[0]['file'])
+                
+            result = files[0:-1]
+
+            assert len(old_result) == len(result)
+            
+             
+            for i in range(len(old_result)):
+                for key in result[i][0]:
+                    assert int(old_result[i][0][key]) == result[i][0][key]
+                assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
+
+            for key in files[-1][0]:
+                assert str(old_result[-1][0][key]) == str(files[-1][0][key])                                                   
+            assert str(os.path.basename(old_result[-1][0]['file'])) == files[-1][1][0]
+            
+            indices = [1, 15, 25, 37]
+            result_slice = files[indices]
+            
+            for i in range(len(result_slice)):
+                for key in result[i][0]:
+                    assert str(old_result[i][0][key]) == str(result[i][0][key]) # Old version stores value as string 
+                assert os.path.basename(old_result[i][0]['file']) == os.path.basename(result[i][1][0])
+            
+            result_slice = files[1::2]
+            old_result_slice = old_result[1::2]
+            
+            assert len(old_result_slice) == len(result_slice)
+            
+            for i in range(len(old_result)):
+                for key in result[i][0]:
+                    assert int(old_result[i][0][key]) == result[i][0][key]
+                assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
+    
 
 class TestExternalFilePattern():
     root_directory = os.path.dirname(os.path.realpath(__file__))
@@ -526,7 +657,55 @@ class TestExternalFilePattern():
                         assert old_result[i][j]["r"] == result[i][1][j][0]["r"]
                         assert old_result[i][j]["c"] == result[i][1][j][0]["c"]
                         assert str(os.path.basename(old_result[i][j]['file'])) == os.path.basename(result[i][1][j][1][0])
+                        
+    
+    def test_get_item(self):
+        for pattern in self.patterns:
+            for block_size in self.block_sizes:
+        
+                old_files = filepattern.FilePattern(self.path, self.old_pattern)
+                files = fp.FilePattern(self.path, pattern, block_size=block_size)
 
+                old_result = []
+                result = []
+
+                for file in old_files():
+                    old_result.append(file)
+                
+                result = files[0:-1]
+
+                assert len(old_result) == len(result)
+                
+                for i in range(len(old_result)):
+                    assert old_result[i][0]["r"] == result[i][0]["r"]
+                    assert old_result[i][0]["c"] == result[i][0]["c"]
+                    assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
+
+                assert old_result[0][0]["r"] == files[0][0]["r"]
+                assert old_result[0][0]["c"] == files[0][0]["c"]                                                    
+                assert str(os.path.basename(old_result[0][0]['file'])) == os.path.basename(files[0][1][0])
+                
+                indices = [1, 15, 25, 37]
+                result_slice = files[indices]
+                
+                for i in range(len(result_slice)):
+                    assert old_result[indices[i]][0]["r"] == result_slice[i][0]["r"]
+                    assert old_result[indices[i]][0]["c"] == result_slice[i][0]["c"]
+                    assert str(os.path.basename(old_result[indices[i]][0]['file'])) == os.path.basename(result_slice[i][1][0])
+                    
+                assert old_result[indices[-1]][0]["r"] == result_slice[-1][0]["r"]
+                assert old_result[indices[-1]][0]["c"] == result_slice[-1][0]["c"]
+                assert str(os.path.basename(old_result[indices[-1]][0]['file'])) == os.path.basename(result_slice[-1][1][0])
+                
+                result_slice = files[1::2]
+                old_result_slice = old_result[1::2]
+                
+                assert len(old_result_slice) == len(result_slice)
+                
+                for i in range(0, len(old_result_slice)):
+                    assert old_result_slice[i][0]["r"] == result_slice[i][0]["r"]
+                    assert old_result_slice[i][0]["c"] == result_slice[i][0]["c"]
+                    assert str(os.path.basename(old_result_slice[i][0]['file'])) == os.path.basename(result_slice[i][1][0])
 
 class TestExternalStringPattern():
     root_directory = os.path.dirname(os.path.realpath(__file__))
@@ -672,7 +851,56 @@ class TestExternalStringPattern():
                         assert old_result[i][j]["r"] == result[i][1][j][0]["r"] 
                         assert old_result[i][j]["c"] == result[i][1][j][0]["c"]
                         assert str(os.path.basename(old_result[i][j]['file'])) == result[i][1][j][1][0]
+                        
+    def test_get_item(self):
+        for pattern in self.patterns:
+            for block_size in self.block_sizes:
+        
+                old_files = filepattern.FilePattern(self.path, self.old_pattern)
+                files = fp.FilePattern(self.string_path, pattern, block_size=block_size)
 
+                old_result = []
+                result = []
+
+                for file in old_files():
+                    old_result.append(file)
+                for file in files():    
+                    result.append(file)
+                 
+                result = files[0:-1]
+
+                assert len(old_result) == len(result)
+                
+                for i in range(len(old_result)):
+                    assert old_result[i][0]["r"] == result[i][0]["r"]
+                    assert old_result[i][0]["c"] == result[i][0]["c"]
+                    assert str(os.path.basename(old_result[i][0]['file'])) == result[i][1][0]
+
+                assert old_result[0][0]["r"] == files[0][0]["r"]
+                assert old_result[0][0]["c"] == files[0][0]["c"]                                                    
+                assert str(os.path.basename(old_result[0][0]['file'])) == files[0][1][0]
+                
+                indices = [1, 15, 25, 37]
+                result_slice = files[indices]
+                
+                for i in range(len(result_slice)):
+                    assert old_result[indices[i]][0]["r"] == result_slice[i][0]["r"]
+                    assert old_result[indices[i]][0]["c"] == result_slice[i][0]["c"]
+                    assert str(os.path.basename(old_result[indices[i]][0]['file'])) == result_slice[i][1][0]
+                    
+                assert old_result[indices[-1]][0]["r"] == result_slice[-1][0]["r"]
+                assert old_result[indices[-1]][0]["c"] == result_slice[-1][0]["c"]
+                assert str(os.path.basename(old_result[indices[-1]][0]['file'])) == result_slice[-1][1][0]
+                
+                result_slice = files[1::2]
+                old_result_slice = old_result[1::2]
+                
+                assert len(old_result_slice) == len(result_slice)
+                
+                for i in range(0, len(old_result_slice)):
+                    assert old_result_slice[i][0]["r"] == result_slice[i][0]["r"]
+                    assert old_result_slice[i][0]["c"] == result_slice[i][0]["c"]
+                    assert str(os.path.basename(old_result_slice[i][0]['file'])) == result_slice[i][1][0]
 
 class TestExternalVectorPattern():
     
@@ -768,4 +996,48 @@ class TestExternalVectorPattern():
                     for key in result[i][0]:
                         assert str(old_result[i][key]) == str(result[i][0][key]) # Old version stores value as string 
                     assert os.path.basename(old_result[i]['file']) == os.path.basename(result[i][1][0])            
-                    
+    
+    def test_get_item(self):          
+        for pattern in self.patterns:
+        
+            old_files = filepattern.VectorPattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern)
+
+            old_result = []
+            result = []
+
+            for file in old_files():
+                old_result.append(file)
+            old_result = sorted(old_result, key=lambda k: k[0]['file'])
+                
+            result = files[0:-1]
+
+            assert len(old_result) == len(result)
+            
+             
+            for i in range(len(old_result)):
+                for key in result[i][0]:
+                    assert int(old_result[i][0][key]) == result[i][0][key]
+                assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
+
+            for key in files[-1][0]:
+                assert str(old_result[-1][0][key]) == str(files[-1][0][key])                                                   
+            assert str(os.path.basename(old_result[-1][0]['file'])) == files[-1][1][0]
+            
+            indices = [1, 15, 25, 37]
+            result_slice = files[indices]
+            
+            for i in range(len(result_slice)):
+                for key in result[i][0]:
+                    assert str(old_result[i][0][key]) == str(result[i][0][key]) # Old version stores value as string 
+                assert os.path.basename(old_result[i][0]['file']) == os.path.basename(result[i][1][0])
+            
+            result_slice = files[1::2]
+            old_result_slice = old_result[1::2]
+            
+            assert len(old_result_slice) == len(result_slice)
+            
+            for i in range(len(old_result)):
+                for key in result[i][0]:
+                    assert int(old_result[i][0][key]) == result[i][0][key]
+                assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])

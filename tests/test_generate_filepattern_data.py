@@ -23,7 +23,7 @@ def generate_data():
     name = ""
 
 
-    limit = math.ceil(math.sqrt(MAX)) 
+    limit = int(math.ceil(math.sqrt(MAX)))
 
     infile = open(path + "/data" + str(MAX) + ".txt", "w+")
     for i in range(0, limit):
