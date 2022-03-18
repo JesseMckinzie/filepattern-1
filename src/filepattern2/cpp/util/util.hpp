@@ -99,8 +99,9 @@ namespace s {
      * @return false String is not a number
      */
     inline bool is_number(const std::string& s) {
-        //return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
-        return std::regex_match(s, std::regex("^-?[0-9]\\d*(\\.\\d+)?$"));
+        if(s[0] == '-') return std::regex_match(s, std::regex("^-?[0-9]\\d*(\\.\\d+)?$"));
+        return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
+        
     }
 
     /**

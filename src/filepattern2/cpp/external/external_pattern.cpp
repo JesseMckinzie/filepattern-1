@@ -348,13 +348,27 @@ vector<Tuple> ExternalPattern::getSlice(vector<Types>& key){
     string key1 = s::to_string(key[1]);
     string key2 = s::to_string(key[2]);
 
+    cout << "valid files length: " << this->stream.getValidFilesSize() << endl;
+
+    if(s::is_number(key0) && key1 == "None"  && key2 == "None"){
+        int i = stoi(key0);
+
+        if(i >= this->stream.getValidFilesSize()) throw invalid_argument("Index out of range.");
+        int j = this->stream.getValidFilesSize();
+        int step =  1;
+        return this->stream.getValidFilesSlice(i, j, step);
+    }
+
     // A start and stop index is provided with no step size, i.e. validFiles[i:j]
     if(s::is_number(key0) && s::is_number(key1)  && key2 == "None"){
         int i =  stoi(key0);
         int j = stoi(key1);
 
         if(i > this->stream.getValidFilesSize() || j > this->stream.getValidFilesSize()) throw invalid_argument("Index out of range.");
-        if(i > j) throw invalid_argument("Invalid range.");
+        if(j >= 0 && i > j) throw invalid_argument("Invalid range.");
+
+        if(j < 0) j += this->stream.getValidFilesSize() + 1;
+
         return this->stream.getValidFilesSlice(i, j, 1);
     }
 
@@ -368,7 +382,7 @@ vector<Tuple> ExternalPattern::getSlice(vector<Types>& key){
 
     if(s::is_number(key0) && key1 == "None" && s::is_number(key2)){
         int i = stoi(key0);
-        int j = validFiles.size();
+        int j = this->stream.getValidFilesSize();
         int step =  stoi(key2);
         return this->stream.getValidFilesSlice(i, j, step);
     }
