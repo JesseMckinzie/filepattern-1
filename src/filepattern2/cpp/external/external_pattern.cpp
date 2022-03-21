@@ -317,7 +317,7 @@ void ExternalPattern::sortFiles(){
 
 Tuple ExternalPattern::getItem(int key){
     if(key >= this->stream.getValidFilesSize()) throw out_of_range("Index " + std::to_string(key) + " is out of range.");
-    if(key < 0) return this->stream.getFileByIndex(this->steam.getValidFilesSize()+key);
+    if(key < 0) return this->stream.getFileByIndex(this->stream.getValidFilesSize()+key);
     return this->stream.getFileByIndex(key);
 }
 
