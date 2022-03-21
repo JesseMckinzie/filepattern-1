@@ -316,7 +316,8 @@ void ExternalPattern::sortFiles(){
 }
 
 Tuple ExternalPattern::getItem(int key){
-    if(key < 0) return this->stream.getFileByIndex(validFiles.size()+key);
+    if(key >= this->this->steam.getValidFilesSize()) throw out_of_range("Index " + std::to_string(key) + is " out of range.");
+    if(key < 0) return this->stream.getFileByIndex(this->steam.getValidFilesSize()+key);
     return this->stream.getFileByIndex(key);
 }
 
@@ -327,7 +328,7 @@ vector<Tuple> ExternalPattern::getItemList(vector<int>& key){
     int validFilesSize = this->stream.getValidFilesSize();
 
     for(const auto& index: key){
-        if(index > validFilesSize) throw invalid_argument("Index " + std::to_string(index) + " is out of range.");
+        if(index > validFilesSize) throw out_of_range("Index " + std::to_string(index) + " is out of range.");
 
         vec.push_back(this->stream.getFileByIndex(index));
     }
@@ -346,7 +347,7 @@ vector<Tuple> ExternalPattern::getSlice(vector<Types>& key){
     if(s::is_number(key0) && key1 == "None"  && key2 == "None"){
         int i = stoi(key0);
 
-        if(i >= this->stream.getValidFilesSize()) throw invalid_argument("Index out of range.");
+        if(i >= this->stream.getValidFilesSize()) throw out_of_range("Index out of range.");
         int j = this->stream.getValidFilesSize();
         int step =  1;
         return this->stream.getValidFilesSlice(i, j, step);
@@ -357,8 +358,8 @@ vector<Tuple> ExternalPattern::getSlice(vector<Types>& key){
         int i =  stoi(key0);
         int j = stoi(key1);
 
-        if(i > this->stream.getValidFilesSize() || j > this->stream.getValidFilesSize()) throw invalid_argument("Index out of range.");
-        if(j >= 0 && i > j) throw invalid_argument("Invalid range.");
+        if(i > this->stream.getValidFilesSize() || j > this->stream.getValidFilesSize()) throw out_of_range("Index out of range.");
+        if(j >= 0 && i > j) throw out_of_range("Invalid range.");
 
         if(j < 0) j += this->stream.getValidFilesSize() + 1;
 
