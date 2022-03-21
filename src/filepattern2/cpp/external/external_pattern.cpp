@@ -293,7 +293,10 @@ string ExternalPattern::inferPattern(const string& path, string& variables, cons
     //      process each block using the in memory version with the current pattern
     while(!stream.isEmpty()){
         vec = stream.getBlock();
-        for(auto& str: vec) replace(str.begin(), str.end(), '\\', '/');
+        for(auto& str: vec) {
+            replace(str.begin(), str.end(), '\\', '/');
+        }
+        for(auto& str: vec) cout << str << endl;
         //for(int i = 0; i < vec.size(); ++i) vec[i] = s::getBaseName
 
         pattern = inferPatternInternal(vec, variables, pattern);
