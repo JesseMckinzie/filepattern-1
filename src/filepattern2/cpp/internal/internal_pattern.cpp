@@ -93,10 +93,20 @@ string InternalPattern::outputName(vector<Tuple>& vec){
 string InternalPattern::inferPattern(const string& path, string& variables){
     vector<string> vec;
 
-    fs::directory_iterator iterator = fs::directory_iterator(path);
-    string filePath;
-    for(auto& file: iterator){
-        vec.push_back(s::getBaseName(file.path().string()));
+    if(s::endsWith(path, ".txt")){
+
+        ifstream infile(path);
+
+        string str;
+        while(getline(infile, str)) vec.push_back(str)
+
+    } else {
+
+        fs::directory_iterator iterator = fs::directory_iterator(path);
+
+        for(auto& file: iterator){
+            vec.push_back(s::getBaseName(file.path().string()));
+        }
     }
 
     return inferPatternInternal(vec, variables);
