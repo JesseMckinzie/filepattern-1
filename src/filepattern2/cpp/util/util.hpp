@@ -108,11 +108,11 @@ namespace s {
     * @return string The basename of the filepath.
     */
     inline std::string getBaseName(const std::string& filePath) {
-        if (filePath.find('/') == std::string::npos) return filePath;
+        if (filePath.find('/') == std::string::npos && filePath.find('\\') == std::string::npos) return filePath;
 
         int i = filePath.size() - 1;
         std::string file;
-        while (filePath[i] != '/') {
+        while (filePath[i] != '/' && filePath[i] != '\\') {
             file.insert(0, 1, filePath[i]);
             --i;
         }
