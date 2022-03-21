@@ -98,7 +98,7 @@ string InternalPattern::inferPattern(const string& path, string& variables){
         ifstream infile(path);
 
         string str;
-        while(getline(infile, str)) vec.push_back(str)
+        while(getline(infile, str)) vec.push_back(str);
 
     } else {
 
