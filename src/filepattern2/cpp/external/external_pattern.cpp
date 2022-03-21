@@ -209,18 +209,7 @@ void ExternalPattern::nextGroup(){
 }
 
 void ExternalPattern::next(){
-    this->currentBlock = this->getValidFilesBlock(); // get block of valid files
-    /*
-    cout << "--------------------------" << endl << "next: " << endl;
-    for (auto& tup : this->currentBlock) {
-        for (auto& p : get<0>(tup)) {
-            cout << p.first << ": " << s::to_string(p.second) << endl;
-        }
-        for (auto& s : get<1>(tup)) {
-            cout << s << endl;
-        }
-    }
-    */
+    this->currentBlock = this->getValidFilesBlock(); // get block of valid files 
 }
 
 int ExternalPattern::currentBlockLength(){
@@ -304,7 +293,8 @@ string ExternalPattern::inferPattern(const string& path, string& variables, cons
     //      process each block using the in memory version with the current pattern
     while(!stream.isEmpty()){
         vec = stream.getBlock();
-        for(auto& str: vec) str = s::getBaseName(str);
+        for(auto& str: vec) replace(str.begin(), str.end(), '\\', '/');
+        //for(int i = 0; i < vec.size(); ++i) vec[i] = s::getBaseName
 
         pattern = inferPatternInternal(vec, variables, pattern);
 
