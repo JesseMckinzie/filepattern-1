@@ -134,6 +134,12 @@ class FilesystemStream {
          */
         std::string getTmpPath();
 
+        Tuple getFileByIndex(int i);
+
+        int getValidFilesSize();
+
+        std::vector<Tuple> getValidFilesSlice(int i, int j, int step);
+
     private:
         fs::directory_iterator directory_iterator; // directory iterator to stream from
         fs::recursive_directory_iterator recursive_directory_iterator; 
@@ -155,6 +161,7 @@ class FilesystemStream {
         bool empty; // no more files remaining
         bool validFilesEmpty; // no more matched files
         long double blockSize; // max amount of memory to use
+        int validFilesSize;
 
         /**
          * @brief Updates the amount of memory being used

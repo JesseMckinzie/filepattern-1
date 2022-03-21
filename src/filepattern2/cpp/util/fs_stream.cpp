@@ -3,6 +3,7 @@
 using namespace std;
 
 FilesystemStream::FilesystemStream(const string& path, bool recursive, const string& blockSize, const bool isInfer) {
+    this->validFilesSize = 0;
     this->isInfer = isInfer; // Is a call from inferPattern (handles memory footprint calculation different if true)
     this->tmpdir = fs::temp_directory_path().string(); // temp directory to store txt files
     if (s::endsWith(tmpdir, "\\")) this->tmpdir.pop_back();
@@ -90,6 +91,7 @@ vector<string> FilesystemStream::getBlockIterator(){
 
         while(this->currentSize(current.length(), previousSize) < blockSize){
             vec.push_back(current);
+            ++this->validFilesSize;
             ++recursive_directory_iterator;
 
             if(fs::begin(recursive_directory_iterator) == rec_end){
@@ -117,6 +119,7 @@ vector<string> FilesystemStream::getBlockIterator(){
 
         while(this->currentSize(current.length(), previousSize) < blockSize){
             vec.push_back(current);
+            ++this->validFilesSize;
             ++directory_iterator;
 
             if(fs::begin(directory_iterator) == end){
@@ -147,10 +150,12 @@ vector<string> FilesystemStream::getBlockTxt(){
     this->inputfile >> str;
     this->updateSize(size, str);
     vec.push_back(str);
+    ++this->validFilesSize;
     size = this->currentSize(str.length(), size);
 
     while(size < this->blockSize && this->inputfile >> str){
         size = this->currentSize(str.length(), size);
+        ++this->validFilesSize;
         vec.push_back(str);
     }
     
@@ -290,4 +295,61 @@ string FilesystemStream::getValidFilesPath(){
 
 string FilesystemStream::getBlockSizeStr(){
     return this->blockSizeStr;
+}
+
+
+Tuple FilesystemStream::getFileByIndex(int i) {
+    int fileIndex = (this->mapSize + 1)*i + 1;
+    cout << "file: " << fileIndex << endl;
+    ifstream in = ifstream(validFiles);
+
+    string str;
+
+    Map map;
+    string key, value;
+    int valueLength; 
+    size_t pos;
+    Types result;
+
+    f::goToLine(in, fileIndex);
+    for(int j = 0; j < this->mapSize; ++j){
+
+        getline(in, str);
+
+        pos = str.find(":");
+        key = str.substr(0, pos);
+        valueLength = str.length() - pos;
+        value = str.substr(pos+1, valueLength);
+
+        if(s::is_number(value)){
+            result = stoi(value);
+        } else {
+            result = value;
+        }
+
+        map[key] = result;
+    }
+
+    in >> str;
+    Tuple temp;
+
+    get<0>(temp) = map;
+    str.pop_back(); // remove trailing comma
+    get<1>(temp).push_back(str);
+
+    return temp;
+}
+
+int FilesystemStream::getValidFilesSize(){
+    return this->validFilesSize;
+}
+
+vector<Tuple> FilesystemStream::getValidFilesSlice(int i, int j, int step){
+    vector<Tuple> vec;
+    
+    for(int index = i; index < j; index += step){
+        vec.push_back(getFileByIndex(index));
+    }
+
+    return vec;
 }

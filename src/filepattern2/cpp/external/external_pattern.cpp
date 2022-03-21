@@ -314,3 +314,74 @@ int ExternalPattern::getGroupLength(){
 void ExternalPattern::sortFiles(){
 
 }
+
+Tuple ExternalPattern::getItem(int key){
+    if(key < 0) return this->stream.getFileByIndex(validFiles.size()+key);
+    return this->stream.getFileByIndex(key);
+}
+
+vector<Tuple> ExternalPattern::getItemList(vector<int>& key){
+
+    vector<Tuple> vec;
+
+    int validFilesSize = this->stream.getValidFilesSize();
+
+    for(const auto& index: key){
+        if(index > validFilesSize) throw invalid_argument("Index " + std::to_string(index) + " is out of range.");
+
+        vec.push_back(this->stream.getFileByIndex(index));
+    }
+
+    return vec;
+}
+
+vector<Tuple> ExternalPattern::getSlice(vector<Types>& key){
+    
+    string key0 = s::to_string(key[0]);
+    string key1 = s::to_string(key[1]);
+    string key2 = s::to_string(key[2]);
+
+    cout << "valid files length: " << this->stream.getValidFilesSize() << endl;
+
+    if(s::is_number(key0) && key1 == "None"  && key2 == "None"){
+        int i = stoi(key0);
+
+        if(i >= this->stream.getValidFilesSize()) throw invalid_argument("Index out of range.");
+        int j = this->stream.getValidFilesSize();
+        int step =  1;
+        return this->stream.getValidFilesSlice(i, j, step);
+    }
+
+    // A start and stop index is provided with no step size, i.e. validFiles[i:j]
+    if(s::is_number(key0) && s::is_number(key1)  && key2 == "None"){
+        int i =  stoi(key0);
+        int j = stoi(key1);
+
+        if(i > this->stream.getValidFilesSize() || j > this->stream.getValidFilesSize()) throw invalid_argument("Index out of range.");
+        if(j >= 0 && i > j) throw invalid_argument("Invalid range.");
+
+        if(j < 0) j += this->stream.getValidFilesSize() + 1;
+
+        return this->stream.getValidFilesSlice(i, j, 1);
+    }
+
+    // A start, stop, and step is provided
+    if(s::is_number(key0) && s::is_number(key1)  && s::is_number(key2)){
+        int i = stoi(key0);
+        int j = stoi(key1);
+        int step =  stoi(key2);
+        return this->stream.getValidFilesSlice(i, j, step);
+    }
+
+    if(s::is_number(key0) && key1 == "None" && s::is_number(key2)){
+        int i = stoi(key0);
+        int j = this->stream.getValidFilesSize();
+        int step =  stoi(key2);
+        return this->stream.getValidFilesSlice(i, j, step);
+    }
+    
+    cout << "Case not handled" << endl;
+    vector<Tuple> empty;
+    return empty;
+
+}

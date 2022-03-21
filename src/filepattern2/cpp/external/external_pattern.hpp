@@ -186,6 +186,12 @@ class ExternalPattern : public Pattern {
         int getGroupLength();
 
         void sortFiles();
+
+        Tuple getItem(int key);
+
+        std::vector<Tuple> getItemList(std::vector<int>& key);
+
+        std::vector<Tuple> getSlice(std::vector<Types>& key);
 };
 
 #endif

@@ -2,6 +2,7 @@
 
 using namespace std;
 
+
 void InternalPattern::groupBy(const string& groupBy) {
     this->setGroup(groupBy);
     validGroupedFiles.clear();
@@ -110,6 +111,74 @@ void InternalPattern::sortFiles(){
         return get<1>(m1)[0] < get<1>(m2)[0];
     });
 }
+
+Tuple InternalPattern::getItem(int key){
+    if(key < 0) return this->validFiles[validFiles.size()+key];
+    return this->validFiles[key];
+}
+
+vector<Tuple> InternalPattern::getItemList(vector<int> key){
+
+    vector<Tuple> vec;
+
+    int validFilesSize = validFiles.size();
+
+    for(const auto& index: key){
+        if(index > validFilesSize) throw invalid_argument("Index " + std::to_string(index) + " is out of range.");
+
+        vec.push_back(validFiles[index]);
+    }
+
+    return vec;
+}
+
+vector<Tuple> InternalPattern::getSlice(vector<Types>& key){
+    
+    string key0 = s::to_string(key[0]);
+    string key1 = s::to_string(key[1]);
+    string key2 = s::to_string(key[2]);
+
+    // A start and stop index is provided with no step size, i.e. validFiles[i:j]
+    if(s::is_number(key0) && s::is_number(key1)  && key2 == "None"){
+        int i =  stoi(key0);
+        int j = stoi(key1);
+
+        cout << "size: " << validFiles.size() << endl;
+
+        cout << "i: " << i << endl;
+
+        cout << "j: " << j << endl;
+
+        if(i > validFiles.size() || (j > validFiles.size() && j >=0)) throw invalid_argument("Index out of range.");
+        if(i > j && j >= 0) throw invalid_argument("Invalid range.");
+
+        if(j < 0) j += validFiles.size() + 1;
+
+        return v::sliceVector(this->validFiles, i, j, 1);
+    }
+
+    // A start, stop, and step is provided
+    if(s::is_number(key0) && s::is_number(key1)  && s::is_number(key2)){
+        int i = stoi(key0);
+        int j = stoi(key1);
+        int step =  stoi(key2);
+        return v::sliceVector(this->validFiles, i, j, step);
+    }
+
+    if(s::is_number(key0) && key1 == "None" && s::is_number(key2)){
+        int i = stoi(key0);
+        int j = validFiles.size();
+        int step =  stoi(key2);
+        return v::sliceVector(this->validFiles, i, j, step);
+    }
+    
+    cout << "Error in InternalPattern::getSlize" << endl;
+    vector<Tuple> empty;
+    return empty;
+
+}
+
+
 
 /*
 vector<Tuple> InternalPattern::getFilesFromOutputName(const string& outputName, const vector<string>& vars) {
