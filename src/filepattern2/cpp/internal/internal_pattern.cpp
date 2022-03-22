@@ -123,7 +123,11 @@ void InternalPattern::sortFiles(){
 }
 
 Tuple InternalPattern::getItem(int key){
-    if(key < 0) return this->validFiles[validFiles.size()+key];
+    if(key < 0) {
+        if(this->validFiles.size() + key < 0) throw out_of_range("Index " + std::to_string(key) + " is out of range.")
+        return this->validFiles[validFiles.size()+key];
+    }
+
     return this->validFiles[key];
 }
 
