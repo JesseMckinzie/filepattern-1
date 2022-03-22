@@ -318,7 +318,7 @@ void ExternalPattern::sortFiles(){
 Tuple ExternalPattern::getItem(int key){
 
     if(key < 0) {
-        if(this->stream.getValidFileSize() + key < 0) throw out_of_range("Index " + std::to_string(key) + " is out of range.");
+        if(this->stream.getValidFilesSize() + key < 0) throw out_of_range("Index " + std::to_string(key) + " is out of range.");
         return this->stream.getFileByIndex(this->stream.getValidFilesSize()+key);
     }
 
@@ -335,15 +335,11 @@ vector<Tuple> ExternalPattern::getItemList(vector<int>& key){
 
     for(const auto& index: key){
         if(index < 0) {
-
-            if(this->stream.getValidFileSize() + index < 0) throw out_of_range("Index " + std::to_string(index) + " is out of range.");
-            vec.push_back(this->stream.getFileByIndex(this->stream.getValidFilesSize()+index));
-
+            if(validFilesSize + index < 0) throw out_of_range("Index " + std::to_string(index) + " is out of range.");
+            vec.push_back(this->stream.getFileByIndex(validFilesSize+index));
         } else {
-
             if(index > validFilesSize) throw out_of_range("Index " + std::to_string(index) + " is out of range.");
             vec.push_back(this->stream.getFileByIndex(index));
-
         }
     }
 
