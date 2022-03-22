@@ -124,9 +124,11 @@ void InternalPattern::sortFiles(){
 
 Tuple InternalPattern::getItem(int key){
     if(key < 0) {
-        if(this->validFiles.size() + key < 0) throw out_of_range("Index " + std::to_string(key) + " is out of range.")
+        if(this->validFiles.size() + key < 0) throw out_of_range("Index " + std::to_string(key) + " is out of range.");
         return this->validFiles[validFiles.size()+key];
     }
+
+    if(key >= this->validFiles.size()) throw out_of_range("Index " + std::to_string(key) + " is out of range.");
 
     return this->validFiles[key];
 }
@@ -138,9 +140,13 @@ vector<Tuple> InternalPattern::getItemList(vector<int> key){
     int validFilesSize = validFiles.size();
 
     for(const auto& index: key){
-        if(index > validFilesSize) throw invalid_argument("Index " + std::to_string(index) + " is out of range.");
-
-        vec.push_back(validFiles[index]);
+        if(index < 0) {
+            if(validFilesSize + index < 0) throw out_of_range("Index " + std::to_string(index) + " is out of range.");
+            vec.push_back(validFiles[validFilesSize+index]);
+        } else {
+            if(index > validFilesSize) throw invalid_argument("Index " + std::to_string(index) + " is out of range.");
+            vec.push_back(validFiles[index]);
+        }
     }
 
     return vec;
@@ -152,21 +158,28 @@ vector<Tuple> InternalPattern::getSlice(vector<Types>& key){
     string key1 = s::to_string(key[1]);
     string key2 = s::to_string(key[2]);
 
+    int validFilesSize = validFiles.size();
+
+    if(s::is_number(key0) && key1 == "None"  && key2 == "None"){
+        int i = stoi(key0);
+        if(i >= validFilesSize) throw out_of_range("Index " + std::to_string(i) + " is out of range.");
+        
+        int j = validFilesSize;
+        int step =  1;
+
+        return v::sliceVector(this->validFiles, i, j, step);
+    }
+
     // A start and stop index is provided with no step size, i.e. validFiles[i:j]
     if(s::is_number(key0) && s::is_number(key1)  && key2 == "None"){
         int i =  stoi(key0);
         int j = stoi(key1);
 
-        cout << "size: " << validFiles.size() << endl;
+        if(i > validFilesSize) throw out_of_range("Index " + std::to_string(i) + " is out of range.");
+        if(j > validFilesSize) throw out_of_range("Index " + std::to_string(j) + " is out of range.");
+        if(j >= 0 && i > j) throw out_of_range("Invalid range.");
 
-        cout << "i: " << i << endl;
-
-        cout << "j: " << j << endl;
-
-        if(i > validFiles.size() || (j > validFiles.size() && j >=0)) throw invalid_argument("Index out of range.");
-        if(i > j && j >= 0) throw invalid_argument("Invalid range.");
-
-        if(j < 0) j += validFiles.size() + 1;
+        if(j < 0) j += validFilesSize + 1;
 
         return v::sliceVector(this->validFiles, i, j, 1);
     }
@@ -175,18 +188,24 @@ vector<Tuple> InternalPattern::getSlice(vector<Types>& key){
     if(s::is_number(key0) && s::is_number(key1)  && s::is_number(key2)){
         int i = stoi(key0);
         int j = stoi(key1);
+
+        if(i > validFilesSize) throw out_of_range("Index " + std::to_string(i) + " is out of range.");
+        if(j > validFilesSize) throw out_of_range("Index " + std::to_string(j) + " is out of range.");
+
         int step =  stoi(key2);
         return v::sliceVector(this->validFiles, i, j, step);
     }
 
     if(s::is_number(key0) && key1 == "None" && s::is_number(key2)){
         int i = stoi(key0);
-        int j = validFiles.size();
+        if(i > validFilesSize) throw out_of_range("Index " + std::to_string(i) + " is out of range.");
+
+        int j = validFilesSize;
         int step =  stoi(key2);
+
         return v::sliceVector(this->validFiles, i, j, step);
     }
-    
-    cout << "Error in InternalPattern::getSlize" << endl;
+  
     vector<Tuple> empty;
     return empty;
 
