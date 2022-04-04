@@ -106,6 +106,10 @@ class PatternObject:
         """
 
         return self._file_pattern.outputName(files)
+    
+    def get_variables(self):
+        
+        return self._file_pattern.getVariables()
 
     def __call__(self, group_by=""):
         """Iterate thorugh files parsed using a filepattern

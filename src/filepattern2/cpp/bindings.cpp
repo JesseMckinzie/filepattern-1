@@ -21,15 +21,16 @@ PYBIND11_MODULE(backend, m){
 
     py::class_<Pattern>(m, "Pattern")
         .def("filePatternToRegex", &Pattern::filePatternToRegex)
+        .def("getRegex", &Pattern::getRegex)
         .def("getPattern", &Pattern::getPattern)
         .def("setPattern", &Pattern::setPattern)
-        .def("setGroup", &Pattern::setGroup)
         .def("getRegexPattern", &Pattern::getRegexPattern)
         .def("getVariables", &Pattern::getVariables)
         .def("printVariables", &Pattern::printVariables)
         .def("getOccurences", &Pattern::getOccurences)
         .def("getUniqueValues", &Pattern::getUniqueValues)
         .def("getTmpDirs", &Pattern::getTmpDirs)
+        .def_static("setGroup", &Pattern::setGroup)
         .def_readonly("group", &Pattern::group)
         .def_readonly("validFiles", &Pattern::validFiles)
         .def("__iter__", [](const Pattern &v){ 

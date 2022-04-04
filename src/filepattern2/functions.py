@@ -1,6 +1,10 @@
 from . import backend
 import re
 
+def get_regex(filepattern: str) -> tuple:
+    
+    return backend.Pattern.getRegex(filepattern)
+
 
 def infer_pattern(
     path: str = "", files: list = [], variables: str = "", block_size: str = ""
