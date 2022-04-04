@@ -171,11 +171,11 @@ std::map<string, std::map<Types, int>> Pattern::getOccurrences(const vector<tupl
     // loop over vector passed in that contains the variable mapped to value(s)
     for(const auto& tup: mapping){
         if(get<1>(tup).size() == 0){
-            occurrences[get<0>(tup)] = this->variableoccurrences[get<0>(tup)];
+            occurrences[get<0>(tup)] = this->variableOccurrences[get<0>(tup)];
         } else {
             for(const auto& value: get<1>(tup)){
                 variable = get<0>(tup);
-                temp[value] = this->variableoccurrences[get<0>(tup)][value];
+                temp[value] = this->variableOccurrences[get<0>(tup)][value];
             }
             occurrences[variable] = temp;
         }
