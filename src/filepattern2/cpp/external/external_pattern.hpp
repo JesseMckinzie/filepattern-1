@@ -45,11 +45,11 @@ class ExternalPattern : public Pattern {
         /**
          * @brief Helper function for the getMatching method.
          * 
-         * Gets all files where the keyword arguement (variable) is equal to the arguement value.
+         * Gets all files where the keyword argument (variable) is equal to the argument value.
          * Performs functionality of getMatching after getMatching() parses the input.
          * 
          * 
-         * @param variableMap Keyword arguement where the keyword is a variable and the value is a vector of the variable value(s)
+         * @param variableMap Keyword argument where the keyword is a variable and the value is a vector of the variable value(s)
          * @param matching Path to file to store matching files
          */
         void getMatchingHelper(const std::tuple<std::string, std::vector<Types>>& variableMap, const std::string& matching);
