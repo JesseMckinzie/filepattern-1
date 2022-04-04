@@ -213,7 +213,7 @@ namespace s {
      *
      * @param str String to check
      * @param c Character to check for
-     * @return int Number of occurences of c in str
+     * @return int Number of occurrences of c in str
      */
     inline int getCount(const std::string& str, const char c) {
         int count = 0;

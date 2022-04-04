@@ -173,7 +173,7 @@ void ExternalPattern::nextGroup(){
         return;
     }
     groupStream.seekg(ptr, ios::beg);
-    // iterate over vaild files temp file while the group variable is constant
+    // iterate over valid files temp file while the group variable is constant
     while(m::getMap(groupStream, this->temp, this->mapSize)){
         m::preserveType(temp);
 
@@ -276,7 +276,7 @@ string ExternalPattern::externalOutPutName(){
             if(get<0>(temp)[var] > get<0>(max)[var]) max = temp;
         }
 
-        // update output namme
+        // update output name
         this->replaceOutputName(min, max, var, outputName, idx, tempStr, patternRegex);
         ++idx;
 

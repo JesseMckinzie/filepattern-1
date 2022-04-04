@@ -22,7 +22,7 @@ class FilePattern : public InternalPattern {
          * 
          * Filesystem directory iterator is used to iterate over the supplied directory,
          * comparing each filename to the regex version of the pattern. If recursive if true,
-         * a recursive directory iteratory is used. If a file matches the pattern, it is stored 
+         * a recursive directory iterator is used. If a file matches the pattern, it is stored 
          * in the validFiles vector.
          */
         void matchFiles();
@@ -43,17 +43,17 @@ class FilePattern : public InternalPattern {
          * @brief Match files to pattern using a directory iterator.
          * 
          * Called from matchFiles() method. Matches files to the pattern from a directory iterator
-         * if recrusive is false.
+         * if recursive is false.
          */
         void matchFilesOneDir();
 
         /**
-         * @brief Match files to pattern using a recusive directory iterator. 
+         * @brief Match files to pattern using a recursive directory iterator. 
          * If a file has the same name and is in a different subdirectory, the filepath will be 
          * added to the existing tuple in the array stored in the second member of the tuple.
          *
          * Called from matchFiles() method. Matches files to the pattern from a directory iterator
-         * if recrusive is false.
+         * if recursive is false.
          */
         void matchFilesMultDir();
 

@@ -29,7 +29,7 @@ class Pattern {
         std::string regexFilePattern; // Pattern with capture groups
         std::string path;
         std::vector<std::string> variables; // Store the names of variables from the pattern
-        std::map<std::string, std::map<Types, int>> variableOccurences; // store the number of times a variable value occurs
+        std::map<std::string, std::map<Types, int>> variableoccurrences; // store the number of times a variable value occurs
         std::map<std::string, std::set<Types>> uniqueValues; // store each unique value for every variable
         std::vector<std::string> namedGroups;
         std::vector<std::string> tmpDirectories; // store paths to all temporary directories used
@@ -150,10 +150,10 @@ class Pattern {
         /**
          * @brief Returns the number of times each unique value for each variable occurs.
          * 
-         * @param mapping Variable(s) mapped to value(s) to get the number of occurences
-         * @return std::map<std::string, std::map<Types, int>> Number of occurences for each variable
+         * @param mapping Variable(s) mapped to value(s) to get the number of occurrences
+         * @return std::map<std::string, std::map<Types, int>> Number of occurrences for each variable
          */
-        std::map<std::string, std::map<Types, int>> getOccurences(const std::vector<std::tuple<std::string, std::vector<Types>>>& mapping);
+        std::map<std::string, std::map<Types, int>> getOccurrences(const std::vector<std::tuple<std::string, std::vector<Types>>>& mapping);
 
         /**
          * @brief Returns the unique values for each variables.
