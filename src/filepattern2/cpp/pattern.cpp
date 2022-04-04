@@ -152,36 +152,36 @@ Tuple Pattern::getVariableMap(const string& filePath, const smatch& sm){
         // conserve variable type
         s::is_number(str) ? get<0>(tup)[variables[i-1]] = stoi(str) : 
                             get<0>(tup)[variables[i-1]] = str;
-        this->variableOccurences[variables[i-1]][get<0>(tup)[variables[i-1]]] += 1; // update count of the variable occurence
+        this->variableOccurrences[variables[i-1]][get<0>(tup)[variables[i-1]]] += 1; // update count of the variable occurence
         this->uniqueValues[variables[i-1]].insert(get<0>(tup)[variables[i-1]]); // update the unique values for the variable
     }
     
     return tup;
 }
 
-std::map<string, std::map<Types, int>> Pattern::getOccurences(const vector<tuple<string, vector<Types>>>& mapping){
+std::map<string, std::map<Types, int>> Pattern::getOccurrences(const vector<tuple<string, vector<Types>>>& mapping){
     // if no variables request, return all variables
     if(mapping.size() == 0){
-        return this->variableOccurences;
+        return this->variableOccurrences;
     }
 
     std::map<Types, int> temp;
-    std::map<string, std::map<Types, int>> occurences;
+    std::map<string, std::map<Types, int>> occurrences;
     string variable;
     // loop over vector passed in that contains the variable mapped to value(s)
     for(const auto& tup: mapping){
         if(get<1>(tup).size() == 0){
-            occurences[get<0>(tup)] = this->variableOccurences[get<0>(tup)];
+            occurrences[get<0>(tup)] = this->variableoccurrences[get<0>(tup)];
         } else {
             for(const auto& value: get<1>(tup)){
                 variable = get<0>(tup);
-                temp[value] = this->variableOccurences[get<0>(tup)][value];
+                temp[value] = this->variableoccurrences[get<0>(tup)][value];
             }
-            occurences[variable] = temp;
+            occurrences[variable] = temp;
         }
     }
 
-    return occurences;
+    return occurrences;
 }
 
 string Pattern::getPattern(){
