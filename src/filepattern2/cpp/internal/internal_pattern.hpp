@@ -26,7 +26,7 @@ class InternalPattern : public Pattern {
          * 
          * Iterates over a vector of matched files and stores the files that match the variable's value
          * 
-         * @param iter Vector of files taht match the pattern
+         * @param iter Vector of files that match the pattern
          * @param variable Variable to get the matching values of
          * @param values Value of the variable to match
          * @param temp Temporary Tuple to use in the loop

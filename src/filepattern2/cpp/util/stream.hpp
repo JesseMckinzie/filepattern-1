@@ -37,7 +37,7 @@ class Stream {
          * @param double 
          * @return long double 
          */
-        long double currentSize(const int&, const long double&);
+        long double currentSize(const int, const long double&);
 
         bool isEmpty();
 

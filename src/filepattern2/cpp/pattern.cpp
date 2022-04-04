@@ -152,36 +152,36 @@ Tuple Pattern::getVariableMap(const string& filePath, const smatch& sm){
         // conserve variable type
         s::is_number(str) ? get<0>(tup)[variables[i-1]] = stoi(str) : 
                             get<0>(tup)[variables[i-1]] = str;
-        this->variableOccurences[variables[i-1]][get<0>(tup)[variables[i-1]]] += 1; // update count of the variable occurence
+        this->variableOccurrences[variables[i-1]][get<0>(tup)[variables[i-1]]] += 1; // update count of the variable occurrence
         this->uniqueValues[variables[i-1]].insert(get<0>(tup)[variables[i-1]]); // update the unique values for the variable
     }
     
     return tup;
 }
 
-std::map<string, std::map<Types, int>> Pattern::getOccurences(const vector<tuple<string, vector<Types>>>& mapping){
+std::map<string, std::map<Types, int>> Pattern::getOccurrences(const vector<tuple<string, vector<Types>>>& mapping){
     // if no variables request, return all variables
     if(mapping.size() == 0){
-        return this->variableOccurences;
+        return this->variableOccurrences;
     }
 
     std::map<Types, int> temp;
-    std::map<string, std::map<Types, int>> occurences;
+    std::map<string, std::map<Types, int>> occurrences;
     string variable;
     // loop over vector passed in that contains the variable mapped to value(s)
     for(const auto& tup: mapping){
         if(get<1>(tup).size() == 0){
-            occurences[get<0>(tup)] = this->variableOccurences[get<0>(tup)];
+            occurrences[get<0>(tup)] = this->variableOccurrences[get<0>(tup)];
         } else {
             for(const auto& value: get<1>(tup)){
                 variable = get<0>(tup);
-                temp[value] = this->variableOccurences[get<0>(tup)][value];
+                temp[value] = this->variableOccurrences[get<0>(tup)][value];
             }
-            occurences[variable] = temp;
+            occurrences[variable] = temp;
         }
     }
 
-    return occurences;
+    return occurrences;
 }
 
 string Pattern::getPattern(){
@@ -266,7 +266,7 @@ void Pattern::getNewNaming(string& pattern){
     if(replaced){
         cout << "WARNING: The old style of pattern was used. This style may become deprecated in future releases." << endl;
         cout << "The recommended pattern to use is: " << pattern << 
-                ". See the documenation for details about the new style." << endl;
+                ". See the documentation for details about the new style." << endl;
     }
 }
 
@@ -428,7 +428,7 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
     vector<int> scores;
     int s, wi, wj;
 
-    // populate scoring maxtrix
+    // populate scoring matrix
     for(const auto& p: pattern){
         pIsNumeric = count(numbers.begin(), numbers.end(), p);
         pIsCharacter = count(alphabet.begin(), alphabet.end(), p);
@@ -442,7 +442,7 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
             scores.clear();
             scores.push_back(0);
 
-            // generate similaroity score
+            // generate similarity score
             if(fIsNumeric){
                 if(pIsNumeric){
                     s = matrix[p_idx][f_idx] + sab["numeric"]["match"];

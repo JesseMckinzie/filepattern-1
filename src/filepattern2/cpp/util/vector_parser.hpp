@@ -16,13 +16,13 @@ class VectorParser {
          * 
          * @param tup Tuple to add variables to
          * @param stitchingVectorLine Line from a stitching vector
-         * @param STITCH_VALRIABLES Variables in the stitching vector
+         * @param STITCH_VARIABLES Variables in the stitching vector
          * @param STITCH_REGEX regex to match line to
          * @param variables current variables in file map
          */
         static void parseVectorLine(Tuple& tup,
                                     std::string& stitchingVectorLine, 
-                                    const std::vector<std::string>& STITCH_VALRIABLES, 
+                                    const std::vector<std::string>& STITCH_VARIABLES, 
                                     const std::regex& STITCH_REGEX,
                                     std::vector<std::string> variables);
 
