@@ -29,7 +29,7 @@ class Pattern {
         std::string regexFilePattern; // Pattern with capture groups
         std::string path;
         std::vector<std::string> variables; // Store the names of variables from the pattern
-        std::map<std::string, std::map<Types, int>> variableoccurrences; // store the number of times a variable value occurs
+        std::map<std::string, std::map<Types, int>> variableOccurrences; // store the number of times a variable value occurs
         std::map<std::string, std::set<Types>> uniqueValues; // store each unique value for every variable
         std::vector<std::string> namedGroups;
         std::vector<std::string> tmpDirectories; // store paths to all temporary directories used

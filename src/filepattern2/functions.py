@@ -1,7 +1,6 @@
 from . import backend
 import re
 
-
 def infer_pattern(
     path: str = "", files: list = [], variables: str = "", block_size: str = ""
 ):
