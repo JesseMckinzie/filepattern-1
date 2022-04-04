@@ -39,7 +39,7 @@ ExternalMergeSort::ExternalMergeSort(const Structure& structure,
 }
 
 
-long ExternalMergeSort::currentSize(const int& stringSize, 
+long ExternalMergeSort::currentSize(const int stringSize, 
                                       const long& previousSize){
     return sizeof(string) + stringSize + previousSize; // update amount of memory being used
 }

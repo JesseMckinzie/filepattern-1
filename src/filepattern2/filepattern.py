@@ -60,28 +60,28 @@ class PatternObject:
         except ValueError as e:
             print(e)
 
-    def get_occurences(self, mapping):
+    def get_occurrences(self, mapping):
         """
-        Returns the unique values for each variable along with the number of occurences for each value.
+        Returns the unique values for each variable along with the number of occurrences for each value.
 
         Args:
-            **kwargs: Each keyword arguement must be a variable. If no arguements are supplied, the occurences
+            **kwargs: Each keyword argument must be a variable. If no arguments are supplied, the occurrences
             for every variable will be returned.
 
         Returns:
-            Dictionary of variables mapped to values where each value is mapped to the number of occurences.
+            Dictionary of variables mapped to values where each value is mapped to the number of occurrences.
         """
 
-        return self._file_pattern.getOccurences(mapping)
+        return self._file_pattern.getOccurrences(mapping)
 
     def get_unique_values(self, vec) -> list:
         """Returns the unique values for each variable.
 
-        This method returns a dictionary of provided variables to a list of all unique occurences. If no variables are provided,
+        This method returns a dictionary of provided variables to a list of all unique occurrences. If no variables are provided,
         all variables will be returned.
 
         Args:
-            **args: Variables to get the occurences of. All variables will be returned if no arguments are provided.
+            **args: Variables to get the occurrences of. All variables will be returned if no arguments are provided.
 
         Returns:
             Dictionary of variables mapped to values.
@@ -169,14 +169,14 @@ class FilePattern(PatternObject):
     """
     Class to create a FilePattern object.
 
-    This class take in in 4 arguements: path, pattern, block_size, and recurisve. For the path,
+    This class take in in 4 arguments: path, pattern, block_size, and recursive. For the path,
     either a path to a directory, text file, or stitching vector may be provided. ``filepattern2`` will
     then match the filenames in the directory, or each line of the text file, to the provided ``pattern``.
 
     The ``block_size`` parameter allows for out of core processing, which consume ``block_size`` amount of memory at most.
 
     The ``recursive`` parameter enables recursive iteration of subdirectories when a directory is passed as ``path``. In
-    this case ``filepattern2`` will iteratre over the subdirectories, storing filenames with the same basename in the same
+    this case ``filepattern2`` will iterate over the subdirectories, storing filenames with the same basename in the same
     group.
 
 
@@ -194,9 +194,9 @@ class FilePattern(PatternObject):
         block_size: str = "",
         recursive: bool = False,
     ):
-        """Constructor of the Pattern class. The path arugment can either be a directory, a text file,
-        or a stitching vector. Passing in the optional arguement `block_size` will
-        create an ExternalFilePattern object, which will process the directory in blocks which comsume less
+        """Constructor of the Pattern class. The path argument can either be a directory, a text file,
+        or a stitching vector. Passing in the optional argument `block_size` will
+        create an ExternalFilePattern object, which will process the directory in blocks which consume less
         than or equal to `block_size` of memory.
 
         Just the path may be passed in the pattern is contained within the path. In this case,
@@ -246,32 +246,32 @@ class FilePattern(PatternObject):
 
         super().__init__(self._file_pattern, block_size)
 
-    def get_occurences(self, **kwargs):
+    def get_occurrences(self, **kwargs):
         """
-        Returns the unique values for each variable along with the number of occurences for each value.
+        Returns the unique values for each variable along with the number of occurrences for each value.
 
         Args:
-            **kwargs: Each keyword arguement must be a variable. If no arguements are supplied, the occurences
+            **kwargs: Each keyword argument must be a variable. If no arguments are supplied, the occurrences
             for every variable will be returned.
 
         Returns:
-            Dictionary of variables mapped to values where each value is mapped to the number of occurences.
+            Dictionary of variables mapped to values where each value is mapped to the number of occurrences.
         """
 
         mapping = []
         for key, value in kwargs.items():
             mapping.append((key, value))
 
-        return super(FilePattern, self).get_occurences(mapping)
+        return super(FilePattern, self).get_occurrences(mapping)
 
     def get_unique_values(self, *args) -> list:
         """Returns the unique values for each variable.
 
-        This method returns a dictionary of provided variables to a list of all unique occurences. If no variables are provided,
+        This method returns a dictionary of provided variables to a list of all unique occurrences. If no variables are provided,
         all variables will be returned.
 
         Args:
-            **args: Variables to get the occurences of. All variables will be returned if no arguments are provided.
+            **args: Variables to get the occurrences of. All variables will be returned if no arguments are provided.
 
         Returns:
             Dictionary of variables mapped to values.

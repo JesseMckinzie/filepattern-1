@@ -124,7 +124,7 @@ vector<Tuple> Stream::getValidFilesBlock(){
     return vec;
 }
 
-long double Stream::currentSize(const int& stringSize, const long double& previousSize){
+long double Stream::currentSize(const int stringSize, const long double& previousSize){
     return sizeof(string) + stringSize + previousSize;
 }
 

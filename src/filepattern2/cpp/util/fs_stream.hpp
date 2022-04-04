@@ -146,7 +146,7 @@ class FilesystemStream {
         fs::directory_iterator end; // End of iterator
         fs::recursive_directory_iterator rec_end; // End of recursive iterator
 
-        bool recurisve; // Iterate over subdirectories
+        bool recursive; // Iterate over subdirectories
         bool txtInput; // The path is to a text file
 
         std::ifstream infile;

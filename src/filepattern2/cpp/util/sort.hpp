@@ -76,7 +76,7 @@ class ExternalMergeSort {
          * @param previousSize Size of vector before adding another string
          * @return double The number of bytes the vector with the new string added takes up
          */
-        long currentSize(const int& stringSize, const long& previousSize);
+        long currentSize(const int stringSize, const long& previousSize);
 
         /**
          * @brief Write a string to an output file in the temporary directory.
