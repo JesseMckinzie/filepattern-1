@@ -4,7 +4,7 @@
 The ``filepattern`` utility is used to store files that follow a pattern, where the pattern is analogous to a simplified regular expression. The need for 
 ``filepattern`` arises in situations where large amounts of data with a systematic naming convention needs to be filtered by patterns in the naming. For example, one may have
 a directory containing segmented images where the name contains information such as the channel, the column value, and the row value. ``filepattern`` provides the ability to 
-extract all images containing such a naming pattern, filter by the row or column value, or group files by one or more of the affermentioned variables. 
+extract all images containing such a naming pattern, filter by the row or column value, or group files by one or more of the aforementioned variables. 
 
 ## Summary
 * [Read the Docs](https://filepattern2.readthedocs.io/en/latest/Home.html)
@@ -26,7 +26,7 @@ After installation, use "import filepattern2" to import the module into Python.
 
 <h2 id="filepattern-section"> FilePattern </h2> 
 
-When only a path to a directory and a pattern are supplied to the constructor of ``filepattern``, ``filepattern`` will iterate over the directory, matching the filenames in the directory to the ``filepattern``. The  ``filepattern`` can either be supplied by  the user or can be found using the ``infer_pattern`` method of ``filepattern``. For example, consider a direcotry containing the following files, 
+When only a path to a directory and a pattern are supplied to the constructor of ``filepattern``, ``filepattern`` will iterate over the directory, matching the filenames in the directory to the ``filepattern``. The  ``filepattern`` can either be supplied by  the user or can be found using the ``infer_pattern`` method of ``filepattern``. For example, consider a directory containing the following files, 
 
 ```
 img_r001_c001_DAPI.tif
@@ -34,7 +34,7 @@ img_r001_c001_TXREAD.tif
 img_r001_c001_GFP.tif
 ```
 
-In each of these filenames, there are three descriptors of the image: the row, the column, and the channel. To match these files, the pattern ``img_r{r:ddd}_c{c:ddd}_{channel:c+}`` can be used. In this pattern, the nameed groups are contained within the curly brackets, where the variable name is before the colon and the value is after the colon. For the value, the descriptors ``d`` and ``c`` are used, which represent a digit and a character, respectively. In the example pattern, three `d`'s are used to catpure three digits. The ``+`` after ``c`` denotes that one or more characters will be captured, which is equivelant to ``[a-zA-z]+`` in a regular expression. The ``+`` symbol may be used after either ``d`` or ``c``. 
+In each of these filenames, there are three descriptors of the image: the row, the column, and the channel. To match these files, the pattern ``img_r{r:ddd}_c{c:ddd}_{channel:c+}`` can be used. In this pattern, the named groups are contained within the curly brackets, where the variable name is before the colon and the value is after the colon. For the value, the descriptors ``d`` and ``c`` are used, which represent a digit and a character, respectively. In the example pattern, three `d`'s are used to capture three digits. The ``+`` after ``c`` denotes that one or more characters will be captured, which is equivalent to ``[a-zA-z]+`` in a regular expression. The ``+`` symbol may be used after either ``d`` or ``c``. 
 
 To have ``filepattern`` guess what the pattern is for a directory, the static method ``infer_pattern`` can be used:
 
@@ -56,7 +56,7 @@ img_r00{r:d}_c00{c:d}_{t:c+}.tif
 
 Note that the ``infer_pattern`` can also guess the patterns from stitching vectors and text files when a path to a text file is passed, rather than a path to a directory. 
 
-To retrieve files from a directory that match the ``filepattern``, an iterator is called on the `FilePattern` object, as shown below. A user specified custom pattern, such as the one below, or the guessed pattern can beas input in the constructor.
+To retrieve files from a directory that match the ``filepattern``, an iterator is called on the `FilePattern` object, as shown below. A user specified custom pattern, such as the one below, or the guessed pattern can be passed to the constructor.
 
 ```python
 import filepattern2 as fp
@@ -74,11 +74,11 @@ for file in files():
 The output is:
 ```
 ({'c': 1, 'channel': 'DAPI', 'r': 1},
- ['path/to/direcotry/img_r001_c001_DAPI.tif'])
+ ['path/to/directory/img_r001_c001_DAPI.tif'])
 ({'c': 1, 'channel': 'TXREAD', 'r': 1},
- ['path/to/direcotry/img_r001_c001_TXREAD.tif'])
+ ['path/to/directory/img_r001_c001_TXREAD.tif'])
 ({'c': 1, 'channel': 'GFP', 'r': 1},
- ['path/to/direcotry/img_r001_c001_GFP.tif'])
+ ['path/to/directory/img_r001_c001_GFP.tif'])
 ```
 
 As shown in this example, the output is a tuple where the first member is a map between the group name supplied in the pattern and the value of the group for each file name. The second member of the tuple is a vector containing the path to the matched file. The second member is stored in a vector for the case where a directory is supplied with multiple subdirectories. In this case, a third optional parameter can be passed to the constructor. If the parameter ``recursive`` is set to `True`, a recursive directory iterator will be used, which iterates over all subdirectories. If the basename of two files from two different subdirectories match, ``filepattern`` will add the path of the file to the vector in the existing tuple rather than creating a new tuple.
