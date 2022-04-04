@@ -27,7 +27,7 @@ PYBIND11_MODULE(backend, m){
         .def("getRegexPattern", &Pattern::getRegexPattern)
         .def("getVariables", &Pattern::getVariables)
         .def("printVariables", &Pattern::printVariables)
-        .def("getOccurences", &Pattern::getOccurences)
+        .def("getOccurrences", &Pattern::getOccurrences)
         .def("getUniqueValues", &Pattern::getUniqueValues)
         .def("getTmpDirs", &Pattern::getTmpDirs)
         .def_readonly("group", &Pattern::group)
