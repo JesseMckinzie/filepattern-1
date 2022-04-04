@@ -13,7 +13,7 @@ extract all images containing such a naming pattern, filter by the row or column
 
 `filepattern2` is pip installable from https://test.pypi.org/project/filepattern2/.
 
-## Build and Install
+### Build and Install
 
 Alternatively, `filepattern2` can be installed from this repo. This install requires GCC 8+ and CMake version 3.2 or greater.
 
