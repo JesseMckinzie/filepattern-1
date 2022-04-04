@@ -165,14 +165,14 @@ class FilePattern(PatternObject):
     """
     Class to create a FilePattern object.
 
-    This class take in in 4 arguments: path, pattern, block_size, and recursive. For the path,
+    This class take in in 4 arguements: path, pattern, block_size, and recurisve. For the path,
     either a path to a directory, text file, or stitching vector may be provided. ``filepattern2`` will
     then match the filenames in the directory, or each line of the text file, to the provided ``pattern``.
 
     The ``block_size`` parameter allows for out of core processing, which consume ``block_size`` amount of memory at most.
 
     The ``recursive`` parameter enables recursive iteration of subdirectories when a directory is passed as ``path``. In
-    this case ``filepattern2`` will iterate over the subdirectories, storing filenames with the same basename in the same
+    this case ``filepattern2`` will iteratre over the subdirectories, storing filenames with the same basename in the same
     group.
 
 
@@ -190,9 +190,9 @@ class FilePattern(PatternObject):
         block_size: str = "",
         recursive: bool = False,
     ):
-        """Constructor of the Pattern class. The path argument can either be a directory, a text file,
-        or a stitching vector. Passing in the optional argument `block_size` will
-        create an ExternalFilePattern object, which will process the directory in blocks which consume less
+        """Constructor of the Pattern class. The path arugment can either be a directory, a text file,
+        or a stitching vector. Passing in the optional arguement `block_size` will
+        create an ExternalFilePattern object, which will process the directory in blocks which comsume less
         than or equal to `block_size` of memory.
 
         Just the path may be passed in the pattern is contained within the path. In this case,
@@ -247,7 +247,7 @@ class FilePattern(PatternObject):
         Returns the unique values for each variable along with the number of occurences for each value.
 
         Args:
-            **kwargs: Each keyword argument must be a variable. If no arguments are supplied, the occurences
+            **kwargs: Each keyword arguement must be a variable. If no arguements are supplied, the occurences
             for every variable will be returned.
 
         Returns:

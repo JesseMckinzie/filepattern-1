@@ -18,7 +18,7 @@ ExternalPattern(path, blockSize, recursive) {
     this->validFilesPath = stream.getValidFilesPath(); // Store path to valid files txt file
     
    this->tmpDirectories.push_back(validFilesPath);
-    this->firstCall = true; // first call to next() has not occurred
+    this->firstCall = true; // first call to next() has not occured
     this->matchFiles(); // match files to pattern
 
     ExternalMergeSort sort = ExternalMergeSort(std_map, 

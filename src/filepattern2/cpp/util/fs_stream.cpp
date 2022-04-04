@@ -26,7 +26,7 @@ FilesystemStream::FilesystemStream(const string& path, bool recursive, const str
     this->infile.open(validFiles);
     this->infile.close();
 
-    this->recursive = false;
+    this->recurisve = false;
 
     try {
         // handle text file or directory based on path name
@@ -79,7 +79,7 @@ vector<string> FilesystemStream::getBlockIterator(){
 
     string current;
 
-    if(this->recursive){
+    if(this->recurisve){
 
         try {
             current = (*recursive_directory_iterator).path().string();
