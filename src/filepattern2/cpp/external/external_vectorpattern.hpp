@@ -40,7 +40,7 @@ class ExternalVectorPattern: public ExternalPattern {
          * @brief Guesses the pattern that the filename follows in a stitching vector.
          * 
          * @param path Path to stitching vector
-         * @param variables Variable names. Optional
+         * @param variables Vairble names. Optional
          * @param blockSize Maximum amount of memory to use
          * @return std::string Guess of the pattern
          */

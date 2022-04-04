@@ -19,7 +19,7 @@ ExternalPattern(path, blockSize, false){
     this->mapSize = 0; //To be updated later in program, set for compiling
     this->validFilesPath = stream.getValidFilesPath(); // Store path to valid files txt file
     this->tmpDirectories.push_back(validFilesPath);
-    this->firstCall = true; // first call to next() has not occurred
+    this->firstCall = true; // first call to next() has not occured
 
     this->matchFiles();
 
