@@ -15,7 +15,7 @@ namespace fs = std::filesystem;
 
 class FilePattern : public InternalPattern {
     public:
-        FilePattern(const std::string&, const std::string&, bool);
+        FilePattern(const std::string& path, const std::string& pattern, bool recursive=false, bool suppressWarnings=false);
 
         /**
          * @brief Match files in directory to the pattern

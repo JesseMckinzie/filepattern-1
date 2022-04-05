@@ -2,9 +2,9 @@
 
 using namespace std;
 
-ExternalStringPattern::ExternalStringPattern(const string& path, const string& filePattern, const string& blockSize="50 MB"):
+ExternalStringPattern::ExternalStringPattern(const string& path, const string& filePattern, const string& blockSize, bool suppressWarnings):
 ExternalPattern(path, blockSize, false) {
-
+    this->suppressWarnings = suppressWarnings;
     this->path = path; // store path to target directory
     //this->stream = {path, true, blockSize};
     this->blockSize = Block::parseblockSize(blockSize);

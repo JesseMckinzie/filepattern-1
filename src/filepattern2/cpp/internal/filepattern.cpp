@@ -3,7 +3,10 @@
 
 using namespace std;
 
-FilePattern::FilePattern(const string& path, const string& filePattern, bool recursive=false) {
+FilePattern::FilePattern(const string& path, const string& filePattern, bool recursive, bool suppressWarnings) {
+
+    this->suppressWarnings = suppressWarnings;
+
     if(filePattern == ""){
         this->getPathFromPattern(path); // set path and filePattern
         try {

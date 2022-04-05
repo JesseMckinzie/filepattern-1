@@ -34,6 +34,7 @@ class Pattern {
         std::vector<std::string> namedGroups;
         std::vector<std::string> tmpDirectories; // store paths to all temporary directories used
         bool justPath;
+        bool suppressWarnings;
 
         std::string VARIABLES; 
 
@@ -76,7 +77,7 @@ class Pattern {
          * @return std::tuple<std::string, std::vector<std::string>, std::vector<std::string>> Tuple containing the
          * the regex version of the file pattern, the variables found, and the named groups.
          */
-        static std::tuple<std::string, std::vector<std::string>, std::vector<std::string>> getRegex(std::string& pattern);
+        static std::tuple<std::string, std::vector<std::string>, std::vector<std::string>> getRegex(std::string& pattern, bool suppressWarning=false);
 
         /**
          * @brief Get the mapping of variables to values for a matching file. Used with a recursive directory iterator. 
@@ -168,7 +169,7 @@ class Pattern {
          * 
          * @param pattern Pattern to get the new naming style of.
          */
-        static void getNewNaming(std::string& pattern);
+        static void getNewNaming(std::string& pattern, bool suppressWarnings);
 
         /**
          * @brief Main loop of outputName. Finds the output name for a vector of files.

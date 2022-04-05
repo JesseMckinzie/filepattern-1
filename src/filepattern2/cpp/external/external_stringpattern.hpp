@@ -34,7 +34,7 @@ class ExternalStringPattern : public ExternalPattern {
          * @param recursive Iterate over all subdirectories if true
          */
 
-        ExternalStringPattern(const std::string& path, const std::string& filePattern, const std::string& blockSize);
+        ExternalStringPattern(const std::string& path, const std::string& filePattern, const std::string& blockSize="50 MB", bool suppressWarnings=false);
 
         ~ExternalStringPattern();
 

@@ -2,8 +2,9 @@
 
 using namespace std;
 
-ExternalVectorPattern::ExternalVectorPattern(const string& path, const string& filePattern, const string& blockSize):
+ExternalVectorPattern::ExternalVectorPattern(const string& path, const string& filePattern, const string& blockSize, bool suppressWarnings):
 ExternalPattern(path, blockSize, false){
+    this->suppressWarnings = suppressWarnings;
     this->path = path; // store path to target directory
     this->fp_tmpdir = "";
 
