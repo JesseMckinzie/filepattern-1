@@ -48,7 +48,9 @@ class InternalPattern : public Pattern {
          *
          * @param group Variable to group files by
          */
-        void groupBy(const std::string& groupBy);
+        void groupBy(std::vector<std::string>& groups);
+
+        void groupByHelper(const std::vector<std::string>& groups);
 
         /**
          * @brief Returns files that match the value of variable. Needs to be updated to match old version input. 

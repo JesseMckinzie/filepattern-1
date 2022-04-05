@@ -39,15 +39,15 @@ void Pattern::filePatternToRegex(){
     replace(path.begin(), path.end(), '\\', '/');
     replace(filePattern.begin(), filePattern.end(), '\\', '/');
 
-    tuple vars = getRegex(this->filePattern);
+    tuple vars = getRegex(this->filePattern, this->suppressWarnings);
     this->regexFilePattern = get<0>(vars);
     this->variables = get<1>(vars);
     this->namedGroups = get<2>(vars);
 }
 
-tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern){
+tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern, bool suppressWarning){
     
-    getNewNaming(pattern);
+    getNewNaming(pattern, suppressWarning);
 
     // regex to match variables
     std::regex e("(\\{(\\w+):([dc+]+)\\})|(\\(P\\?<(\\w+)>(.+)\\))"); // check for bracket expressions or named groups
@@ -222,7 +222,7 @@ map<string, set<Types>> Pattern::getUniqueValues(const vector<string>& vec){
 }
 
 
-void Pattern::getNewNaming(string& pattern){
+void Pattern::getNewNaming(string& pattern, bool suppressWarnings){
     
     string vars = "\\{([rtczyxp+]+)\\}"; // check for old naming style or named grouped
 
@@ -263,7 +263,7 @@ void Pattern::getNewNaming(string& pattern){
             s::replace(pattern, match.first, str);
         } 
     }
-    if(replaced){
+    if(replaced && !suppressWarnings){
         cout << "WARNING: The old style of pattern was used. This style may become deprecated in future releases." << endl;
         cout << "The recommended pattern to use is: " << pattern << 
                 ". See the documenation for details about the new style." << endl;

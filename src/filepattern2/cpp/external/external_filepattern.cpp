@@ -2,9 +2,9 @@
 
 using namespace std;
 
-ExternalFilePattern::ExternalFilePattern(const string& path, const string& filePattern, const string& blockSize="50 MB", bool recursive=false):
+ExternalFilePattern::ExternalFilePattern(const string& path, const string& filePattern, const string& blockSize, bool recursive, bool suppressWarnings):
 ExternalPattern(path, blockSize, recursive) {
-
+    this->suppressWarnings = suppressWarnings;
     this->path = path; // store path to target directory
    // this->stream = {path, true, blockSize};
     this->blockSize = Block::parseblockSize(blockSize);

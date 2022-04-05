@@ -3,7 +3,8 @@
 
 using namespace std;
 
-StringPattern::StringPattern(const string& fileName, const string& filePattern) {
+StringPattern::StringPattern(const string& fileName, const string& filePattern, bool suppressWarnings) {
+    this->suppressWarnings = suppressWarnings;
     this->fileName = fileName; // store path to target directory
     this->filePattern = filePattern; // cast input string to regex
     this->regexFilePattern = "";
