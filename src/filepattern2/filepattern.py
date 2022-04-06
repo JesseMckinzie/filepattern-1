@@ -58,19 +58,19 @@ class PatternObject:
         except ValueError as e:
             print(e)
 
-    def get_occurences(self, mapping):
+    def get_occurrences(self, mapping):
         """
-        Returns the unique values for each variable along with the number of occurences for each value.
+        Returns the unique values for each variable along with the number of occurrences for each value.
 
         Args:
-            **kwargs: Each keyword arguement must be a variable. If no arguements are supplied, the occurences
+            **kwargs: Each keyword argument must be a variable. If no arguments are supplied, the occurrences
             for every variable will be returned.
 
         Returns:
-            Dictionary of variables mapped to values where each value is mapped to the number of occurences.
+            Dictionary of variables mapped to values where each value is mapped to the number of occurrences.
         """
 
-        return self._file_pattern.getOccurences(mapping)
+        return self._file_pattern.getOccurrences(mapping)
 
     def get_unique_values(self, vec) -> list:
         """Returns the unique values for each variable.
@@ -115,11 +115,15 @@ class PatternObject:
         Args:
             group_by: List of variables to group filenames by.
         """
-        if self._block_size == "":
-            if group_by != "":
+    
+        
+        if self._block_size == "":        
+            if (isinstance(group_by, str)):
+                group_by = [group_by]
+            if group_by[0] != "":
                 self._file_pattern.groupBy(group_by)
             return self
-
+        
         if group_by != "":
             self._file_pattern.setGroup(group_by)
 
@@ -246,14 +250,14 @@ class FilePattern(PatternObject):
 
     def get_occurences(self, **kwargs):
         """
-        Returns the unique values for each variable along with the number of occurences for each value.
+        Returns the unique values for each variable along with the number of occurrences for each value.
 
         Args:
-            **kwargs: Each keyword argument must be a variable. If no arguments are supplied, the occurences
+            **kwargs: Each keyword argument must be a variable. If no arguments are supplied, the occurrences
             for every variable will be returned.
 
         Returns:
-            Dictionary of variables mapped to values where each value is mapped to the number of occurences.
+            Dictionary of variables mapped to values where each value is mapped to the number of occurrences.
         """
 
         mapping = []

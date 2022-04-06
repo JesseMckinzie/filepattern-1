@@ -43,6 +43,10 @@ void Pattern::filePatternToRegex(){
     this->regexFilePattern = get<0>(vars);
     this->variables = get<1>(vars);
     this->namedGroups = get<2>(vars);
+    for(const auto& p: namedGroups){
+        cout << p << " ";
+    }
+    cout << endl;
 }
 
 tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern, bool suppressWarning){
@@ -67,6 +71,7 @@ tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern,
 
     string temp;
     // extract bracket expressions from pattern and store regex
+    cout << "here" << endl;
     while (regex_search(patternCopy, m, e)){
         temp = m[0];
         // find any named groups with regex style naming

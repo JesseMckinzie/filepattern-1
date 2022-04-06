@@ -83,7 +83,8 @@ class ExternalPattern : public Pattern {
 
     public: 
         std::vector<Tuple> currentBlock; // Store current block of files
-        std::vector<std::pair<std::pair<std::string, Types>, std::vector<Tuple>>> currentGroup; //Store current block of grouped files
+        //std::vector<std::pair<std::pair<std::string, Types>, std::vector<Tuple>>> currentGroup; //Store current block of grouped files
+        std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> currentGroup;
 
         /**
          * @brief Construct a new External Pattern object
