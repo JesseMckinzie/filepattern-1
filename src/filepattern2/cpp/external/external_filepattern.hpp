@@ -35,7 +35,7 @@ class ExternalFilePattern : public ExternalPattern {
          * @param recursive Iterate over all subdirectories if true
          */
 
-        ExternalFilePattern(const std::string& path, const std::string& filePattern, const std::string& blockSize, bool recursive);
+        ExternalFilePattern(const std::string& path, const std::string& filePattern, const std::string& blockSize="50 MB", bool recursive=false, bool suppressWarnings=false);
 
         /**
          * @brief Destroy the External File Pattern object: Deletes all files in temp directory

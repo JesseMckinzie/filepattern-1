@@ -2,9 +2,9 @@
 
 using namespace std;
 
-ExternalFilePattern::ExternalFilePattern(const string& path, const string& filePattern, const string& blockSize="50 MB", bool recursive=false):
+ExternalFilePattern::ExternalFilePattern(const string& path, const string& filePattern, const string& blockSize, bool recursive, bool suppressWarnings):
 ExternalPattern(path, blockSize, recursive) {
-
+    this->suppressWarnings = suppressWarnings;
     this->path = path; // store path to target directory
    // this->stream = {path, true, blockSize};
     this->blockSize = Block::parseblockSize(blockSize);
@@ -18,7 +18,7 @@ ExternalPattern(path, blockSize, recursive) {
     this->validFilesPath = stream.getValidFilesPath(); // Store path to valid files txt file
     
    this->tmpDirectories.push_back(validFilesPath);
-    this->firstCall = true; // first call to next() has not occured
+    this->firstCall = true; // first call to next() has not occurred
     this->matchFiles(); // match files to pattern
 
     ExternalMergeSort sort = ExternalMergeSort(std_map, 

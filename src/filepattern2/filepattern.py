@@ -1,7 +1,5 @@
-# from . import FilePatternBackend, StringPattern, VectorPattern
 from . import backend
-#import backend
-import re
+import re, pathlib
 
 
 class PatternObject:
@@ -121,11 +119,15 @@ class PatternObject:
         Args:
             group_by: List of variables to group filenames by.
         """
-        if self._block_size == "":
-            if group_by != "":
+    
+        
+        if self._block_size == "":        
+            if (isinstance(group_by, str)):
+                group_by = [group_by]
+            if group_by[0] != "":
                 self._file_pattern.groupBy(group_by)
             return self
-
+        
         if group_by != "":
             self._file_pattern.setGroup(group_by)
 
@@ -193,6 +195,7 @@ class FilePattern(PatternObject):
         pattern: str = "",
         block_size: str = "",
         recursive: bool = False,
+        suppress_warnings = False
     ):
         """Constructor of the Pattern class. The path argument can either be a directory, a text file,
         or a stitching vector. Passing in the optional argument `block_size` will
@@ -211,6 +214,9 @@ class FilePattern(PatternObject):
             recursive: Iterate over subdirectories. Defaults to False.
         """
 
+        
+        path = str(path) # change path type to string to support pathlib paths
+        
         if path.endswith(".txt"):
 
             with open(path) as infile:
@@ -218,28 +224,28 @@ class FilePattern(PatternObject):
 
             if re.match(r"file\: .+?; corr\: .+?; position\: .+?; grid\: .+?;", line):
                 if block_size == "":
-                    self._file_pattern = backend.InternalVectorPattern(path, pattern)
+                    self._file_pattern = backend.InternalVectorPattern(path, pattern, suppress_warnings)
                 else:
                     self._file_pattern = backend.ExternalVectorPattern(
-                        path, pattern, block_size
+                        path, pattern, block_size, suppress_warnings
                     )
                 # self._file_pattern = backend.InternalVectorPattern(path, pattern) if block_size == '' \
                 #                    else backend.ExternalVectorPattern(path, pattern, block_size=block_size)
             else:
                 if block_size == "":
-                    self._file_pattern = backend.StringPattern(path, pattern)
+                    self._file_pattern = backend.StringPattern(path, pattern, suppress_warnings)
                 else:
                     self._file_pattern = backend.ExternalStringPattern(
-                        path, pattern, block_size
+                        path, pattern, block_size, suppress_warnings
                     )
                 # self._file_pattern = backend.StringPattern(path, pattern) if block_size == '' \
                 #                    else backend.ExternalStringPattern(path, pattern, block_size=block_size)
         else:
             if block_size == "":
-                self._file_pattern = backend.FilePattern(path, pattern, recursive)
+                self._file_pattern = backend.FilePattern(path, pattern, recursive, suppress_warnings)
             else:
                 self._file_pattern = backend.ExternalFilePattern(
-                    path, pattern, block_size, recursive
+                    path, pattern, block_size, recursive, suppress_warnings
                 )
             # self._file_pattern = backend.FilePattern(path, pattern, recursive) if block_size == '' \
             #                    else backend.ExternalFilePattern(path, pattern, recursive = recursive, block_size=block_size)

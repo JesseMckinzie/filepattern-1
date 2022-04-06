@@ -2,7 +2,8 @@
 
 using namespace std;
 
-VectorPattern::VectorPattern(const string& path, const string& filePattern){
+VectorPattern::VectorPattern(const string& path, const string& filePattern, bool suppressWarnings){
+    this->suppressWarnings = suppressWarnings;
     this->path = path; // store path to target directory
 
     this->infile.open(path);

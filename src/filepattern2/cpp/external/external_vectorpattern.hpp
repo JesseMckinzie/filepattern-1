@@ -22,7 +22,7 @@ class ExternalVectorPattern: public ExternalPattern {
          * @param pattern Pattern to match filenames to
          * @param blockSize Maximum amount of memory to use
          */
-        ExternalVectorPattern(const std::string& path, const std::string& pattern, const std::string& blockSize);
+        ExternalVectorPattern(const std::string& path, const std::string& pattern, const std::string& blockSize, bool suppressWarnings);
 
         /**
          * @brief Destuctor of ExternalVectorPattern. Removes temporay directories and files.
@@ -40,7 +40,7 @@ class ExternalVectorPattern: public ExternalPattern {
          * @brief Guesses the pattern that the filename follows in a stitching vector.
          * 
          * @param path Path to stitching vector
-         * @param variables Vairble names. Optional
+         * @param variables Variable names. Optional
          * @param blockSize Maximum amount of memory to use
          * @return std::string Guess of the pattern
          */

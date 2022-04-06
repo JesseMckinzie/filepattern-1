@@ -18,7 +18,7 @@ class VectorPattern: public InternalPattern {
          * @param path Path to stitching vector
          * @param pattern Pattern to match filename to
          */
-        VectorPattern(const std::string& path, const std::string& pattern);
+        VectorPattern(const std::string& path, const std::string& pattern, bool suppressWarnings);
 
         /**
          * @brief Match filenames to the pattern.

@@ -11,8 +11,8 @@ def infer_pattern(
     """Returns a guess of a pattern given path to a directory of files or a list of files.
 
     Args:
-        path: The path to a directory of files. Defualts to "".
-        files: A list of files. Defualts to [].
+        path: The path to a directory of files. Defaults to "".
+        files: A list of files. Defaults to [].
         variables: A string of variables. If an empty string, variable names will be provided. Defaults to "".
         block_size: An string that specifies a maximum amount of RAM to consume. If "", no limit will be imposed. Defaults to "".
 

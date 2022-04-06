@@ -2,12 +2,121 @@
 
 using namespace std;
 
+void InternalPattern::groupByHelper(const vector<string>& groups){
 
-void InternalPattern::groupBy(const string& groupBy) {
-    this->setGroup(groupBy);
+    std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> temp;
+    int groupIdx;
+    vector<Tuple> tempVec;
+    vector<std::pair<std::string, Types>> grouped_variables;
+    for(const auto& groupBy: groups){
+
+        cout << "group: " << groupBy << endl;
+        groupIdx = 0;
+        
+        for(auto& vec: validGroupedFiles){
+            grouped_variables.clear();
+            for(auto& g: vec.first) grouped_variables.push_back(g);
+            // Sort the matched files by the groupBy parameter 
+            sort(vec.second.begin(), vec.second.end(), [&groupBy = as_const(groupBy)](Tuple& p1, Tuple& p2){
+                return get<0>(p1)[groupBy] < get<0>(p2)[groupBy];
+            });
+
+            Types currentValue = get<0>(vec.second[0])[groupBy]; // get the value of variable
+            vector<Tuple> emptyVec;
+            int i = 0;
+            int group_ptr = 0;
+
+            //group files into vectors based on groupBy variable 
+            while(i < vec.second.size()){
+
+                //this->validGroupedFiles.push_back(emptyVec);
+                //temp.push_back(make_pair(make_pair(groupBy, currentValue), emptyVec));
+                while(std::get<0>(vec.second[i])[groupBy] == currentValue) {
+                    //temp[group_ptr].second.push_back(vec.second[i]);
+                    tempVec.push_back(vec.second[i]);
+
+                    // sort group of variables
+                    //sort(temp[group_ptr].second.begin(), temp[group_ptr].second.end(), [](Tuple& m1, Tuple& m2){
+                    //    return get<1>(m1)[0] < get<1>(m2)[0];
+                    //});
+
+                    ++i;
+                    if (i >= vec.second.size()) break;
+                }
+
+                // sort group of variables
+                //sort(temp[group_ptr].second.begin(), temp[group_ptr].second.end(), [](Tuple& m1, Tuple& m2){
+                //   return get<1>(m1)[0] < get<1>(m2)[0];
+                //});
+                /*
+                cout << "tempVec: ";
+                for(const auto& v: tempVec){
+                    for(auto& p: get<0>(v)){
+                        cout << p.first << ", " << s::to_string(p.second) << ", ";
+                    }
+                    for(auto& p: get<1>(v)){
+                        cout << p << endl;
+                    }
+                } 
+                */
+                grouped_variables.push_back(make_pair(groupBy, currentValue));
+                temp.push_back(make_pair(grouped_variables, tempVec)); 
+                sort(temp[group_ptr].second.begin(), temp[group_ptr].second.end(), [](Tuple& m1, Tuple& m2){
+                    return get<1>(m1)[0] < get<1>(m2)[0];
+                });
+                tempVec.clear(); 
+
+                if (i < vec.second.size()){
+                     currentValue = get<0>(vec.second[i])[groupBy];
+                     grouped_variables.pop_back();
+                }
+                ++group_ptr;
+            }
+
+            // insert into group  
+            /*          
+            cout << "temp: " << endl;
+            for(const auto& v: temp){
+                for(const auto& p: get<0>(v)){
+                    cout << p.first << s::to_string(p.second) << ", ";
+                }
+                for(const auto& p: get<1>(v)){
+                    cout << p << " " << endl;
+                }
+            }
+            cout << endl;
+            */
+            
+        }
+        validGroupedFiles = temp;
+        /*
+        cout << "temp: ";
+        for(const auto& vecc: temp){
+            cout << endl;
+            for(const auto& v: vecc.second){
+                for(const auto& p: get<0>(v)){
+                    cout << p.first << s::to_string(p.second) << ", ";
+                }
+                for(const auto& p: get<1>(v)){
+                    cout << p << " " << endl;
+                }
+            }
+            cout << endl;
+        }
+        */
+
+        temp.clear();
+    }
+}
+
+
+void InternalPattern::groupBy(vector<string>& groups) {
+    vector<std::pair<std::string, Types>> grouped_variables;
+    this->setGroup(groups[0]);
     validGroupedFiles.clear();
     Tuple member;
     
+    string groupBy = groups[0];
     // Sort the matched files by the groupBy parameter 
     sort(validFiles.begin(), validFiles.end(), [&groupBy = as_const(groupBy)](Tuple& p1, Tuple& p2){
         return get<0>(p1)[groupBy] < get<0>(p2)[groupBy];
@@ -21,7 +130,9 @@ void InternalPattern::groupBy(const string& groupBy) {
     //group files into vectors based on groupBy variable 
     while(i < this->validFiles.size()){
         //this->validGroupedFiles.push_back(emptyVec);
-        this->validGroupedFiles.push_back(make_pair(make_pair(groupBy, currentValue), emptyVec));
+        grouped_variables.clear();
+        grouped_variables.push_back(make_pair(groupBy, currentValue));
+        this->validGroupedFiles.push_back(make_pair(grouped_variables, emptyVec));
         while(std::get<0>(this->validFiles[i])[groupBy] == currentValue) {
             this->validGroupedFiles[group_ptr].second.push_back(this->validFiles[i]);
 
@@ -37,6 +148,10 @@ void InternalPattern::groupBy(const string& groupBy) {
         if (i < this->validFiles.size()) currentValue = get<0>(this->validFiles[i])[groupBy];
         ++group_ptr;
     }
+
+    groups.erase(groups.begin());
+    this->groupByHelper(groups);
+    
 }
 
 void InternalPattern::getMatchingLoop(vector<Tuple>& iter, 
