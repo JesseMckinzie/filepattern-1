@@ -119,11 +119,15 @@ class PatternObject:
         Args:
             group_by: List of variables to group filenames by.
         """
-        if self._block_size == "":
-            if group_by != "":
+    
+        
+        if self._block_size == "":        
+            if (isinstance(group_by, str)):
+                group_by = [group_by]
+            if group_by[0] != "":
                 self._file_pattern.groupBy(group_by)
             return self
-
+        
         if group_by != "":
             self._file_pattern.setGroup(group_by)
 

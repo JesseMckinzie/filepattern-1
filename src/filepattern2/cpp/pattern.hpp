@@ -56,7 +56,8 @@ class Pattern {
 
     public:
         std::vector<Tuple> validFiles; // Store files that match given regex
-        std::vector<std::pair<std::pair<std::string, Types> , std::vector<Tuple>>> validGroupedFiles; // 2D vector to store grouped files
+        
+        std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> validGroupedFiles; // 2D vector to store grouped files
         std::string group; // current groupBy variable
 
         /**

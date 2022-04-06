@@ -164,6 +164,7 @@ void ExternalPattern::nextGroup(){
     streampos ptr = groupStream.tellg();
     string str; 
     vector<Tuple> empty;
+    vector<std::pair<std::string, Types>> grouped_variables;
     if(!(this->groupStream >> str)){
         // reset variables incase of another call
         this->currentGroup[0].second.clear();
@@ -181,12 +182,14 @@ void ExternalPattern::nextGroup(){
         if(firstCall) {
             this->currentValue = get<0>(temp)[this->group];
             this->currentGroup.resize(1);
-            this->currentGroup[0] = make_pair(make_pair(this->group, currentValue), empty);
+            grouped_variables.push_back(make_pair(group, currentValue));
+            this->currentGroup[0] = make_pair(grouped_variables, empty);
             this->currentGroup[0].second.push_back(temp);
             this->firstCall = false;
         } else {
             // add to block if value matches current value
-            this->currentGroup[0].first = make_pair(this->group, currentValue);
+            grouped_variables.push_back(make_pair(group, currentValue));
+            this->currentGroup[0].first = grouped_variables;
     
             if(get<0>(this->temp)[this->group] == this->currentValue) {
                     this->currentGroup[0].second.push_back(this->temp);
