@@ -10,7 +10,6 @@ void InternalPattern::groupByHelper(const vector<string>& groups){
     vector<std::pair<std::string, Types>> grouped_variables;
     for(const auto& groupBy: groups){
 
-        cout << "group: " << groupBy << endl;
         groupIdx = 0;
         
         for(auto& vec: validGroupedFiles){

@@ -1,8 +1,8 @@
 from . import backend
 import re
 
-def get_regex(filepattern: str) -> tuple:
-    result  = backend.Pattern.getRegex(filepattern)
+def get_regex(filepattern: str, suppress_warnings=False) -> tuple:
+    result  = backend.Pattern.getRegex(filepattern, suppress_warnings)
     return result[0:2]
 
 def infer_pattern(
