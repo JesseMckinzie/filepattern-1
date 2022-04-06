@@ -214,8 +214,8 @@ class FilePattern(PatternObject):
             recursive: Iterate over subdirectories. Defaults to False.
         """
 
-        if (isinstance(path, pathlib.Path)):
-            path = str(path)
+        
+        path = str(path) # change path type to string to support pathlib paths
         
         if path.endswith(".txt"):
 
