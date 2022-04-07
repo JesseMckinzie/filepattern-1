@@ -119,7 +119,8 @@ class PatternObject:
         Args:
             group_by: List of variables to group filenames by.
         """
-    
+
+        if(group_by == []): group_by = [""]
         
         if self._block_size == "":        
             if (isinstance(group_by, str)):
