@@ -21,7 +21,6 @@
 #include "util/util.hpp"
 
 class Pattern {
-    
     protected:
         std::regex regexExpression; // Regex expression
         std::string filePattern; // Pattern to match files to
@@ -56,7 +55,6 @@ class Pattern {
         void getPathFromPattern(const std::string& path);
 
     public:
-
         std::vector<Tuple> validFiles; // Store files that match given regex
         
         std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> validGroupedFiles; // 2D vector to store grouped files
