@@ -115,26 +115,28 @@ class PatternObject:
         This method returns an iterable of filenames matched to the filepattern. If
         a group_by variable is provided, lists of files where the variable is held constant are
         returned on each call.
+        
+        Note that the `group_by` argument works in the inverse of the previous version of `filepattern`. 
+        The variable passed to `group_by` will be held constant rather than the other variables remaining constant.
 
         Args:
-            group_by: List of variables to group filenames by.
+            group_by: A string consisting of a single variable or a list of variables to group filenames by.
         """
-
-        if(group_by == []): group_by = [""]
+        
+        if (isinstance(group_by, str)):
+                group_by = [group_by]
         
         if self._block_size == "":        
-            if (isinstance(group_by, str)):
-                group_by = [group_by]
-            if group_by[0] != "":
+            if len(group_by) == 0 or group_by[0] != "":
                 self._file_pattern.groupBy(group_by)
             return self
         
-        if group_by != "":
+        if len(group_by) == 0 or group_by != [""] and len(group_by) != 1:
             self._file_pattern.setGroup(group_by)
 
         return self
 
-    def __len__(self):
+    def _length(self):
         return self._file_pattern.currentBlockLength()
 
     def __iter__(self):
@@ -144,19 +146,17 @@ class PatternObject:
                 yield file
         else:
             while True:
-
                 for block in self._file_pattern.__iter__():
 
-                    if len(self) == 0:
+                    if self._length() == 0:
                         break
 
                     yield block
 
-                if len(self) == 0:
+                if self._length() == 0:
                     break
                 
     def __getitem__(self, key):
-        print(key)
         if(type(key) == int): return self._file_pattern.getItem(key)
         if(type(key) == list): return self._file_pattern.getItemList(key)
         
