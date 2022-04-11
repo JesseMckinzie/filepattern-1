@@ -58,7 +58,7 @@ class Pattern {
         std::vector<Tuple> validFiles; // Store files that match given regex
         
         std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> validGroupedFiles; // 2D vector to store grouped files
-        std::string group; // current groupBy variable
+        std::vector<std::string> group; // current groupBy variable
 
         /**
          * @brief Convert to pattern to regex and update class variables from the returned 
@@ -147,7 +147,7 @@ class Pattern {
          * 
          * @param group Variable to group the matched files by 
          */
-        void setGroup(const std::string& group);
+        void setGroup(const std::vector<std::string>& groups);
 
         /**
          * @brief Returns the number of times each unique value for each variable occurs.
