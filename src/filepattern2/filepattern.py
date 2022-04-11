@@ -134,7 +134,7 @@ class PatternObject:
 
         return self
 
-    def __len__(self):
+    def _length(self):
         return self._file_pattern.currentBlockLength()
 
     def __iter__(self):
@@ -147,12 +147,12 @@ class PatternObject:
 
                 for block in self._file_pattern.__iter__():
 
-                    if len(self) == 0:
+                    if _length(self) == 0:
                         break
 
                     yield block
 
-                if len(self) == 0:
+                if _length(self) == 0:
                     break
                 
     def __getitem__(self, key):
