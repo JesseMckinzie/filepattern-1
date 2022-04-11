@@ -21,6 +21,7 @@
 #include "util/util.hpp"
 
 class Pattern {
+<<<<<<< Updated upstream
     
     protected:
         std::regex regexExpression; // Regex expression
@@ -37,6 +38,8 @@ class Pattern {
         bool suppressWarnings;
 
         std::string VARIABLES; 
+=======
+>>>>>>> Stashed changes
 
     protected:
         /**
