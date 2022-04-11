@@ -109,11 +109,16 @@ void InternalPattern::groupByHelper(const vector<string>& groups){
 }
 
 
-void InternalPattern::groupBy(vector<string>& groups) {
+void InternalPattern::groupBy(vector<string>& groups) {    
     vector<std::pair<std::string, Types>> grouped_variables;
-    this->setGroup(groups[0]);
+    this->setGroup(groups);
     validGroupedFiles.clear();
     Tuple member;
+
+    if(groups.size() == 0) {
+        validGroupedFiles.push_back(make_pair(grouped_variables,validFiles));
+        return;
+    }
     
     string groupBy = groups[0];
     // Sort the matched files by the groupBy parameter 
