@@ -23,12 +23,17 @@ void Pattern::getPathFromPattern(const string& path){
     this->filePattern = path.substr(firstBracket, path.length()-1); // the rest of the path is the pattern
 }
 
-void Pattern::setGroup(const string& group){
-    if(find(this->variables.begin(), this->variables.end(), group) != variables.end()) {
-        this->group = group;
-    } else {
-        throw invalid_argument("Group by variable must be contained in the pattern.");
+void Pattern::setGroup(const vector<string>& groups){
+    for (const auto& group: groups) {
+        if(find(this->variables.begin(), this->variables.end(), group) != variables.end()) {
+            continue;
+            //this->group = group;
+        } else {
+            throw invalid_argument("Group by variable must be contained in the pattern.");
+        }
     }
+
+    this->group = groups;
 }
 
 vector<string> Pattern::getVariables(){

@@ -131,8 +131,10 @@ class ExternalPattern : public Pattern {
          */
         void nextGroup();
 
+        void groupByHelper();
+
         /**
-         * @brief Returns the number of files in the current block.
+         * @brief Returns the number of files in the current block
          * 
          * @return int Number of files in the block
          */
@@ -159,7 +161,7 @@ class ExternalPattern : public Pattern {
          * 
          * @param groupBy A variable that is contained in the pattern.
          */
-        void groupBy(const std::string& groupBy);
+        void groupBy(const std::vector<std::string>& groupBy);
 
         /**
          * @brief 
