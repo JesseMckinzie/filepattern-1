@@ -27,21 +27,9 @@
 
 class ExternalPattern : public Pattern {
     
+    
     protected:
-        long blockSize; // Max amount of main memory to use at a time
-        std::string matching;
-        std::string matchingCopy;
-        std::string validFilesPath; // Path to temporary txt file containing valid files
-        int mapSize;
-        std::ifstream matchingStream;
-        std::ifstream groupStream;
-        Types currentValue; 
-        std::ifstream infile; // Input stream used throughout methods
-        std::string fp_tmpdir;
-        bool firstCall; // True if first call has not been made to next()
-        Tuple temp;
-        FilesystemStream stream; // I/O stream from temporary file
-
+    
         /**
          * @brief Helper function for the getMatching method.
          * 
@@ -82,6 +70,23 @@ class ExternalPattern : public Pattern {
         std::string externalOutPutName();
 
     public: 
+    
+        // to be changed to prive
+        long blockSize; // Max amount of main memory to use at a time
+        std::string matching;
+        std::string matchingCopy;
+        std::string validFilesPath; // Path to temporary txt file containing valid files
+        int mapSize;
+        std::ifstream matchingStream;
+        std::ifstream groupStream;
+        Types currentValue; 
+        std::ifstream infile; // Input stream used throughout methods
+        std::string fp_tmpdir;
+        bool firstCall; // True if first call has not been made to next()
+        Tuple temp;
+        FilesystemStream stream; // I/O stream from temporary file
+        // end to be changed to private
+
         std::vector<Tuple> currentBlock; // Store current block of files
         //std::vector<std::pair<std::pair<std::string, Types>, std::vector<Tuple>>> currentGroup; //Store current block of grouped files
         std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> currentGroup;

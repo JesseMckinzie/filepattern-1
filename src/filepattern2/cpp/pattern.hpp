@@ -21,6 +21,7 @@
 #include "util/util.hpp"
 
 class Pattern {
+<<<<<<< Updated upstream
     
     protected:
         std::regex regexExpression; // Regex expression
@@ -37,7 +38,10 @@ class Pattern {
         bool suppressWarnings;
 
         std::string VARIABLES; 
+=======
+>>>>>>> Stashed changes
 
+    protected:
         /**
          * @brief Returns a guess of the filepattern using internal memory.
          * 
@@ -55,6 +59,23 @@ class Pattern {
         void getPathFromPattern(const std::string& path);
 
     public:
+
+        // to be changed to private
+        std::regex regexExpression; // Regex expression
+        std::string filePattern; // Pattern to match files to
+        std::string pathPattern;
+        std::string regexFilePattern; // Pattern with capture groups
+        std::string path;
+        std::vector<std::string> variables; // Store the names of variables from the pattern
+        std::map<std::string, std::map<Types, int>> variableOccurrences; // store the number of times a variable value occurs
+        std::map<std::string, std::set<Types>> uniqueValues; // store each unique value for every variable
+        std::vector<std::string> namedGroups;
+        std::vector<std::string> tmpDirectories; // store paths to all temporary directories used
+        bool justPath;
+        std::string VARIABLES; 
+        // end to be changed to private
+
+
         std::vector<Tuple> validFiles; // Store files that match given regex
         
         std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> validGroupedFiles; // 2D vector to store grouped files
