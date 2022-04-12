@@ -125,13 +125,13 @@ class PatternObject:
         
         if (isinstance(group_by, str)):
                 group_by = [group_by]
-        
-        if self._block_size == "":        
+        self._file_pattern.setGroup(group_by)
+        if self._block_size == "":  
             if len(group_by) == 0 or group_by[0] != "":
                 self._file_pattern.groupBy(group_by)
             return self
         
-        if len(group_by) == 0 or group_by != [""] and len(group_by) != 1:
+        if len(group_by) == 0 or (group_by != [""] and len(group_by) != 1):
             self._file_pattern.setGroup(group_by)
 
         return self

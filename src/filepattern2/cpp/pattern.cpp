@@ -28,7 +28,7 @@ void Pattern::setGroup(const vector<string>& groups){
         if(find(this->variables.begin(), this->variables.end(), group) != variables.end()) {
             continue;
             //this->group = group;
-        } else {
+        } else if(group != "") {
             throw invalid_argument("Group by variable must be contained in the pattern.");
         }
     }

@@ -33,8 +33,10 @@ PYBIND11_MODULE(backend, m){
         .def_static("getRegex", &Pattern::getRegex)
         .def_readonly("group", &Pattern::group)
         .def_readonly("validFiles", &Pattern::validFiles)
-        .def("__iter__", [](const Pattern &v){ 
-            if(v.group.size() == 0 || v.group[0] != "") return py::make_iterator(v.validGroupedFiles.begin(), v.validGroupedFiles.end());
+        .def("__iter__", [](const Pattern &v){
+            if(v.group.size() == 0 || v.group[0] != ""){
+                return py::make_iterator(v.validGroupedFiles.begin(), v.validGroupedFiles.end());
+            } 
             else{ 
                 return py::make_iterator(v.validFiles.begin(), v.validFiles.end());
             }
@@ -75,7 +77,6 @@ PYBIND11_MODULE(backend, m){
         .def("getSlice", &ExternalPattern::getSlice)
         .def("getItemList", &ExternalPattern::getItemList)
         .def("__iter__", [](ExternalPattern &v){ 
-            std::cout << "group2 0: " << v.group[0] << std::endl;
             if(v.group[0] == "") {
                 v.next();
                 return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());
@@ -89,7 +90,6 @@ PYBIND11_MODULE(backend, m){
     py::class_<ExternalFilePattern, ExternalPattern>(m, "ExternalFilePattern")
         .def(py::init<const std::string&, const std::string&, const std::string&, bool, bool>())
         .def("__iter__", [](ExternalFilePattern &v){ 
-            std::cout << "group2 0: " << v.group[0] << std::endl;
             if(v.group[0] == "") {
                 v.next();
                 return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());
