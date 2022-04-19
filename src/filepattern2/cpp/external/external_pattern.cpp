@@ -152,27 +152,29 @@ vector<Tuple> ExternalPattern::getMatchingBlock(){
 
 
 void ExternalPattern::groupByHelper(){
-    if(group[0] == "" && group.size() == 1) return;
 
-    std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> temp;
+    std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> temp_group;
     int groupIdx;
     vector<Tuple> tempVec;
     vector<std::pair<std::string, Types>> grouped_variables;
     string groupBy;
     //for(const auto& groupBy: this->group){
-    for(int i = 1; i < this->group.size(); ++i){
-        groupBy = this->group[i];
+    
+    for(int j = 1; j < this->group.size(); ++j){
+        groupBy = this->group[j];
 
         groupIdx = 0;
-        
+
         for(auto& vec: this->currentGroup){
+            if(vec.second.size() == 0) return;
+                
             grouped_variables.clear();
             for(auto& g: vec.first) grouped_variables.push_back(g);
             // Sort the matched files by the groupBy parameter 
             sort(vec.second.begin(), vec.second.end(), [&groupBy = as_const(groupBy)](Tuple& p1, Tuple& p2){
                 return get<0>(p1)[groupBy] < get<0>(p2)[groupBy];
             });
-
+            
             Types currentValue = get<0>(vec.second[0])[groupBy]; // get the value of variable
             vector<Tuple> emptyVec;
             int i = 0;
@@ -211,9 +213,10 @@ void ExternalPattern::groupByHelper(){
                     }
                 } 
                 */
+
                 grouped_variables.push_back(make_pair(groupBy, currentValue));
-                temp.push_back(make_pair(grouped_variables, tempVec)); 
-                sort(temp[group_ptr].second.begin(), temp[group_ptr].second.end(), [](Tuple& m1, Tuple& m2){
+                temp_group.push_back(make_pair(grouped_variables, tempVec)); 
+                sort(temp_group[group_ptr].second.begin(), temp_group[group_ptr].second.end(), [](Tuple& m1, Tuple& m2){
                     return get<1>(m1)[0] < get<1>(m2)[0];
                 });
                 tempVec.clear(); 
@@ -240,31 +243,17 @@ void ExternalPattern::groupByHelper(){
             */
             
         }
-        this->currentGroup = temp;
-        /*
-        cout << "temp: ";
-        for(const auto& vecc: temp){
-            cout << endl;
-            for(const auto& v: vecc.second){
-                for(const auto& p: get<0>(v)){
-                    cout << p.first << s::to_string(p.second) << ", ";
-                }
-                for(const auto& p: get<1>(v)){
-                    cout << p << " " << endl;
-                }
-            }
-            cout << endl;
-        }
-        */
 
-        temp.clear();
+        this->currentGroup = temp_group;
+
+        temp_group.clear();
     }
+
 }
 
 
 void ExternalPattern::nextGroup(){
-    cout << "next group" << endl;
-    
+
     if(firstCall) this->groupBy(this->group);
     
     // add mapping from previous call to return block
@@ -272,12 +261,16 @@ void ExternalPattern::nextGroup(){
         this->currentGroup[0].second.clear();
         if(get<0>(this->temp).size() != 0) this->currentGroup[0].second.push_back(this->temp);
     }
-    
+
+    this->currentGroup.clear();
+
     // check if end of file
     streampos ptr = groupStream.tellg();
     string str; 
     vector<Tuple> empty;
     vector<std::pair<std::string, Types>> grouped_variables;
+
+    currentGroup.push_back(make_pair(grouped_variables, empty));
 
     if(!(this->groupStream >> str)){
         // reset variables incase of another call
@@ -285,47 +278,57 @@ void ExternalPattern::nextGroup(){
         this->groupStream.close();
         this->groupStream.open(this->validFilesPath);
         this->firstCall = true;
+        this->groupByHelper();
         return;
     }
-
     groupStream.seekg(ptr, ios::beg);
     // iterate over valid files temp file while the group variable is constant
+
+    bool valueAdded = false;
     while(m::getMap(groupStream, this->temp, this->mapSize)){
-        m::preserveType(temp);
+
+        m::preserveType(this->temp);
 
         // if method has not been called, initialize data structures
         if(firstCall) {
-            this->currentValue = get<0>(temp)[this->group[0]];
+            this->currentValue = get<0>(this->temp)[this->group[0]];
             this->currentGroup.resize(1);
-            grouped_variables.push_back(make_pair(group[0], currentValue));
+            //grouped_variables.push_back(make_pair(group[0], currentValue));
             this->currentGroup[0] = make_pair(grouped_variables, empty);
-            this->currentGroup[0].second.push_back(temp);
+            this->currentGroup[0].second.push_back(this->temp);
             this->firstCall = false;
         } else {
             // add to block if value matches current value
-            grouped_variables.push_back(make_pair(group[0], currentValue));
-            this->currentGroup[0].first = grouped_variables;
-    
+            //grouped_variables.clear();
+            //grouped_variables.push_back(make_pair(group[0], currentValue));
+            if(!valueAdded){
+                grouped_variables.push_back(make_pair(group[0], currentValue));
+                this->currentGroup[0].first = grouped_variables;
+                valueAdded = true;
+            }
+
             if(get<0>(this->temp)[this->group[0]] == this->currentValue) {
+    
+                    //this->currentGroup.push_back(make_pair(grouped_variables, this->temp));
                     this->currentGroup[0].second.push_back(this->temp);
             } else { 
+
                 // update variable value and end loop on variable value change
                         // sort block by basename
                 sort(this->currentGroup[0].second.begin(), this->currentGroup[0].second.end(), [](Tuple& m1, Tuple& m2){
                     return get<1>(m1)[0] < get<1>(m2)[0];
                 });
                 this->currentValue = get<0>(this->temp)[this->group[0]];
-                //cout << "else return" << endl;
-                //cout << "result: " << currentGroup[0].first.first << ", " << s::to_string(currentGroup[0].first.second) << endl << endl;
+                valueAdded = false;
+
+                this->groupByHelper();
                 return;
             };
         }
     }
-
     sort(this->currentGroup[0].second.begin(), this->currentGroup[0].second.end(), [](Tuple& m1, Tuple& m2){
         return get<1>(m1)[0] < get<1>(m2)[0];
     });
-
     this->groupByHelper();
 }
 
