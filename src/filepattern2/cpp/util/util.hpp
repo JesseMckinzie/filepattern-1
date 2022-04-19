@@ -302,6 +302,7 @@ namespace m {
      * @return false The end of the file has been reached and the mao is not modified
      */
     inline bool getMap(std::ifstream& infile, Tuple& member, int mapSize) {
+
         std::string str;
         Map map;
 
@@ -310,9 +311,11 @@ namespace m {
         size_t pos;
 
         std::get<1>(member).clear();
-        while (std::getline(infile, str)) {
 
+        while (std::getline(infile, str)) {
+            
             // if map is correct size, return 
+
             if (map.size() == (mapSize)) {
                 std::get<0>(member) = map;
                 str.pop_back();
@@ -326,8 +329,7 @@ namespace m {
             valueLength = str.length() - pos;
             value = str.substr(pos + 1, valueLength);
 
-            map[key] = value;
-            //size += valueLength + pos;
+            map.insert(std::make_pair(key, value));
         }
 
         return false;
