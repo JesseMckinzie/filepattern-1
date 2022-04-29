@@ -30,12 +30,12 @@ class ExternalFilePattern : public ExternalPattern {
          * arbitrary number of characters. 
          *
          * @param path Path to directory
-         * @param filePattern Pattern to compare filenames to 
-         * @param blockSize Amount of memory to process at a time
+         * @param file_pattern Pattern to compare filenames to 
+         * @param block_size Amount of memory to process at a time
          * @param recursive Iterate over all subdirectories if true
          */
 
-        ExternalFilePattern(const std::string& path, const std::string& filePattern, const std::string& blockSize="50 MB", bool recursive=false, bool suppressWarnings=false);
+        ExternalFilePattern(const std::string& path, const std::string& file_pattern, const std::string& block_size="50 MB", bool recursive=false, bool suppress_warnings=false);
 
         /**
          * @brief Destroy the External File Pattern object: Deletes all files in temp directory
@@ -67,12 +67,12 @@ class ExternalFilePattern : public ExternalPattern {
         //std::vector<Tuple> getMatching(std::string&);
 
     private: 
-        std::string path; // path to directory
-        std::filesystem::directory_iterator iterator; // File iterator for given path
-        std::filesystem::recursive_directory_iterator recursiveIterator; // Recursive iterator
-        bool endOfFile; // True if end of temp file is reached
-        bool recursive; // True if recursive iterator through subdirectories
-        int totalFiles; // Total number of matched files (will be deleted)
+        std::string path_; // path to directory
+        std::filesystem::directory_iterator iterator_; // File iterator for given path
+        std::filesystem::recursive_directory_iterator recursive_iterator_; // Recursive iterator
+        bool end_of_file_; // True if end of temp file is reached
+        bool recursive_; // True if recursive iterator through subdirectories
+        int total_files_; // Total number of matched files (will be deleted)
 
         /**
          * @brief Matches files from a directory iterator. 

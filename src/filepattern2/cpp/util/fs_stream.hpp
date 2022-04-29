@@ -24,8 +24,8 @@ namespace fs = std::filesystem;
 class FilesystemStream {
 
     public:
-        int counter; // for debugging (to be removed) 
-        int mapSize; // size of maps in stream
+        int counter_; // for debugging (to be removed) 
+        int map_size_; // size of maps in stream
     
         /**
          * @brief Construct a new Filesystem Stream object.
@@ -34,28 +34,28 @@ class FilesystemStream {
          *
          * @param path Path to directory to stream filenames from
          * @param recursive True will create a recursive directory iterator that will iterate through subdirectories
-         * @param blockSize Maximum size of memory the stream will consume at a time
+         * @param block_size Maximum size of memory the stream will consume at a time
          */
-        FilesystemStream(const std::string& path, bool recursive=false, const std::string& blockSize="50 MB", const bool isInfer=false);
+        FilesystemStream(const std::string& path, bool recursive=false, const std::string& block_size="50 MB", const bool is_infer=false);
 
         ~FilesystemStream();
 
         /**
-         * @brief Get a block of filenames that consumes at most blockSize of main memory.
+         * @brief Get a block of filenames that consumes at most block_size of main memory.
          * 
          * @return std::vector<std::string> Vector of filenames
          */
         std::vector<std::string> getBlock();
 
         /**
-         * @brief Get a block of filenames that consumes at most blockSize of main memory.
+         * @brief Get a block of filenames that consumes at most block_size of main memory.
          * 
          * @return std::vector<std::string> Vector of filenames
          */
         std::vector<std::string> getBlockIterator();
 
         /**
-         * @brief Get a block of filenames that consumes at most blockSize of main memory.
+         * @brief Get a block of filenames that consumes at most block_size of main memory.
          * 
          * @return std::vector<std::string> Vector of filenames
          */
@@ -99,7 +99,7 @@ class FilesystemStream {
         std::string getFilePath();
 
         /**
-         * @brief Get a block of matched files that uses at most blockSize of memory.
+         * @brief Get a block of matched files that uses at most block_size of memory.
          * 
          * @return std::vector<Tuple> Block of matched files
          */
@@ -121,7 +121,7 @@ class FilesystemStream {
         std::string getValidFilesPath();
         
         /**
-         * @brief Returns the string version of the blockSize
+         * @brief Returns the string version of the block_size
          * 
          * @return std::string String containing the max amount of memory used
          */
@@ -141,27 +141,27 @@ class FilesystemStream {
         std::vector<Tuple> getValidFilesSlice(int i, int j, int step);
 
     private:
-        fs::directory_iterator directory_iterator; // directory iterator to stream from
-        fs::recursive_directory_iterator recursive_directory_iterator; 
-        fs::directory_iterator end; // End of iterator
-        fs::recursive_directory_iterator rec_end; // End of recursive iterator
+        fs::directory_iterator directory_iterator_; // directory iterator to stream from
+        fs::recursive_directory_iterator recursive_directory_iterator_; 
+        fs::directory_iterator end_; // End of iterator
+        fs::recursive_directory_iterator rec_end_; // End of recursive iterator
 
-        bool recursive; // Iterate over subdirectories
-        bool txtInput; // The path is to a text file
+        bool recursive_; // Iterate over subdirectories
+        bool txt_input_; // The path is to a text file
 
-        std::ifstream infile;
-        std::ifstream inputfile;
+        std::ifstream infile_;
+        std::ifstream inputfile_;
 
-        std::string tmpdir; // path to temporary directory
-        std::string outName; 
-        std::string validFiles; // store matched files block 
-        std::string blockSizeStr; // string version of max amount of memory
-        Map tempMap; 
-        bool isInfer; // Called from inferPattern method. Calculates memory used from matrix in inferPattern
-        bool empty; // no more files remaining
-        bool validFilesEmpty; // no more matched files
-        long double blockSize; // max amount of memory to use
-        int validFilesSize;
+        std::string tmpdir_; // path to temporary directory
+        std::string out_name_; 
+        std::string valid_files_; // store matched files block 
+        std::string block_size_str_; // string version of max amount of memory
+        Map temp_map_; 
+        bool is_infer_; // Called from inferPattern method. Calculates memory used from matrix in inferPattern
+        bool empty_; // no more files remaining
+        bool valid_files_empty_; // no more matched files
+        long double block_size_; // max amount of memory to use
+        int valid_files_size_;
 
         /**
          * @brief Updates the amount of memory being used

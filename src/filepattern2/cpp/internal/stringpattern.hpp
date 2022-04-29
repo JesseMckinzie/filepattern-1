@@ -7,10 +7,11 @@ class StringPattern : public InternalPattern {
         /**
          * @brief Constructor of StringPattern. 
          * 
-         * @param fileName Path to text file
-         * @param filePattern Pattern to match line of text file to
+         * @param file_name Path to text file
+         * @param file_pattern Pattern to match line of text file to
+         * @param suppress_warnings True will disable the warnings about using the old style of pattern. Default is false.
          */
-        StringPattern(const std::string& fileName, const std::string& filePattern, bool suppressWarnings);
+        StringPattern(const std::string& file_name, const std::string& file_pattern, bool suppress_warnings=false);
 
         /**
          * @brief Match lines of text file to the pattern.
@@ -25,6 +26,6 @@ class StringPattern : public InternalPattern {
         void readFile();
 
     private:
-        std::vector<std::string> files; // Vector of filenames
-        std::string fileName; // path to txt file
+        std::vector<std::string> files_; // Vector of filenames
+        std::string file_name_; // path to txt file
 };

@@ -2,47 +2,47 @@
 
 using namespace std;
 
-FilesystemStream::FilesystemStream(const string& path, bool recursive, const string& blockSize, const bool isInfer) {
-    this->validFilesSize = 0;
-    this->isInfer = isInfer; // Is a call from inferPattern (handles memory footprint calculation different if true)
-    this->tmpdir = fs::temp_directory_path().string(); // temp directory to store txt files
-    if (s::endsWith(tmpdir, "\\")) this->tmpdir.pop_back();
-    this->tmpdir += slash + "fs_stream_tmp_" + s::getTimeString() + slash; // path to temp directory
-    this->blockSizeStr = blockSize; // string version of blockSize
-    this->blockSize = Block::parseblockSize(blockSize); // parse string to long
+FilesystemStream::FilesystemStream(const string& path, bool recursive, const string& block_size, const bool is_infer) {
+    this->valid_files_size_ = 0;
+    this->is_infer_ = is_infer; // Is a call from inferPattern (handles memory footprint calculation different if true)
+    this->tmpdir_ = fs::temp_directory_path().string(); // temp directory to store txt files
+    if (s::endsWith(this->tmpdir_, "\\")) this->tmpdir_.pop_back();
+    this->tmpdir_ += slash + "fs_stream_tmp_" + s::getTimeString() + slash; // path to temp directory
+    this->block_size_str_ = block_size; // string version of block_size
+    this->block_size_ = Block::parseblockSize(block_size); // parse string to long
 
-    this->empty = false; // no more files
-    this->validFiles = tmpdir + "validFiles.txt"; // path to txt file to store matched files
-    this->counter = 0;
+    this->empty_ = false; // no more files
+    this->valid_files_ = this->tmpdir_ + "valid_files.txt"; // path to txt file to store matched files
+    this->counter_ = 0;
 
-    bool created = fs::create_directory(tmpdir); // create temp directory
+    bool created = fs::create_directory(this->tmpdir_); // create temp directory
     //throw error if temp directory cannot be created
     if (!created) {
         throw runtime_error("Could not create temporary file.");
     }
-    fs::permissions(this->tmpdir, fs::perms::all);
+    fs::permissions(this->tmpdir_, fs::perms::all);
 
-    this->outName = tmpdir + slash + "temp.txt";
-    this->infile.open(validFiles);
-    this->infile.close();
+    this->out_name_ = this->tmpdir_ + slash + "temp.txt";
+    this->infile_.open(this->valid_files_);
+    this->infile_.close();
 
-    this->recursive = false;
+    this->recursive_ = false;
 
     try {
         // handle text file or directory based on path name
         if (s::endsWith(path, ".txt")) {
-            this->txtInput = true;
-            this->inputfile.open(path);
-            if (!inputfile.is_open()) {
+            this->txt_input_ = true;
+            this->inputfile_.open(path);
+            if (!this->inputfile_.is_open()) {
                 throw invalid_argument("Invalid path \"" + path + "\".");
             }
         }
         else {
-            txtInput = false;
-            this->recursive_directory_iterator = fs::recursive_directory_iterator(path);
-            this->rec_end = fs::end(recursive_directory_iterator);
-            this->directory_iterator = fs::directory_iterator(path); // store iterator for target directory
-            this->end = fs::end(directory_iterator);
+            txt_input_ = false;
+            this->recursive_directory_iterator_ = fs::recursive_directory_iterator(path);
+            this->rec_end_ = fs::end(this->recursive_directory_iterator_);
+            this->directory_iterator_ = fs::directory_iterator(path); // store iterator for target directory
+            this->end_ = fs::end(this->directory_iterator_);
         }
     }
     catch (const std::runtime_error& e) {
@@ -52,12 +52,12 @@ FilesystemStream::FilesystemStream(const string& path, bool recursive, const str
 }
 
 FilesystemStream::~FilesystemStream() {
-    this->infile.close();
-    d::remove_dir(this->tmpdir);
+    this->infile_.close();
+    d::remove_dir(this->tmpdir_);
 }
 
 vector<string> FilesystemStream::getBlock(){
-    if(txtInput){
+    if(this->txt_input_){
         return this->getBlockTxt();
     } else {
         return this->getBlockIterator();
@@ -65,43 +65,43 @@ vector<string> FilesystemStream::getBlock(){
 }
 
 void FilesystemStream::updateSize(long& size, const string& current){
-    if(isInfer){
+    if(this->is_infer_){
         size +=  sizeof(vector<vector<int>>) + current.length()*sizeof(vector<int>) + 2*current.length()*sizeof(int);
     }
-    if(size > this->blockSize) throw runtime_error("The block size is too small. Block size must be increased.");
+    if(size > this->block_size_) throw runtime_error("The block size is too small. Block size must be increased.");
 }
 
 
 vector<string> FilesystemStream::getBlockIterator(){
 
     vector<string> vec; // files to return
-    long previousSize = sizeof(vector<string>); //memory used
+    long previous_size = sizeof(vector<string>); //memory used
 
     string current;
 
-    if(this->recursive){
+    if(this->recursive_){
 
         try {
-            current = (*recursive_directory_iterator).path().string();
+            current = (*this->recursive_directory_iterator_).path().string();
         } catch (exception& e){
             cout << e.what() << endl;
         }
 
-        this->updateSize(previousSize, current);
+        this->updateSize(previous_size, current);
 
-        while(this->currentSize(current.length(), previousSize) < blockSize){
+        while(this->currentSize(current.length(), previous_size) < this->block_size_){
             vec.push_back(current);
-            ++this->validFilesSize;
-            ++recursive_directory_iterator;
+            ++this->valid_files_size_;
+            ++this->recursive_directory_iterator_;
 
-            if(fs::begin(recursive_directory_iterator) == rec_end){
-                empty = true;
+            if(fs::begin(this->recursive_directory_iterator_) == this->rec_end_){
+                this->empty_ = true;
                 break;
             } else {  
-                previousSize = this->currentSize(current.length(), previousSize);
+                previous_size = this->currentSize(current.length(), previous_size);
 
                 try{
-                    current = (*recursive_directory_iterator).path().string();
+                    current = (*this->recursive_directory_iterator_).path().string();
                 } catch (exception& e){
                     cout << e.what() << endl;
                 }
@@ -110,26 +110,26 @@ vector<string> FilesystemStream::getBlockIterator(){
     } else{ 
         try {
             
-            current = (*this->directory_iterator).path().string();
+            current = (*this->directory_iterator_).path().string();
         } catch (exception& e){
             cout << e.what() << endl;
         }
 
-        this->updateSize(previousSize, current);
+        this->updateSize(previous_size, current);
 
-        while(this->currentSize(current.length(), previousSize) < blockSize){
+        while(this->currentSize(current.length(), previous_size) < this->block_size_){
             vec.push_back(current);
-            ++this->validFilesSize;
-            ++directory_iterator;
+            ++this->valid_files_size_;
+            ++this->directory_iterator_;
 
-            if(fs::begin(directory_iterator) == end){
-                empty = true;
+            if(fs::begin(this->directory_iterator_) == this->end_){
+                this->empty_ = true;
                 break;
             } else {
-                previousSize = this->currentSize(current.length(), previousSize);
+                previous_size = this->currentSize(current.length(), previous_size);
 
                 try{
-                    current = (*directory_iterator).path().string();
+                    current = (*this->directory_iterator_).path().string();
                 } catch (exception& e){
                     cout << e.what() << endl;
                 }
@@ -147,35 +147,35 @@ vector<string> FilesystemStream::getBlockTxt(){
     long size = sizeof(vector<string>);
     string str;
     // get string while less than block size
-    this->inputfile >> str;
+    this->inputfile_ >> str;
     this->updateSize(size, str);
     vec.push_back(str);
-    ++this->validFilesSize;
+    ++this->valid_files_size_;
     size = this->currentSize(str.length(), size);
 
-    while(size < this->blockSize && this->inputfile >> str){
+    while(size < this->block_size_ && this->inputfile_ >> str){
         size = this->currentSize(str.length(), size);
-        ++this->validFilesSize;
+        ++this->valid_files_size_;
         vec.push_back(str);
     }
     
     //check if end of file
-    streampos ptr = inputfile.tellg();
-    if(!(this->inputfile >> str)){
-        this->empty = true;
+    streampos ptr = this->inputfile_.tellg();
+    if(!(this->inputfile_ >> str)){
+        this->empty_ = true;
     }
-    inputfile.seekg(ptr, ios::beg);
+    this->inputfile_.seekg(ptr, ios::beg);
     
     return vec;
 }
 
 string FilesystemStream::getTmpPath(){
-    return this->tmpdir;
+    return this->tmpdir_;
 }
 
 
 void FilesystemStream::writeBlock(const vector<string>& vec){
-    ofstream file(this->outName, ios_base::app);
+    ofstream file(this->out_name_, ios_base::app);
 
     for(const auto& element: vec){
         file << '\n' << element;
@@ -184,8 +184,8 @@ void FilesystemStream::writeBlock(const vector<string>& vec){
 }
 
 void FilesystemStream::writeValidFiles(const Tuple& mapping){
-    counter++;
-    ofstream file(validFiles, ios_base::app);
+    this->counter_++;
+    ofstream file(this->valid_files_, ios_base::app);
   
     for(const auto& element: get<0>(mapping)){
         file << element.first << ":" << s::to_string(element.second) << '\n';
@@ -197,17 +197,17 @@ void FilesystemStream::writeValidFiles(const Tuple& mapping){
 
     file << '\n';
     file.close();
-    validFilesEmpty = false;
-    if(counter == 1){
-        this->mapSize = get<0>(mapping).size();
-        this->infile.open(validFiles);
+    this->valid_files_empty_ = false;
+    if(this->counter_ == 1){
+        this->map_size_ = get<0>(mapping).size();
+        this->infile_.open(this->valid_files_);
     }
     
 }
 
 vector<Tuple> FilesystemStream::getValidFilesBlock(){
 
-    if(this->validFilesEmpty){
+    if(this->valid_files_empty_){
         vector<Tuple> empty;
         return empty; 
     }
@@ -220,14 +220,14 @@ vector<Tuple> FilesystemStream::getValidFilesBlock(){
     Map map;
     string str;
     string key, value;
-    int valueLength; 
+    int value_length; 
     size_t pos;
     Types result;
-    map = this->tempMap;
+    map = this->temp_map_;
     
-    while(size < blockSize && this->infile >> str){
+    while(size < this->block_size_ && this->infile_ >> str){
         
-        if (map.size() == (this->mapSize)) {
+        if (map.size() == (this->map_size_)) {
             size += sizeof(map) + sizeof(vector<string>);
             
             //sizeof(Tuple) +
@@ -244,13 +244,13 @@ vector<Tuple> FilesystemStream::getValidFilesBlock(){
             map.clear();
             get<1>(member).clear();
             
-            infile >> str;
+            this->infile_ >> str;
         }
 
         pos = str.find(":");
         key = str.substr(0, pos);
-        valueLength = str.length() - pos;
-        value = str.substr(pos+1, valueLength);
+        value_length = str.length() - pos;
+        value = str.substr(pos+1, value_length);
 
         if(s::is_number(value)){
             result = stoi(value);
@@ -259,67 +259,67 @@ vector<Tuple> FilesystemStream::getValidFilesBlock(){
         }
 
         map[key] = result;
-        size += valueLength + pos;
+        size += value_length + pos;
     }
     
-    streampos ptr = infile.tellg();
-    if(!(this->infile >> str)){
-        validFilesEmpty = true;
-        this->infile.close();
+    streampos ptr = this->infile_.tellg();
+    if(!(this->infile_ >> str)){
+        this->valid_files_empty_ = true;
+        this->infile_.close();
     }
     //ptr +=1;
-    infile.seekg(ptr, ios::beg);
-    this->tempMap = map;
+    this->infile_.seekg(ptr, ios::beg);
+    this->temp_map_ = map;
     return vec;
 }
 
-long double FilesystemStream::currentSize(const int& stringSize, const long double& previousSize){
-    return sizeof(string) + stringSize + previousSize;
+long double FilesystemStream::currentSize(const int& stringSize, const long double& previous_size){
+    return sizeof(string) + stringSize + previous_size;
 }
 
 bool FilesystemStream::isEmpty() {
-    return empty;
+    return this->empty_;
 }
 
 bool FilesystemStream::endOfValidFiles(){
-    return validFilesEmpty;
+    return this->valid_files_empty_;
 }
 
 string FilesystemStream::getFilePath(){
-    return outName;
+    return this->out_name_;
 }
 
 string FilesystemStream::getValidFilesPath(){
-    return validFiles;
+    return this->valid_files_;
 }
 
 string FilesystemStream::getBlockSizeStr(){
-    return this->blockSizeStr;
+    return this->block_size_str_;
 }
 
 
 Tuple FilesystemStream::getFileByIndex(int i) {
-    int fileIndex = (this->mapSize + 1)*i + 1;
-    cout << "file: " << fileIndex << endl;
-    ifstream in = ifstream(validFiles);
+    int file_index = (this->map_size_ + 1)*i + 1;
+    cout << "file: " << file_index << endl;
+    ifstream in = ifstream(this->valid_files_);
 
     string str;
 
     Map map;
     string key, value;
-    int valueLength; 
+    int value_length; 
     size_t pos;
     Types result;
 
-    f::goToLine(in, fileIndex);
-    for(int j = 0; j < this->mapSize; ++j){
+    f::goToLine(in, file_index);
+    for(int j = 0; j < this->map_size_; ++j){
 
         getline(in, str);
 
         pos = str.find(":");
         key = str.substr(0, pos);
-        valueLength = str.length() - pos;
-        value = str.substr(pos+1, valueLength);
+        value_length = str.length() - pos;
+        value = str.substr(pos+1, value_length);
 
         if(s::is_number(value)){
             result = stoi(value);
@@ -341,7 +341,7 @@ Tuple FilesystemStream::getFileByIndex(int i) {
 }
 
 int FilesystemStream::getValidFilesSize(){
-    return this->validFilesSize;
+    return this->valid_files_size_;
 }
 
 vector<Tuple> FilesystemStream::getValidFilesSlice(int i, int j, int step){

@@ -3,14 +3,14 @@
 using namespace std;
 
 VectorPattern::VectorPattern(const string& path, const string& filePattern, bool suppressWarnings){
-    this->suppressWarnings = suppressWarnings;
-    this->path = path; // store path to target directory
+    this->setSuppressWarnings(suppressWarnings);
+    this->path_ = path; // store path to target directory
 
-    this->infile.open(path);
-    if(!infile.is_open()) throw invalid_argument("Invalid path \"" + path + "\".");
+    this->infile_.open(path);
+    if(!this->infile_.is_open()) throw invalid_argument("Invalid path \"" + this->path_ + "\".");
 
-    this->filePattern = filePattern; // cast input string to regex
-    this->regexFilePattern = ""; // Regex version of pattern
+    this->setFilePattern(filePattern); // cast input string to regex
+    this->setRegexFilePattern(""); // Regex version of pattern
 
     this->matchFiles(); // match lines of stitching vector to the pattern
     this->sortFiles();
@@ -19,23 +19,23 @@ VectorPattern::VectorPattern(const string& path, const string& filePattern, bool
 void VectorPattern::matchFiles(){   
     this->filePatternToRegex(); // get regex version of the pattern
 
-    this->STITCH_REGEX = "corr: (.*); position: \\((.*), (.*)\\); grid: \\((.*), (.*)\\);"; // regex of a stitching vector line
-    this->STITCH_VARIABLES = {"correlation","posX","posY","gridX","gridY"}; // stitching vector variables
+    this->STITCH_REGEX_ = "corr: (.*); position: \\((.*), (.*)\\); grid: \\((.*), (.*)\\);"; // regex of a stitching vector line
+    this->STITCH_VARIABLES_ = {"correlation","posX","posY","gridX","gridY"}; // stitching vector variables
 
-    this->regexExpression = regex(regexFilePattern); // cast pattern to regex
+    this->setRegexExpression(regex(this->getRegexFilePattern())); // cast pattern to regex
 
     string line, file;
     Tuple temp;
     smatch sm;
-    while(getline(infile, line)){
+    while(getline(this->infile_, line)){
         file = VectorParser::getFileName(line); // get filename from line of stitching vector
-        if(regex_match(file, sm, this->regexExpression)){ // match to regex. groups are in sm
+        if(regex_match(file, sm, this->getRegexExpression())){ // match to regex. groups are in sm
             temp = getVariableMap(file, sm); // get the variable map for the filename
-            VectorParser::parseVectorLine(temp, line, this->STITCH_VARIABLES, this->STITCH_REGEX, this->variables); // parse the vector line
-            this->validFiles.push_back(temp); // add file mapping to matched files
+            VectorParser::parseVectorLine(temp, line, this->STITCH_VARIABLES_, this->STITCH_REGEX_, this->variables_); // parse the vector line
+            this->valid_files_.push_back(temp); // add file mapping to matched files
         }
     }
-    infile.close();
+    this->infile_.close();
 }
 
 string VectorPattern::inferPattern(const string& path, string& variables){

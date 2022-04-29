@@ -107,16 +107,16 @@ namespace s {
     /**
     * @brief Get the basename of a filepath.
     *
-    * @param filePath Filepath to find the basename of.
+    * @param file_path Filepath to find the basename of.
     * @return string The basename of the filepath.
     */
-    inline std::string getBaseName(const std::string& filePath) {
-        if (filePath.find('/') == std::string::npos && filePath.find('\\') == std::string::npos) return filePath;
+    inline std::string getBaseName(const std::string& file_path) {
+        if (file_path.find('/') == std::string::npos && file_path.find('\\') == std::string::npos) return file_path;
 
-        int i = filePath.size() - 1;
+        int i = file_path.size() - 1;
         std::string file;
-        while (filePath[i] != '/' && filePath[i] != '\\') {
-            file.insert(0, 1, filePath[i]);
+        while (file_path[i] != '/' && file_path[i] != '\\') {
+            file.insert(0, 1, file_path[i]);
             --i;
         }
         return file;
@@ -200,10 +200,10 @@ namespace s {
      * From https://stackoverflow.com/questions/6143824/add-leading-zeros-to-string-without-sprintf
      *
      * @param s String to pad with zeros
-     * @param desiredLength Length of string after padding is added
+     * @param desired_length Length of string after padding is added
      */
-    inline void padWithZeros(std::string& s, unsigned int desiredLength) {
-        unsigned int number_of_zeros = desiredLength - s.length(); // add 2 zeros
+    inline void padWithZeros(std::string& s, unsigned int desired_length) {
+        unsigned int number_of_zeros = desired_length - s.length(); // add 2 zeros
 
         s.insert(0, number_of_zeros, '0');
     }
@@ -236,16 +236,16 @@ namespace s {
      * From: https://thispointer.com/how-to-remove-substrings-from-a-string-in-c/
      *
      * @param str String to erase from
-     * @param toErase Substring to erase from mainStr
+     * @param to_erase Substring to erase from mainStr
      */
-    inline std::string eraseSubStr(std::string& str, const std::string& toErase) {
+    inline std::string eraseSubStr(std::string& str, const std::string& to_erase) {
         std::string mainStr = str;
         // Search for the substring in string
-        size_t pos = mainStr.find(toErase);
+        size_t pos = mainStr.find(to_erase);
         if (pos != std::string::npos)
         {
             // If found then erase it from string
-            mainStr.erase(pos, toErase.length());
+            mainStr.erase(pos, to_erase.length());
         }
         return mainStr;
     }
@@ -301,7 +301,7 @@ namespace m {
      * @return true The end of the file has not been reached and the map is modified
      * @return false The end of the file has been reached and the mao is not modified
      */
-    inline bool getMap(std::ifstream& infile, Tuple& member, int mapSize) {
+    inline bool getMap(std::ifstream& infile, Tuple& member, int map_size) {
 
         std::string str;
         Map map;
@@ -316,7 +316,7 @@ namespace m {
             
             // if map is correct size, return 
 
-            if (map.size() == (mapSize)) {
+            if (map.size() == (map_size)) {
                 std::get<0>(member) = map;
                 str.pop_back();
                 std::get<1>(member).push_back(str);
@@ -435,9 +435,9 @@ namespace m {
 
 namespace d {
 
-    inline void remove_dir(std::string& pathToDir) {
-        if (s::endsWith(pathToDir, ".txt")) pathToDir = pathToDir.substr(0, pathToDir.find_last_of('/'));
-        std::filesystem::path path = pathToDir;
+    inline void remove_dir(std::string& path_to_dir) {
+        if (s::endsWith(path_to_dir, ".txt")) path_to_dir = path_to_dir.substr(0, path_to_dir.find_last_of('/'));
+        std::filesystem::path path = path_to_dir;
         try {
             uintmax_t n = std::filesystem::remove_all(path);
         }

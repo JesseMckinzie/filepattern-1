@@ -11,15 +11,15 @@
 class InternalPattern : public Pattern {
 
     private:
-        std::vector<Tuple> matching; // store files from a call to getMatching
-        std::vector<std::pair<std::string, std::vector<Types>>> variableMapping;
+        std::vector<Tuple> matching_; // store files from a call to getMatching
+        std::vector<std::pair<std::string, std::vector<Types>>> variable_mapping_;
 
         /**
          * @brief Sets up variables from getMatching to call the main loop of getMatching (getMatchingLoop)
          * 
-         * @param variableMap Mapping of variables to values from getMatching
+         * @param variable_map Mapping of variables to values from getMatching
          */
-        void getMatchingHelper(const std::tuple<std::string, std::vector<Types>>& variableMap);
+        void getMatchingHelper(const std::tuple<std::string, std::vector<Types>>& variable_map);
 
         /**
          * @brief Main loop of the getMatching function.

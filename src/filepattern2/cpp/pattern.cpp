@@ -5,8 +5,8 @@ namespace fs = filesystem;
 
 void Pattern::getPathFromPattern(const string& path){
 
-    this->path = path; 
-    this->filePattern = path;
+    this->path_ = path; 
+    this->file_pattern_ = path;
     size_t firstBracket = path.find("{"); // find location of first named group
     if(firstBracket == string::npos) return; // return if none found
     
@@ -19,13 +19,13 @@ void Pattern::getPathFromPattern(const string& path){
     }
     ++firstBracket;
 
-    this->path = path.substr(0, firstBracket); // piece of path without named groups becomes the path
-    this->filePattern = path.substr(firstBracket, path.length()-1); // the rest of the path is the pattern
+    this->path_ = path.substr(0, firstBracket); // piece of path without named groups becomes the path
+    this->file_pattern_ = path.substr(firstBracket, path.length()-1); // the rest of the path is the pattern
 }
 
 void Pattern::setGroup(const vector<string>& groups){
     for (const auto& group: groups) {
-        if(find(this->variables.begin(), this->variables.end(), group) != variables.end()) {
+        if(find(this->variables_.begin(), this->variables_.end(), group) != this->variables_.end()) {
             continue;
             //this->group = group;
         } else if(group != "") {
@@ -33,21 +33,21 @@ void Pattern::setGroup(const vector<string>& groups){
         }
     }
 
-    this->group = groups;
+    this->group_ = groups;
 }
 
 vector<string> Pattern::getVariables(){
-    return this->variables;
+    return this->variables_;
 }
 
 void Pattern::filePatternToRegex(){
-    replace(path.begin(), path.end(), '\\', '/');
-    replace(filePattern.begin(), filePattern.end(), '\\', '/');
+    replace(path_.begin(), path_.end(), '\\', '/');
+    replace(file_pattern_.begin(), file_pattern_.end(), '\\', '/');
 
-    tuple vars = getRegex(this->filePattern, this->suppressWarnings);
-    this->regexFilePattern = get<0>(vars);
-    this->variables = get<1>(vars);
-    this->namedGroups = get<2>(vars);
+    tuple vars = getRegex(this->file_pattern_, this->suppress_warnings_);
+    this->regex_file_pattern_ = get<0>(vars);
+    this->variables_ = get<1>(vars);
+    this->named_groups_ = get<2>(vars);
 }
 
 tuple<string, vector<string>, vector<string>> Pattern::getRegex(string& pattern, bool suppressWarning){
@@ -126,12 +126,12 @@ Tuple Pattern::getVariableMapMultDir(const string& filePath, const smatch& sm){
     string basename;
     string file = s::getBaseName(filePath);
     // iterate over matched files, checking if filename already exists
-    for(int i = 0; i < validFiles.size(); i++){ 
-        basename = s::getBaseName(s::to_string(get<1>(validFiles[i])[0])); // store the basename
+    for(int i = 0; i < this->valid_files_.size(); i++){ 
+        basename = s::getBaseName(s::to_string(get<1>(this->valid_files_[i])[0])); // store the basename
         // if the filename is found, add the filepath to the vector in the second member of the tuple 
         if(basename == file){
             matched = true;
-            get<1>(validFiles[i]).push_back(filePath); // Add path to existing mapping
+            get<1>(this->valid_files_[i]).push_back(filePath); // Add path to existing mapping
             break;
         } 
     }
@@ -155,10 +155,10 @@ Tuple Pattern::getVariableMap(const string& filePath, const smatch& sm){
     for(int i = 1; i < sm.size(); ++i){
         str = sm[i];
         // conserve variable type
-        s::is_number(str) ? get<0>(tup)[variables[i-1]] = stoi(str) : 
-                            get<0>(tup)[variables[i-1]] = str;
-        this->variableOccurrences[variables[i-1]][get<0>(tup)[variables[i-1]]] += 1; // update count of the variable occurence
-        this->uniqueValues[variables[i-1]].insert(get<0>(tup)[variables[i-1]]); // update the unique values for the variable
+        s::is_number(str) ? get<0>(tup)[variables_[i-1]] = stoi(str) : 
+                            get<0>(tup)[variables_[i-1]] = str;
+        this->variable_occurrences_[this->variables_[i-1]][get<0>(tup)[this->variables_[i-1]]] += 1; // update count of the variable occurence
+        this->unique_values_[this->variables_[i-1]].insert(get<0>(tup)[this->variables_[i-1]]); // update the unique values for the variable
     }
     
     return tup;
@@ -167,7 +167,7 @@ Tuple Pattern::getVariableMap(const string& filePath, const smatch& sm){
 std::map<string, std::map<Types, int>> Pattern::getOccurrences(const vector<tuple<string, vector<Types>>>& mapping){
     // if no variables request, return all variables
     if(mapping.size() == 0){
-        return this->variableOccurrences;
+        return this->variable_occurrences_;
     }
 
     std::map<Types, int> temp;
@@ -176,11 +176,11 @@ std::map<string, std::map<Types, int>> Pattern::getOccurrences(const vector<tupl
     // loop over vector passed in that contains the variable mapped to value(s)
     for(const auto& tup: mapping){
         if(get<1>(tup).size() == 0){
-            occurrences[get<0>(tup)] = this->variableOccurrences[get<0>(tup)];
+            occurrences[get<0>(tup)] = this->variable_occurrences_[get<0>(tup)];
         } else {
             for(const auto& value: get<1>(tup)){
                 variable = get<0>(tup);
-                temp[value] = this->variableOccurrences[get<0>(tup)][value];
+                temp[value] = this->variable_occurrences_[get<0>(tup)][value];
             }
             occurrences[variable] = temp;
         }
@@ -190,15 +190,15 @@ std::map<string, std::map<Types, int>> Pattern::getOccurrences(const vector<tupl
 }
 
 string Pattern::getPattern(){
-    return this->filePattern;
+    return this->file_pattern_;
 }
 
 void Pattern::setPattern(const string& pattern){
-    this->filePattern = pattern;
+    this->file_pattern_ = pattern;
 }
 
 string Pattern::getRegexPattern(){
-    return this->regexFilePattern;
+    return this->regex_file_pattern_;
 }
 
 void Pattern::printVariables(){
@@ -216,12 +216,12 @@ void Pattern::printVariables(){
 }
 
 map<string, set<Types>> Pattern::getUniqueValues(const vector<string>& vec){
-    if(vec.size() == 0) return this->uniqueValues; // if no variables are passed, return all variables
+    if(vec.size() == 0) return this->unique_values_; // if no variables are passed, return all variables
 
     map<string, set<Types>> temp;
     // return variables that were requested
     for(const auto& str: vec){
-        temp[str] = uniqueValues[str];
+        temp[str] = unique_values_[str];
     }
     return temp;
 }
@@ -283,7 +283,7 @@ void Pattern::replaceOutputName(Tuple& min, Tuple& max, const string& var, strin
             file = s::getBaseName(get<1>(min)[0]);
             regex_match(file, sm, patternRegex);
         
-            s::replace(outputName, this->namedGroups[idx], sm[idx+1]);
+            s::replace(outputName, this->named_groups_[idx], sm[idx+1]);
 
         } else { // if min is different than max, put range in outputname
 
@@ -301,25 +301,25 @@ void Pattern::replaceOutputName(Tuple& min, Tuple& max, const string& var, strin
             temp += sm[idx+1];
             temp += ")";
 
-            s::replace(outputName, this->namedGroups[idx], temp);
+            s::replace(outputName, this->named_groups_[idx], temp);
         }
 }
 
 string Pattern::outputNameHelper(vector<Tuple>& vec){
     if(vec.size() == 0){
-        vec = this->validFiles;
+        vec = this->valid_files_;
     }
 
-    string outputName = this->filePattern;
+    string outputName = this->file_pattern_;
 
     int idx = 0;
     int min, max;
     smatch sm;
     string temp, file;
     
-    regex patternRegex(this->regexFilePattern);
+    regex patternRegex(this->regex_file_pattern_);
 
-    for(auto& var: variables){
+    for(auto& var: this->variables_){
         
         min = m::getMinIdx(vec, var); 
         max = m::getMaxIdx(vec, var);
@@ -629,6 +629,62 @@ string Pattern::swSearch(string& pattern, string& filename, const string& variab
 } 
 
 vector<string> Pattern::getTmpDirs(){
-    return this->tmpDirectories;
+    return this->tmp_directories_;
 }
 
+
+void Pattern::setRegexExpression(std::regex regex_expression){
+    this->regex_expression_ = regex_expression;
+}
+
+void Pattern::setFilePattern(std::string file_pattern){
+    this->file_pattern_ = file_pattern;
+}
+
+void Pattern::setPathPattern(std::string path_pattern){
+    this->path_pattern_ = path_pattern;
+}
+
+void Pattern::setRegexFilePattern(std::string regex_file_pattern){
+    this->regex_file_pattern_ = regex_file_pattern;
+}
+
+void Pattern::setPath(std::string path){
+    this->path_ = path;
+}
+
+void Pattern::setJustPath(bool just_path){
+    this->just_path_ = just_path;
+}
+
+void Pattern::setSuppressWarnings(bool suppress_warnings){
+    this->suppress_warnings_ = suppress_warnings;
+}
+
+std::regex Pattern::getRegexExpression(){
+    return this-> regex_expression_;
+}
+
+std::string Pattern::getFilePattern(){
+    return this->file_pattern_;
+}
+
+std::string Pattern::getPathPattern(){
+    return this->path_pattern_;
+}
+
+std::string Pattern::getRegexFilePattern(){
+    return this->regex_file_pattern_;
+}
+
+std::string Pattern::getPath(){
+    return this->path_;
+}
+
+bool Pattern::getJustPath(){
+    return this->just_path_;
+}
+
+bool Pattern::getSuppressWarnings(){
+    return this->suppress_warnings_;
+}
