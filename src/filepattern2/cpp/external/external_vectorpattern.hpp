@@ -8,11 +8,11 @@
 class ExternalVectorPattern: public ExternalPattern {
 
     private:
-        std::regex STITCH_REGEX; // regex to match stitching vector line
-        std::vector<std::string> STITCH_VARIABLES; // variable names for stitching vector 
-        std::ifstream infile; // stream for validFiles.txt
-        std::string path; // path to stitching vector
-        std::ifstream vectorReader; //// stream to read stitching vector
+        std::regex STITCH_REGEX_; // regex to match stitching vector line
+        std::vector<std::string> STITCH_VARIABLES_; // variable names for stitching vector 
+        std::ifstream infile_; // stream for validFiles.txt
+        std::string path_; // path to stitching vector
+        std::ifstream vector_reader_; //// stream to read stitching vector
 
     public:
         /**
@@ -20,12 +20,12 @@ class ExternalVectorPattern: public ExternalPattern {
          * 
          * @param path Path to stitching vector
          * @param pattern Pattern to match filenames to
-         * @param blockSize Maximum amount of memory to use
+         * @param block_size Maximum amount of memory to use
          */
-        ExternalVectorPattern(const std::string& path, const std::string& pattern, const std::string& blockSize, bool suppressWarnings);
+        ExternalVectorPattern(const std::string& path, const std::string& pattern, const std::string& block_size, bool suppress_warnings);
 
         /**
-         * @brief Destuctor of ExternalVectorPattern. Removes temporay directories and files.
+         * @brief Deconstructor of ExternalVectorPattern. Removes temporay directories and files.
          * 
          */
         ~ExternalVectorPattern();
@@ -41,8 +41,8 @@ class ExternalVectorPattern: public ExternalPattern {
          * 
          * @param path Path to stitching vector
          * @param variables Variable names. Optional
-         * @param blockSize Maximum amount of memory to use
+         * @param block_size Maximum amount of memory to use
          * @return std::string Guess of the pattern
          */
-        static std::string inferPattern(const std::string& path, std::string& variables, const std::string& blockSize);
+        static std::string inferPattern(const std::string& path, std::string& variables, const std::string& block_size);
 };

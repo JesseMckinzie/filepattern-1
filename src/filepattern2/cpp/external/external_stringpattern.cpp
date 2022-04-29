@@ -2,30 +2,30 @@
 
 using namespace std;
 
-ExternalStringPattern::ExternalStringPattern(const string& path, const string& filePattern, const string& blockSize, bool suppressWarnings):
-ExternalPattern(path, blockSize, false) {
-    this->suppressWarnings = suppressWarnings;
-    this->path = path; // store path to target directory
-    //this->stream = {path, true, blockSize};
-    this->blockSize = Block::parseblockSize(blockSize);
-    this->fp_tmpdir = "";
+ExternalStringPattern::ExternalStringPattern(const string& path, const string& file_pattern, const string& block_size, bool suppress_warnings):
+ExternalPattern(path, block_size, false) {
+    this->setSuppressWarnings(suppress_warnings);
+    this->setPath(path); // store path to target directory
+    //this->stream = {path, true, block_size};
+    this->setBlockSize(Block::parseblockSize(block_size));
+    this->setFpTmpdir("");
 
-    this->filePattern = filePattern; // cast input string to regex
-    this->regexFilePattern = ""; // Regex equivalent of the pattern
-    this->totalFiles = 0; // Number of files matched (to be removed)
-    this->mapSize = 0; //To be updated later in program, set for compiling
-    this->validFilesPath = stream.getValidFilesPath(); // Store path to valid files txt file
-    this->tmpDirectories.push_back(validFilesPath);
-    this->firstCall = true; // first call to next() has not occurred
+    this->setFilePattern(file_pattern); // cast input string to regex
+    this->setRegexFilePattern(""); // Regex equivalent of the pattern
+    this->total_files_ = 0; // Number of files matched (to be removed)
+    this->setMapSize(0); //To be updated later in program, set for compiling
+    this->setValidFilesPath(this->stream_.getValidFilesPath()); // Store path to valid files txt file
+    this->tmp_directories_.push_back(this->getValidFilesPath());
+    this->setFirstCall(true); // first call to next() has not occurred
     this->matchFiles(); // match files to pattern
-    this->groupStream.open(stream.getValidFilesPath());
-    this->infile.open(validFilesPath); // open temp file for the valid files
-    this->endOfFile = false; // end of valid files 
+    this->group_stream_.open(this->stream_.getValidFilesPath());
+    this->infile_.open(this->getValidFilesPath()); // open temp file for the valid files
+    this->end_of_file_ = false; // end of valid files 
     
 }
 
 ExternalStringPattern::~ExternalStringPattern(){
-    for(auto& dir: this->tmpDirectories){
+    for(auto& dir: this->tmp_directories_){
         if(dir != "") d::remove_dir(dir);
     }
 }
@@ -33,27 +33,27 @@ ExternalStringPattern::~ExternalStringPattern(){
 void ExternalStringPattern::matchFiles(){
     this->filePatternToRegex();
 
-    this->mapSize = variables.size();
+    this->setMapSize(this->variables_.size());
 
     vector<string> block;
 
-    regex patternRegex = regex(this->regexFilePattern);
+    regex pattern_regex = regex(this->getRegexFilePattern());
     string file;
     smatch sm;
 
     int count = 0;
     // iterate over files    
-    while(!this->stream.isEmpty()){
+    while(!this->stream_.isEmpty()){
 
-        block = stream.getBlock();
+        block = this->stream_.getBlock();
 
         //if(count == 0 && block.size() == 0) throw runtime_error("Block size too small.");
         
         for (const auto& file : block) {
             //file = s::getBaseName(filePath);
         
-            if(regex_match(file, sm, patternRegex)){
-                stream.writeValidFiles(getVariableMap(file, sm)); // write to txt file
+            if(regex_match(file, sm, pattern_regex)){
+                this->stream_.writeValidFiles(getVariableMap(file, sm)); // write to txt file
                 ++count;
             }
         }

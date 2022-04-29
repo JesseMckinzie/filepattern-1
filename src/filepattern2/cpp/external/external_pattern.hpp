@@ -27,8 +27,39 @@
 
 class ExternalPattern : public Pattern {
     
+    private:
+        // to be changed to private
+        long block_size_; // Max amount of main memory to use at a time
+        std::string matching_;
+        std::string matching_copy_;
+        std::string valid_files_path_; // Path to temporary txt file containing valid files
+        int map_size_;
+        Types current_value_; 
+        std::string fp_tmpdir_;
+        bool first_call_; // True if first call has not been made to next()
+        Tuple temp_;
+        // end to be changed to private
     
     protected:
+        long getBlockSize(); // Max amount of main memory to use at a time
+        std::string getMatching_();
+        std::string getMatchingCopy_();
+        std::string getValidFilesPath(); // Path to temporary txt file containing valid files
+        int getMapSize();
+        Types getCurrentValue(); 
+        std::string getFpTmpdir();
+        bool getFirstCall(); // True if first call has not been made to next()
+        Tuple getTemp();
+
+        void setBlockSize(long); // Max amount of main memory to use at a time
+        void setMatching(std::string);
+        void setMatchingCopy(std::string);
+        void setValidFilesPath(std::string); // Path to temporary txt file containing valid files
+        void setMapSize(int);
+        void setCurrentValue(Types); 
+        void setFpTmpdir(std::string);
+        void setFirstCall(bool); // True if first call has not been made to next()
+        void setTemp(Tuple);
     
         /**
          * @brief Helper function for the getMatching method.
@@ -37,10 +68,10 @@ class ExternalPattern : public Pattern {
          * Performs functionality of getMatching after getMatching() parses the input.
          * 
          * 
-         * @param variableMap Keyword argument where the keyword is a variable and the value is a vector of the variable value(s)
+         * @param variable_map Keyword argument where the keyword is a variable and the value is a vector of the variable value(s)
          * @param matching Path to file to store matching files
          */
-        void getMatchingHelper(const std::tuple<std::string, std::vector<Types>>& variableMap, const std::string& matching);
+        void getMatchingHelper(const std::tuple<std::string, std::vector<Types>>& variable_map, const std::string& matching);
 
         /**
          * @brief Main loop of the getMatching function.
@@ -52,14 +83,14 @@ class ExternalPattern : public Pattern {
          * @param variable Variable to get matching of
          * @param values Value of variable(s)
          * @param temp Temporary Tuple structure
-         * @param tempMap Temporary Map structure
+         * @param temp_map Temporary Map structure
          */
         void getMatchingLoop(std::ifstream& infile, 
                              std::ofstream& outfile,
                              const std::string& variable, 
                              const std::vector<Types>& values, 
                              Types& temp,
-                             Tuple& tempMap);
+                             Tuple& temp_map);
         
         /**
          * @brief Converts a directory of files that match the pattern to a single name which captures
@@ -70,35 +101,24 @@ class ExternalPattern : public Pattern {
         std::string externalOutPutName();
 
     public: 
-    
-        // to be changed to prive
-        long blockSize; // Max amount of main memory to use at a time
-        std::string matching;
-        std::string matchingCopy;
-        std::string validFilesPath; // Path to temporary txt file containing valid files
-        int mapSize;
-        std::ifstream matchingStream;
-        std::ifstream groupStream;
-        Types currentValue; 
-        std::ifstream infile; // Input stream used throughout methods
-        std::string fp_tmpdir;
-        bool firstCall; // True if first call has not been made to next()
-        Tuple temp;
-        FilesystemStream stream; // I/O stream from temporary file
-        // end to be changed to private
 
-        std::vector<Tuple> currentBlock; // Store current block of files
+        std::ifstream matching_stream_;
+        std::ifstream group_stream_;
+        std::ifstream infile_; // Input stream used throughout methods
+        FilesystemStream stream_; // I/O stream from temporary file
+
+        std::vector<Tuple> current_block_; // Store current block of files
         //std::vector<std::pair<std::pair<std::string, Types>, std::vector<Tuple>>> currentGroup; //Store current block of grouped files
-        std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> currentGroup;
+        std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> current_group_;
 
         /**
          * @brief Construct a new External Pattern object
          * 
          * @param path Path to directory or text file
-         * @param blockSize Maximum amount of memory to use
+         * @param block_size Maximum amount of memory to use
          * @param recursive True to iterate over subdirectories
          */
-        ExternalPattern(const std::string& path, const std::string& blockSize, bool recursive);
+        ExternalPattern(const std::string& path, const std::string& block_size, bool recursive);
 
         ~ExternalPattern();
 
@@ -112,7 +132,7 @@ class ExternalPattern : public Pattern {
 
         /**
          * @brief Returns a block of files after a call to getMatching where the block of files
-         * does not use more memory than blockSize.
+         * does not use more memory than block_size.
          * 
          * @return std::vector<Tuple> A block of file that are matched from getMatching
          */
@@ -164,9 +184,9 @@ class ExternalPattern : public Pattern {
          * Sorts the temporary .txt file by the provided variable uses an 
          * external merge sort algorithm to maintain memory usage of less than the block size.
          * 
-         * @param groupBy A variable that is contained in the pattern.
+         * @param group_by A variable that is contained in the pattern.
          */
-        void groupBy(const std::vector<std::string>& groupBy);
+        void groupBy(const std::vector<std::string>& group_by);
 
         /**
          * @brief 
@@ -181,10 +201,10 @@ class ExternalPattern : public Pattern {
          * 
          * @param path Path to directory or text file
          * @param variables Variable names. Optional
-         * @param blockSize Maximum amount of memory to consume
+         * @param block_size Maximum amount of memory to consume
          * @return std::string A guess of the pattern
          */
-        static std::string inferPattern(const std::string& path, std::string& variables, const std::string& blockSize);
+        static std::string inferPattern(const std::string& path, std::string& variables, const std::string& block_size);
 
         /**
          * @brief Returns the length of the current group of files

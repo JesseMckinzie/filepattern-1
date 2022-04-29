@@ -31,14 +31,14 @@ PYBIND11_MODULE(backend, m){
         .def("getTmpDirs", &Pattern::getTmpDirs)
         .def("setGroup", &Pattern::setGroup)
         .def_static("getRegex", &Pattern::getRegex)
-        .def_readonly("group", &Pattern::group)
-        .def_readonly("validFiles", &Pattern::validFiles)
+        .def_readonly("group", &Pattern::group_)
+        .def_readonly("validFiles", &Pattern::valid_files_)
         .def("__iter__", [](const Pattern &v){
-            if(v.group.size() == 0 || v.group[0] != ""){
-                return py::make_iterator(v.validGroupedFiles.begin(), v.validGroupedFiles.end());
+            if(v.group_.size() == 0 || v.group_[0] != ""){
+                return py::make_iterator(v.valid_grouped_files_.begin(), v.valid_grouped_files_.end());
             } 
             else{ 
-                return py::make_iterator(v.validFiles.begin(), v.validFiles.end());
+                return py::make_iterator(v.valid_files_.begin(), v.valid_files_.end());
             }
             }, 
             py::keep_alive<0, 1>()); // Keep vector alive while iterator is used 
@@ -77,12 +77,12 @@ PYBIND11_MODULE(backend, m){
         .def("getSlice", &ExternalPattern::getSlice)
         .def("getItemList", &ExternalPattern::getItemList)
         .def("__iter__", [](ExternalPattern &v){ 
-            if(v.group[0] == "") {
+            if(v.group_[0] == "") {
                 v.next();
-                return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());
+                return py::make_iterator(v.current_block_.begin(), v.current_block_.end());
             } else {
                 v.nextGroup();
-                return py::make_iterator(v.currentGroup.begin(), v.currentGroup.end());
+                return py::make_iterator(v.current_group_.begin(), v.current_group_.end());
             }}, 
             py::keep_alive<0, 1>()); // Keep vector alive while iterator is used ;
         
@@ -90,12 +90,12 @@ PYBIND11_MODULE(backend, m){
     py::class_<ExternalFilePattern, ExternalPattern>(m, "ExternalFilePattern")
         .def(py::init<const std::string&, const std::string&, const std::string&, bool, bool>())
         .def("__iter__", [](ExternalFilePattern &v){ 
-            if(v.group[0] == "") {
+            if(v.group_[0] == "") {
                 v.next();
-                return py::make_iterator(v.currentBlock.begin(), v.currentBlock.end());
+                return py::make_iterator(v.current_block_.begin(), v.current_block_.end());
             } else {
                 v.nextGroup();
-                return py::make_iterator(v.currentGroup.begin(), v.currentGroup.end());
+                return py::make_iterator(v.current_group_.begin(), v.current_group_.end());
             }}, 
             py::keep_alive<0, 1>()); // Keep vector alive while iterator is used ;
     

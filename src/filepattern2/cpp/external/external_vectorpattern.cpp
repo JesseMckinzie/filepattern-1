@@ -2,35 +2,35 @@
 
 using namespace std;
 
-ExternalVectorPattern::ExternalVectorPattern(const string& path, const string& filePattern, const string& blockSize, bool suppressWarnings):
-ExternalPattern(path, blockSize, false){
-    this->suppressWarnings = suppressWarnings;
-    this->path = path; // store path to target directory
-    this->fp_tmpdir = "";
+ExternalVectorPattern::ExternalVectorPattern(const string& path, const string& file_pattern, const string& block_size, bool suppress_warnings):
+ExternalPattern(path, block_size, false){
+    this->setSuppressWarnings(suppress_warnings);
+    this->path_ = path; // store path to target directory
+    this->setFpTmpdir("");
 
-    this->blockSize = Block::parseblockSize(blockSize);
-    //this->stream = {path, true, blockSize};
+    this->setBlockSize(Block::parseblockSize(block_size));
+    //this->stream = {path, true, block_size};
 
-    this->vectorReader.open(path);
-    if(!vectorReader.is_open()) throw invalid_argument("Invalid path \"" + path + "\".");
+    this->vector_reader_.open(path);
+    if(!this->vector_reader_.is_open()) throw invalid_argument("Invalid path \"" + path + "\".");
 
-    this->filePattern = filePattern; // cast input string to regex
-    this->regexFilePattern = ""; // Regex version of pattern
+    this->setFilePattern(file_pattern); // cast input string to regex
+    this->setRegexFilePattern(""); // Regex version of pattern
 
-    this->mapSize = 0; //To be updated later in program, set for compiling
-    this->validFilesPath = stream.getValidFilesPath(); // Store path to valid files txt file
-    this->tmpDirectories.push_back(validFilesPath);
-    this->firstCall = true; // first call to next() has not occurred
+    this->setMapSize(0); //To be updated later in program, set for compiling
+    this->setValidFilesPath(this->stream_.getValidFilesPath()); // Store path to valid files txt file
+    this->tmp_directories_.push_back(this->getValidFilesPath());
+    this->setFirstCall(true); // first call to next() has not occurred
 
     this->matchFiles();
 
-    this->groupStream.open(stream.getValidFilesPath());
-    this->infile.open(validFilesPath); // open temp file for the valid files
+    this->group_stream_.open(this->stream_.getValidFilesPath());
+    this->infile_.open(this->getValidFilesPath()); // open temp file for the valid files
 }
 
 ExternalVectorPattern::~ExternalVectorPattern(){
     // Loop over stored paths and delete contents and directory
-    for(auto& dir: this->tmpDirectories){
+    for(auto& dir: this->tmp_directories_){
         if(dir != "") d::remove_dir(dir);
 
     }
@@ -39,30 +39,30 @@ ExternalVectorPattern::~ExternalVectorPattern(){
 void ExternalVectorPattern::matchFiles(){   
     this->filePatternToRegex();
 
-    this->STITCH_REGEX = "corr: (.*); position: \\((.*), (.*)\\); grid: \\((.*), (.*)\\);"; // pattern of a line for a stitching vector
-    this->STITCH_VARIABLES = {"correlation","posX","posY","gridX","gridY"}; // variables in a stitching vector
+    this->STITCH_REGEX_ = "corr: (.*); position: \\((.*), (.*)\\); grid: \\((.*), (.*)\\);"; // pattern of a line for a stitching vector
+    this->STITCH_VARIABLES_ = {"correlation","posX","posY","gridX","gridY"}; // variables in a stitching vector
 
-    this->mapSize = variables.size() + STITCH_VARIABLES.size(); // Change the size of the map to include stitching variables
+    this->setMapSize(this->variables_.size() + this->STITCH_VARIABLES_.size()); // Change the size of the map to include stitching variables
 
-    this->regexExpression = regex(regexFilePattern);
+    this->setRegexExpression(regex(this->getRegexFilePattern()));
 
     string line, file;
     Tuple temp;
     smatch sm;
 
-    while(getline(vectorReader, line)){
+    while(getline(this->vector_reader_, line)){
         file = VectorParser::getFileName(line);
-        if(regex_match(file, sm, this->regexExpression)){
+        if(regex_match(file, sm, this->getRegexExpression())){
             temp = getVariableMap(file, sm);
-            VectorParser::parseVectorLine(temp, line, this->STITCH_VARIABLES, this->STITCH_REGEX, this->variables);
-            this->stream.writeValidFiles(temp);
+            VectorParser::parseVectorLine(temp, line, this->STITCH_VARIABLES_, this->STITCH_REGEX_, this->variables_);
+            this->stream_.writeValidFiles(temp);
         }
     }
-    vectorReader.close();
+    this->vector_reader_.close();
 }
 
-string ExternalVectorPattern::inferPattern(const string& path, string& variables, const string& blockSize){
-    long block = Block::parseblockSize(blockSize); // parse string
+string ExternalVectorPattern::inferPattern(const string& path, string& variables, const string& block_size){
+    long block = Block::parseblockSize(block_size); // parse string
     
     vector<string> files;
     string file;

@@ -15,7 +15,7 @@ class Stream {
     
     public:
         int counter; // for debugging (to be removed) 
-        int mapSize; // size of maps in stream
+        int map_size; // size of maps in stream
 
         /**
          * @brief Write a block of strings to the output file.
@@ -54,16 +54,16 @@ class Stream {
     protected:
         
         std::string tmpdir;
-        long double blockSize;
-        std::string outName;
+        long double block_size;
+        std::string out_name;
         bool empty;
-        bool validFilesEmpty;
-        std::string validFiles;
+        bool valid_files_empty;
+        std::string valid_files;
         std::ifstream infile;
-        std::string blockSizeStr;
-        Map tempMap;
-        bool isInfer;
+        std::string block_size_str;
+        Map temp_map;
+        bool is_infer;
 
-        Stream(const std::string&, const bool isInfer=false);
+        Stream(const std::string&, const bool is_infer=false);
 
 };

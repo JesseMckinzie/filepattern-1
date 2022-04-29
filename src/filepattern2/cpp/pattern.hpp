@@ -19,25 +19,36 @@
 #include <set>
 #include "util/fs_stream.hpp"
 #include "util/util.hpp"
-
 class Pattern {
-    protected:
-        std::regex regexExpression; // Regex expression
-        std::string filePattern; // Pattern to match files to
-        std::string pathPattern;
-        std::string regexFilePattern; // Pattern with capture groups
-        std::string path;
-        std::vector<std::string> variables; // Store the names of variables from the pattern
-        std::map<std::string, std::map<Types, int>> variableOccurrences; // store the number of times a variable value occurs
-        std::map<std::string, std::set<Types>> uniqueValues; // store each unique value for every variable
-        std::vector<std::string> namedGroups;
-        std::vector<std::string> tmpDirectories; // store paths to all temporary directories used
-        bool justPath;
-        bool suppressWarnings;
+    private:
+        std::regex regex_expression_; // Regex expression
+        std::string file_pattern_; // Pattern to match files to
+        std::string path_pattern_;
+        std::string regex_file_pattern_; // Pattern with capture groups
+        std::string path_;
+        bool just_path_;
+        bool suppress_warnings_;
 
-        std::string VARIABLES; 
+        std::string VARIABLES_; 
 
     protected:
+        void setRegexExpression(std::regex);
+        void setFilePattern(std::string);
+        void setPathPattern(std::string);
+        void setRegexFilePattern(std::string);
+        void setPath(std::string);
+        void setJustPath(bool);
+        void setSuppressWarnings(bool);
+
+        std::regex getRegexExpression();
+        std::string getFilePattern();
+        std::string getPathPattern();
+        std::string getRegexFilePattern();
+        std::string getPath();
+        bool getJustPath();
+        bool getSuppressWarnings();
+
+        
         /**
          * @brief Returns a guess of the filepattern using internal memory.
          * 
@@ -55,10 +66,17 @@ class Pattern {
         void getPathFromPattern(const std::string& path);
 
     public:
-        std::vector<Tuple> validFiles; // Store files that match given regex
+        std::vector<Tuple> valid_files_; // Store files that match given regex
         
-        std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> validGroupedFiles; // 2D vector to store grouped files
-        std::vector<std::string> group; // current groupBy variable
+        std::vector<std::pair<std::vector<std::pair<std::string, Types>> , std::vector<Tuple>>> valid_grouped_files_; // 2D vector to store grouped files
+        std::vector<std::string> group_; // current groupBy variable
+
+        std::vector<std::string> variables_; // Store the names of variables from the pattern
+        std::map<std::string, std::map<Types, int>> variable_occurrences_; // store the number of times a variable value occurs
+        std::map<std::string, std::set<Types>> unique_values_; // store each unique value for every variable
+
+        std::vector<std::string> named_groups_;
+        std::vector<std::string> tmp_directories_; // store paths to all temporary directories used
 
         /**
          * @brief Convert to pattern to regex and update class variables from the returned 

@@ -6,19 +6,20 @@
 
 class VectorPattern: public InternalPattern {
 
+    private:
+        std::string path_; // path to stitching vector
+        std::regex STITCH_REGEX_; // regex to match stitching vector line
+        std::vector<std::string> STITCH_VARIABLES_; // variable names for stitching vector 
+        std::ifstream infile_; // stream to read in stitching vector
+    
     public:
-        std::string path; // path to stitching vector
-        std::regex STITCH_REGEX; // regex to match stitching vector line
-        std::vector<std::string> STITCH_VARIABLES; // variable names for stitching vector 
-        std::ifstream infile; // stream to read in stitching vector
-
         /**
          * @brief Constructor of VectorPattern.
          * 
          * @param path Path to stitching vector
          * @param pattern Pattern to match filename to
          */
-        VectorPattern(const std::string& path, const std::string& pattern, bool suppressWarnings);
+        VectorPattern(const std::string& path, const std::string& pattern, bool suppress_warnings);
 
         /**
          * @brief Match filenames to the pattern.

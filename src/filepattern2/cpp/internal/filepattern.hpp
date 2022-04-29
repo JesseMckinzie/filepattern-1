@@ -15,7 +15,7 @@ namespace fs = std::filesystem;
 
 class FilePattern : public InternalPattern {
     public:
-        FilePattern(const std::string& path, const std::string& pattern, bool recursive=false, bool suppressWarnings=false);
+        FilePattern(const std::string& path, const std::string& pattern, bool recursive=false, bool suppress_warnings=false);
 
         /**
          * @brief Match files in directory to the pattern
@@ -23,7 +23,7 @@ class FilePattern : public InternalPattern {
          * Filesystem directory iterator is used to iterate over the supplied directory,
          * comparing each filename to the regex version of the pattern. If recursive if true,
          * a recursive directory iterator is used. If a file matches the pattern, it is stored 
-         * in the validFiles vector.
+         * in the valid_files vector.
          */
         void matchFiles();
 
@@ -35,9 +35,9 @@ class FilePattern : public InternalPattern {
         
     private: 
         //std::string path; // path to directory
-        fs::directory_iterator iterator; // File iterator for given path
-        fs::recursive_directory_iterator recursiveIterator; // Recursive directory iterator
-        bool recursive; // Iterate over subdirectories
+        fs::directory_iterator iterator_; // File iterator for given path
+        fs::recursive_directory_iterator recursive_iterator_; // Recursive directory iterator
+        bool recursive_; // Iterate over subdirectories
 
         /**
          * @brief Match files to pattern using a directory iterator.

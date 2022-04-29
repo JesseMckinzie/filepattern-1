@@ -2,15 +2,15 @@
 
 using namespace std;
 
-Stream::Stream(const string& blockSize, const bool isInfer) {
-    this->isInfer = isInfer;
+Stream::Stream(const string& block_size, const bool is_infer) {
+    this->is_infer = is_infer;
     this->tmpdir = fs::temp_directory_path().string();
     this->tmpdir += "/fs_stream_tmp_" + s::getTimeString() + "/";
-    this->blockSizeStr = blockSize;
-    this->blockSize = Block::parseblockSize(blockSize);
+    this->block_size_str = block_size;
+    this->block_size = Block::parseblockSize(block_size);
     
     this->empty = false;
-    this->validFiles = tmpdir + "validFiles.txt";
+    this->valid_files = tmpdir + "validFiles.txt";
     this->counter = 0;
 
     if (fs::exists(tmpdir)){
@@ -21,13 +21,13 @@ Stream::Stream(const string& blockSize, const bool isInfer) {
     if (!created) {
         throw runtime_error("Could not create temporary file.");
     }
-    this->outName = tmpdir + "/temp.txt";
-    this->infile.open(validFiles);
+    this->out_name = tmpdir + "/temp.txt";
+    this->infile.open(valid_files);
 }
 
 
 void Stream::writeBlock(const vector<string>& vec){
-    ofstream file(this->outName, ios_base::app);
+    ofstream file(this->out_name, ios_base::app);
 
     for(const auto& element: vec){
         file << '\n' << element;
@@ -37,7 +37,7 @@ void Stream::writeBlock(const vector<string>& vec){
 
 void Stream::writeValidFiles(const Tuple& mapping){
     counter++;
-    ofstream file(validFiles, ios_base::app);
+    ofstream file(valid_files, ios_base::app);
     cout << "stream comments added" << endl;
     /*
     for(const auto& element: get<0>(mapping)){
@@ -49,9 +49,9 @@ void Stream::writeValidFiles(const Tuple& mapping){
     } 
     file << '\n';
     file.close();
-    validFilesEmpty = false;
+    valid_files_empty = false;
     if(counter == 1){
-        this->mapSize = get<0>(mapping).size();
+        this->map_size = get<0>(mapping).size();
         this->infile.open(validFiles);
     }
     */
@@ -59,7 +59,7 @@ void Stream::writeValidFiles(const Tuple& mapping){
 
 vector<Tuple> Stream::getValidFilesBlock(){
 
-    if(this->validFilesEmpty){
+    if(this->valid_files_empty){
         vector<Tuple> empty;
         return empty; 
     }
@@ -72,14 +72,14 @@ vector<Tuple> Stream::getValidFilesBlock(){
     Map map;
     string str;
     string key, value;
-    int valueLength; 
+    int value_length; 
     size_t pos;
     Types result;
-    map = this->tempMap;
+    map = this->temp_map;
     
-    while(size < blockSize && this->infile >> str){
+    while(size < block_size && this->infile >> str){
         
-        if (map.size() == (this->mapSize)) {
+        if (map.size() == (this->map_size)) {
             size += sizeof(map) + sizeof(vector<string>);
             
             //sizeof(Tuple) +
@@ -101,8 +101,8 @@ vector<Tuple> Stream::getValidFilesBlock(){
 
         pos = str.find(":");
         key = str.substr(0, pos);
-        valueLength = str.length() - pos;
-        value = str.substr(pos+1, valueLength);
+        value_length = str.length() - pos;
+        value = str.substr(pos+1, value_length);
 
         if(s::is_number(value)){
             result = stoi(value);
@@ -111,16 +111,16 @@ vector<Tuple> Stream::getValidFilesBlock(){
         }
 
         map[key] = result;
-        size += valueLength + pos;
+        size += value_length + pos;
     }
     
     streampos ptr = infile.tellg();
     if(!(this->infile >> str)){
-        validFilesEmpty = true;
+        valid_files_empty = true;
     }
     //ptr +=1;
     infile.seekg(ptr, ios::beg);
-    this->tempMap = map;
+    this->temp_map = map;
     return vec;
 }
 
@@ -133,17 +133,17 @@ bool Stream::isEmpty() {
 }
 
 bool Stream::endOfValidFiles(){
-    return validFilesEmpty;
+    return valid_files_empty;
 }
 
 string Stream::getFilePath(){
-    return outName;
+    return out_name;
 }
 
 string Stream::getValidFilesPath(){
-    return validFiles;
+    return valid_files;
 }
 
 string Stream::getBlockSizeStr(){
-    return this->blockSizeStr;
+    return this->block_size_str;
 }

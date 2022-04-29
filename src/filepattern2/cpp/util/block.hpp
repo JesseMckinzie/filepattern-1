@@ -30,25 +30,25 @@ class Block {
          */
         static long parseblockSize(const std::string& block){ 
 
-            std::string numString = "";
-            std::string unitString = "";
+            std::string num_string = "";
+            std::string unit_string = "";
             
             for(const auto& c: block){
-                if(isdigit(c) || c == '.') numString.push_back(c);
-                else if(c != ' ') unitString.push_back(c);
+                if(isdigit(c) || c == '.') num_string.push_back(c);
+                else if(c != ' ') unit_string.push_back(c);
             }
 
-            if (numString == "") throw std::invalid_argument("Block size must include a size.");
+            if (num_string == "") throw std::invalid_argument("Block size must include a size.");
             std::string::size_type sz;
-            long num = stoi (numString, &sz);
+            long num = stoi (num_string, &sz);
 
-            if (unitString == "KB"){
+            if (unit_string == "KB"){
                 num = KB(num);
-            } else if (unitString == "MB") {
+            } else if (unit_string == "MB") {
                 num = MB(num);
-            } else if (unitString == "GB"){
+            } else if (unit_string == "GB"){
                 num = GB(num);
-            } else if (unitString != "B"){
+            } else if (unit_string != "B"){
                 throw std::invalid_argument("Block size must include a valid unit (B, KB, MB, GB).");
             }
 
