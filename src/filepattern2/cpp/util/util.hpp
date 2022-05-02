@@ -320,6 +320,7 @@ namespace m {
                 std::get<0>(member) = map;
                 str.pop_back();
                 std::get<1>(member).push_back(str);
+
                 return true;
             }
 
