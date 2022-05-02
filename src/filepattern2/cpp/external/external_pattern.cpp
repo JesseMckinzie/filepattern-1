@@ -83,7 +83,7 @@ void ExternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
 }
 
 string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
-    cout << "matching " << endl;
+
     // construct temporary directory path
     this->fp_tmpdir_ = fs::temp_directory_path().string();
     if (s::endsWith(this->fp_tmpdir_, "\\")) this->fp_tmpdir_.pop_back();
@@ -114,7 +114,7 @@ string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& 
     }
 
     this->matching_stream_.open(this->matching_);
-    cout << "end matching" << endl;
+
     return this->matching_;
 }
 
@@ -166,6 +166,8 @@ void ExternalPattern::groupByHelper(){
         group_idx = 0;
 
         for(auto& vec: this->current_group_){
+        
+
             if(vec.second.size() == 0) return;
                 
             grouped_variables.clear();
@@ -251,10 +253,19 @@ void ExternalPattern::groupByHelper(){
 
 }
 
-
 void ExternalPattern::nextGroup(){
 
     if(this->first_call_) this->groupBy(this->group_);
+    this->current_group_.clear();
+
+    string str; 
+    vector<Tuple> empty;
+    vector<std::pair<std::string, Types>> grouped_variables;
+
+    this->current_group_.push_back(make_pair(grouped_variables, empty));
+
+
+    if(get<0>(this->temp_).size() != 0) this->current_group_[0].second.push_back(this->temp_);
     
     // add mapping from previous call to return block
     if(!this->first_call_){
@@ -262,15 +273,8 @@ void ExternalPattern::nextGroup(){
         if(get<0>(this->temp_).size() != 0) this->current_group_[0].second.push_back(this->temp_);
     }
 
-    this->current_group_.clear();
-
     // check if end of file
     streampos ptr = this->group_stream_.tellg();
-    string str; 
-    vector<Tuple> empty;
-    vector<std::pair<std::string, Types>> grouped_variables;
-
-    this->current_group_.push_back(make_pair(grouped_variables, empty));
 
     if(!(this->group_stream_ >> str)){
         // reset variables incase of another call
@@ -286,7 +290,7 @@ void ExternalPattern::nextGroup(){
 
     bool value_added = false;
     while(m::getMap(this->group_stream_, this->temp_, this->map_size_)){
-
+        
         m::preserveType(this->temp_);
 
         // if method has not been called, initialize data structures
@@ -420,7 +424,7 @@ string ExternalPattern::inferPattern(const string& path, string& variables, cons
         for(auto& str: vec) {
             replace(str.begin(), str.end(), '\\', '/');
         }
-        for(auto& str: vec) cout << str << endl;
+        //for(auto& str: vec) cout << str << endl;
         //for(int i = 0; i < vec.size(); ++i) vec[i] = s::getBaseName
 
         pattern = inferPatternInternal(vec, variables, pattern);
