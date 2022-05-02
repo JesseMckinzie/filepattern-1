@@ -128,7 +128,33 @@ class TestFilePattern():
                     assert old_result[i][j]["r"] == result[i][1][j][0]["r"]
                     assert old_result[i][j]["c"] == result[i][1][j][0]["c"]
                     assert str(os.path.basename(old_result[i][j]['file'])) == os.path.basename(result[i][1][j][1][0])
+                    
+    def test_group_by_multi(self):
+        
+        for pattern in self.patterns:
+            old_files = filepattern.FilePattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern)
 
+            old_result = []
+            result = []
+
+            # group by "c" instead of "r" since we changed how group by works
+            for file in old_files(group_by="rc"):
+                old_result = file
+            for file in files(group_by=["r", "c"]):
+                result.append(file[1])
+                
+            pprint.pprint(old_result)
+            print()
+            pprint.pprint(result)
+
+            assert len(old_result) == len(result)
+
+            for i in range(len(old_result)):
+                assert old_result[i]["r"] == result[i][0][0]["r"] 
+                assert old_result[i]["c"] == result[i][0][0]["c"]
+                assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][0][1][0])
+                    
     def test_recursive_filepattern(self):
         path = self.root_directory + '/test_data/recursive_data'
         old_path = self.root_directory + '/test_data/recursive_data/DAPI'
@@ -205,7 +231,7 @@ class TestFilePattern():
                 assert old_result_slice[i][0]["r"] == result_slice[i][0]["r"]
                 assert old_result_slice[i][0]["c"] == result_slice[i][0]["c"]
                 assert str(os.path.basename(old_result_slice[i][0]['file'])) == os.path.basename(result_slice[i][1][0])
-                
+            
 class TestStringPattern():
 
     root_directory = os.path.dirname(os.path.realpath(__file__))
@@ -328,6 +354,33 @@ class TestStringPattern():
                     assert old_result[i][j]["r"] == result[i][1][j][0]["r"] 
                     assert old_result[i][j]["c"] == result[i][1][j][0]["c"]
                     assert str(os.path.basename(old_result[i][j]['file'])) == result[i][1][j][1][0]
+                    
+    def test_group_by_multi(self):
+        
+        for pattern in self.patterns:
+            old_files = filepattern.FilePattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern)
+
+            old_result = []
+            result = []
+
+            # group by "c" instead of "r" since we changed how group by works
+            for file in old_files(group_by="rc"):
+                old_result = file
+            for file in files(group_by=["r", "c"]):
+                result.append(file[1])
+                
+            pprint.pprint(old_result)
+            print()
+            pprint.pprint(result)
+
+            assert len(old_result) == len(result)
+
+            for i in range(len(old_result)):
+                assert old_result[i]["r"] == result[i][0][0]["r"] 
+                assert old_result[i]["c"] == result[i][0][0]["c"]
+                assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][0][1][0])               
+                    
     def test_get_item(self):
         
         for pattern in self.patterns:
@@ -466,6 +519,31 @@ class TestVectorPattern():
                     for key in result[i][0]:
                         assert str(old_result[i][key]) == str(result[i][0][key]) # Old version stores value as string 
                     assert os.path.basename(old_result[i]['file']) == os.path.basename(result[i][1][0])
+                    
+    def test_group_by_multi(self):
+        
+        for pattern in self.patterns:
+            old_files = filepattern.VectorPattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern)
+
+            old_result = []
+            result = []
+
+            # group by "c" instead of "r" since we changed how group by works
+            for file in old_files(group_by="xyzrc"):
+                old_result = file
+            for file in files(group_by=["x", "y", "z", "r", "c"]):
+                result.append(file[1])
+                
+            assert len(old_result) == len(result)
+            
+            old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
+
+            for i in range(len(old_result)):
+                for key in result[i][0][0]:
+                    assert str(old_result[i][key]) == str(result[i][0][0][key]) 
+                
+                assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][0][1][0])
                     
     def test_get_item(self):          
         for pattern in self.patterns:
@@ -663,6 +741,31 @@ class TestExternalFilePattern():
                         assert old_result[i][j]["c"] == result[i][1][j][0]["c"]
                         assert str(os.path.basename(old_result[i][j]['file'])) == os.path.basename(result[i][1][j][1][0])
                         
+    def test_group_by_multi(self):
+        
+        for pattern in self.patterns:
+            old_files = filepattern.FilePattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern)
+
+            old_result = []
+            result = []
+
+            # group by "c" instead of "r" since we changed how group by works
+            for file in old_files(group_by="rc"):
+                old_result = file
+            for file in files(group_by=["r", "c"]):
+                result.append(file[1])
+                
+            pprint.pprint(old_result)
+            print()
+            pprint.pprint(result)
+
+            assert len(old_result) == len(result)
+
+            for i in range(len(old_result)):
+                assert old_result[i]["r"] == result[i][0][0]["r"] 
+                assert old_result[i]["c"] == result[i][0][0]["c"]
+                assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][0][1][0])  
     
     def test_get_item(self):
         for pattern in self.patterns:
@@ -810,6 +913,31 @@ class TestExternalStringPattern():
                         assert old_result[i]["c"] == result[i][0]["c"]
                         assert str(os.path.basename(old_result[i]['file'])) == result[i][1][0]
 
+    def test_group_by_multi(self):
+        
+        for pattern in self.patterns:
+            old_files = filepattern.FilePattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern)
+
+            old_result = []
+            result = []
+
+            # group by "c" instead of "r" since we changed how group by works
+            for file in old_files(group_by="rc"):
+                old_result = file
+            for file in files(group_by=["r", "c"]):
+                result.append(file[1])
+                
+            pprint.pprint(old_result)
+            print()
+            pprint.pprint(result)
+
+            assert len(old_result) == len(result)
+
+            for i in range(len(old_result)):
+                assert old_result[i]["r"] == result[i][0][0]["r"] 
+                assert old_result[i]["c"] == result[i][0][0]["c"]
+                assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][0][1][0])  
 
     def test_group_by(self):
         for pattern in self.patterns:
@@ -1000,11 +1128,36 @@ class TestExternalVectorPattern():
                 for i in range(len(old_result)):
                     for key in result[i][0]:
                         assert str(old_result[i][key]) == str(result[i][0][key]) # Old version stores value as string 
-                    assert os.path.basename(old_result[i]['file']) == os.path.basename(result[i][1][0])            
+                    assert os.path.basename(old_result[i]['file']) == os.path.basename(result[i][1][0])     
+    
+    def test_group_by_multi(self):
+        
+        for pattern in self.patterns:
+            old_files = filepattern.VectorPattern(self.path, self.old_pattern)
+            files = fp.FilePattern(self.path, pattern, "50 MB")
+
+            old_result = []
+            result = []
+
+            # group by "c" instead of "r" since we changed how group by works
+            for file in old_files(group_by="xyzrc"):
+                old_result = file
+            for file in files(group_by=["x", "y", "z", "r", "c"]):
+                result.append(file[1])
+                
+            assert len(old_result) == len(result)
+            
+            old_result = sorted(old_result, key=lambda k: k['file']) # Old version does not sort results
+
+            for i in range(len(old_result)):
+                for key in result[i][0][0]:
+                    assert str(old_result[i][key]) == str(result[i][0][0][key]) 
+                
+                assert str(os.path.basename(old_result[i]['file'])) == os.path.basename(result[i][0][1][0])       
     
     def test_get_item(self):          
         for pattern in self.patterns:
-        
+            
             old_files = filepattern.VectorPattern(self.path, self.old_pattern)
             files = fp.FilePattern(self.path, pattern)
 
@@ -1046,3 +1199,4 @@ class TestExternalVectorPattern():
                 for key in result[i][0]:
                     assert int(old_result[i][0][key]) == result[i][0][key]
                 assert str(os.path.basename(old_result[i][0]['file'])) == os.path.basename(result[i][1][0])
+                
