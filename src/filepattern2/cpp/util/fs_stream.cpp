@@ -7,7 +7,7 @@ FilesystemStream::FilesystemStream(const string& path, bool recursive, const str
     this->is_infer_ = is_infer; // Is a call from inferPattern (handles memory footprint calculation different if true)
     this->tmpdir_ = fs::temp_directory_path().string(); // temp directory to store txt files
     if (s::endsWith(this->tmpdir_, "\\")) this->tmpdir_.pop_back();
-    this->tmpdir_ += slash + "fs_stream_tmp_" + s::getTimeString() + slash; // path to temp directory
+    this->tmpdir_ += SLASH + "fs_stream_tmp_" + s::getTimeString() + SLASH; // path to temp directory
     this->block_size_str_ = block_size; // string version of block_size
     this->block_size_ = Block::parseblockSize(block_size); // parse string to long
 
@@ -22,7 +22,7 @@ FilesystemStream::FilesystemStream(const string& path, bool recursive, const str
     }
     fs::permissions(this->tmpdir_, fs::perms::all);
 
-    this->out_name_ = this->tmpdir_ + slash + "temp.txt";
+    this->out_name_ = this->tmpdir_ + SLASH + "temp.txt";
     this->infile_.open(this->valid_files_);
     this->infile_.close();
 
