@@ -234,6 +234,8 @@ class TestStringPattern():
                 result.append(file)
 
             assert len(old_result) == len(result)
+            
+            pprint.pprint(result)
 
             for i in range(len(old_result)):
                 assert old_result[i][0]["r"] == result[i][0]["r"]
@@ -628,7 +630,10 @@ class TestExternalFilePattern():
 
                 for file in files(group_by="r"):
                     result.append(file)
-                  
+                    
+                pprint.pprint(old_result)
+                print()
+                pprint.pprint(result)  
                 assert len(old_result) == len(result) 
                 for i in range(len(old_result)):
                    assert len(old_result[i]) == len(result[i][1])

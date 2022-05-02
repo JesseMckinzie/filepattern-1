@@ -87,7 +87,7 @@ string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& 
     // construct temporary directory path
     this->fp_tmpdir_ = fs::temp_directory_path().string();
     if (s::endsWith(this->fp_tmpdir_, "\\")) this->fp_tmpdir_.pop_back();
-    this->fp_tmpdir_ += slash + "filepattern_" + s::getTimeString() + slash;
+    this->fp_tmpdir_ += SLASH + "filepattern_" + s::getTimeString() + SLASH;
 
     this->tmp_directories_.push_back(this->fp_tmpdir_);
 
@@ -102,7 +102,7 @@ string ExternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& 
 
     // create a path to store matching files
     this->matching_ = this->fp_tmpdir_ + "matching.txt";
-    this->matching_copy_ = this->fp_tmpdir_ + slash + "temp.txt";
+    this->matching_copy_ = this->fp_tmpdir_ + SLASH + "temp.txt";
     if(fs::exists(this->matching_)) {
 
         fs::remove(this->matching_);

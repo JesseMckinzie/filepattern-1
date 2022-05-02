@@ -36,9 +36,9 @@ typedef std::map<std::string, Types> Map;
 typedef std::tuple<Map, std::vector<std::string>> Tuple;
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-static const std::string slash = "\\";
+static const std::string SLASH = "\\";
 #else
-static const std::string slash = "/";
+static const std::string SLASH = "/";
 #endif
 
 
