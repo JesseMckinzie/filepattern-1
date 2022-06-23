@@ -44,7 +44,6 @@ class Pattern {
         std::string getFilePattern();
         std::string getPathPattern();
         std::string getRegexFilePattern();
-        std::string getPath();
         bool getJustPath();
         bool getSuppressWarnings();
 
@@ -243,4 +242,6 @@ class Pattern {
          * @return std::vector<std::string> Vector of paths to temporary directories used.
          */
         std::vector<std::string> getTmpDirs();
+
+        std::string getPath();
 };

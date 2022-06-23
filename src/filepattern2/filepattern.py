@@ -166,6 +166,10 @@ class PatternObject:
         if(slc[2] == None): slc[2] = 'None'
         
         return self._file_pattern.getSlice(slc)
+    
+    def path(self):
+        
+        return pathlib.Path(self._file_pattern.getPath())
 
 
 class FilePattern(PatternObject):
@@ -306,3 +310,7 @@ class FilePattern(PatternObject):
         """
 
         return super().output_name(files)
+    
+    def get_path(self) -> pathlib.Path:
+        
+        return super().path()
