@@ -23,6 +23,7 @@ PYBIND11_MODULE(backend, m){
         .def("filePatternToRegex", &Pattern::filePatternToRegex)
         .def("getPattern", &Pattern::getPattern)
         .def("setPattern", &Pattern::setPattern)
+        .def("getPath", &Pattern::getPath)
         .def("getRegexPattern", &Pattern::getRegexPattern)
         .def("getVariables", &Pattern::getVariables)
         .def("printVariables", &Pattern::printVariables)
