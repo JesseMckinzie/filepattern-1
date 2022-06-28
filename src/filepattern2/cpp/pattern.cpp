@@ -281,7 +281,7 @@ void Pattern::replaceOutputName(Tuple& min, Tuple& max, const string& var, strin
         smatch sm;
         if(get<0>(min)[var] == get<0>(max)[var]){
 
-            file = s::getBaseName(get<1>(min)[0]);
+            file = (get<1>(min)[0]).filename().string();
             regex_match(file, sm, patternRegex);
         
             s::replace(outputName, this->named_groups_[idx], sm[idx+1]);
@@ -290,13 +290,13 @@ void Pattern::replaceOutputName(Tuple& min, Tuple& max, const string& var, strin
 
             temp = "("; 
 
-            file = s::getBaseName(get<1>(min)[0]); // get basename of filepath
+            file = (get<1>(min)[0]).filename().string(); // get basename of filepath
             regex_match(file, sm, patternRegex); // find variables
 
             temp += sm[idx+1];
             temp += "-";
 
-            file = s::getBaseName(get<1>(max)[0]);
+            file = (get<1>(max)[0]).filename().string();
             regex_match(file, sm, patternRegex);
 
             temp += sm[idx+1];
