@@ -38,8 +38,7 @@ void Stream::writeBlock(const vector<string>& vec){
 void Stream::writeValidFiles(const Tuple& mapping){
     counter++;
     ofstream file(valid_files, ios_base::app);
-    cout << "stream comments added" << endl;
-    /*
+    
     for(const auto& element: get<0>(mapping)){
         file << element.first << ":" << s::to_string(element.second) << '\n';
     }
@@ -54,7 +53,7 @@ void Stream::writeValidFiles(const Tuple& mapping){
         this->map_size = get<0>(mapping).size();
         this->infile.open(validFiles);
     }
-    */
+    
 }
 
 vector<Tuple> Stream::getValidFilesBlock(){
@@ -75,10 +74,24 @@ vector<Tuple> Stream::getValidFilesBlock(){
     int value_length; 
     size_t pos;
     Types result;
-    map = this->temp_map;
     
     while(size < block_size && this->infile >> str){
         
+        m::getMap(this->group_stream_, member, this->map_size_)){
+        
+        m::preserveType(member);
+
+        for(const auto& item : get<0>(member)){
+                size += item.first.length() + s::size(item.second);
+        }
+
+        for(const auto& item : get<1>(member)){
+                size += item.string().length();
+        }
+
+        vec.push_back(member);
+        
+        /*
         if (map.size() == (this->map_size)) {
             size += sizeof(map) + sizeof(vector<string>);
             
@@ -89,6 +102,7 @@ vector<Tuple> Stream::getValidFilesBlock(){
 
             get<0>(member) = map;
             str.pop_back(); // remove trailing comma
+            //str.erase(std::remove(str.begin(), str.end(), '"'), str.end());
             get<1>(member).push_back(str);
 
             vec.push_back(member);
@@ -121,6 +135,7 @@ vector<Tuple> Stream::getValidFilesBlock(){
     //ptr +=1;
     infile.seekg(ptr, ios::beg);
     this->temp_map = map;
+    */
     return vec;
 }
 

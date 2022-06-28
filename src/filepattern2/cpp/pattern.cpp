@@ -147,7 +147,8 @@ Tuple Pattern::getVariableMapMultDir(const string& filePath, const smatch& sm){
 Tuple Pattern::getVariableMap(const string& filePath, const smatch& sm){
     Tuple tup;
     // filename matches the pattern
-    std::get<1>(tup).push_back(filePath);
+
+    std::get<1>(tup).push_back(std::filesystem::path(filePath));
 
     
     string str;
@@ -687,4 +688,8 @@ bool Pattern::getJustPath(){
 
 bool Pattern::getSuppressWarnings(){
     return this->suppress_warnings_;
+}
+
+void Pattern::setMatchingVariables(std::vector<std::tuple<std::string, std::vector<Types>>>& matching_variables) {
+    this->matching_variables_ = matching_variables;
 }

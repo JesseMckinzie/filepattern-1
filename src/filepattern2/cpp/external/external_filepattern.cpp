@@ -4,6 +4,7 @@ using namespace std;
 
 ExternalFilePattern::ExternalFilePattern(const string& path, const string& filePattern, const string& block_size, bool recursive, bool suppressWarnings):
 ExternalPattern(path, block_size, recursive) {
+
     this->setSuppressWarnings(suppressWarnings);
     this->setPath(path); // store path to target directory
    // this->stream = {path, true, block_size};
@@ -19,8 +20,8 @@ ExternalPattern(path, block_size, recursive) {
     
     this->tmp_directories_.push_back(this->getValidFilesPath());
     this->setFirstCall(true); // first call to next() has not occurred
-    this->matchFiles(); // match files to pattern
 
+    this->matchFiles(); // match files to pattern
     ExternalMergeSort sort = ExternalMergeSort(std_map, 
                                                this->getValidFilesPath(), 
                                                this->getValidFilesPath(),
@@ -34,11 +35,10 @@ ExternalPattern(path, block_size, recursive) {
 }
 
 ExternalFilePattern::~ExternalFilePattern(){
-    this->infile_.close();
-    for(auto& dir: this->tmp_directories_){
-        if(dir != "") d::remove_dir(dir);
-
-    }
+    //this->infile_.close();
+    //for(auto& dir: this->tmp_directories_){
+    //    if(dir != "") d::remove_dir(dir);
+    //}
    
     //d::remove_dir(this->validFilesPath
     //if(this->fp_tmpdir != "") d::remove_dir(this->fp_tmpdir);

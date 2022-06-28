@@ -11,7 +11,7 @@
 class InternalPattern : public Pattern {
 
     private:
-        std::vector<Tuple> matching_; // store files from a call to getMatching
+        //std::vector<Tuple> matching_; // store files from a call to getMatching
         std::vector<std::pair<std::string, std::vector<Types>>> variable_mapping_;
 
         /**
@@ -38,6 +38,9 @@ class InternalPattern : public Pattern {
     
     public:
 
+        std::vector<Tuple> matching_;
+        std::vector<std::vector<Tuple>> matching_grouped_;
+
         void sortFiles();
 
         /**
@@ -48,7 +51,7 @@ class InternalPattern : public Pattern {
          *
          * @param group Variable to group files by
          */
-        void groupBy(std::vector<std::string>& groups);
+        void groupBy(std::vector<std::string>& groups, std::vector<Tuple>& files);
 
         void groupByHelper(const std::vector<std::string>& groups);
 
@@ -58,7 +61,9 @@ class InternalPattern : public Pattern {
          * @param variables Variables with value to match (ex. "x=1, y=2")
          * @return std::vector<Tuple> Vector of files where the variable(s) match the value.
          */
-        std::vector<Tuple> getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables);
+        std::vector<Tuple> getMatching(const std::vector<std::tuple<std::string, std::vector<Types>>>& variables, bool inplace=false);
+
+        void getMatchingGrouped();
 
         /**
          * @brief Returns a single filename from a group of files that captures the variables from a list of files.

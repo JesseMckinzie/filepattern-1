@@ -9,7 +9,6 @@
  * 
  */
 
-
 #ifndef ExternalPattern_H
 #define ExternalPattern_H
 #include <string>

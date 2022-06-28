@@ -8,7 +8,9 @@ FilePattern::FilePattern(const string& path, const string& file_pattern, bool re
     this->setSuppressWarnings(suppress_warnings);
 
     if(file_pattern == ""){
+
         this->getPathFromPattern(path); // set path and file_pattern
+        
         try {
             this->recursive_iterator_ = fs::recursive_directory_iterator(this->getPath());
             this->recursive_ = true;
@@ -17,6 +19,7 @@ FilePattern::FilePattern(const string& path, const string& file_pattern, bool re
             string error = "No directory found. Invalid path \"" + path + "\"."; 
             throw std::runtime_error(error);
         }
+
     } else {
         this->setJustPath(false);
         this->setPath(path); // store path to target directory

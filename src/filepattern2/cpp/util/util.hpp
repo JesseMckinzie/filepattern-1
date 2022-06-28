@@ -119,6 +119,7 @@ namespace s {
             file.insert(0, 1, file_path[i]);
             --i;
         }
+
         return file;
     }
 
@@ -319,6 +320,9 @@ namespace m {
             if (map.size() == (map_size)) {
                 std::get<0>(member) = map;
                 str.pop_back();
+                str.erase(std::remove(str.begin(), str.end(), '\\'), str.end());
+                str.erase(std::remove(str.begin(), str.end(), '"'), str.end());
+
                 std::get<1>(member).push_back(str);
 
                 return true;
