@@ -127,7 +127,7 @@ Tuple Pattern::getVariableMapMultDir(const string& filePath, const smatch& sm){
     string file = s::getBaseName(filePath);
     // iterate over matched files, checking if filename already exists
     for(int i = 0; i < this->valid_files_.size(); i++){ 
-        basename = (get<1>(this->valid_files_[i])[0]).filename(); // store the basename
+        basename = (get<1>(this->valid_files_[i])[0]).filename().string(); // store the basename
         // if the filename is found, add the filepath to the vector in the second member of the tuple 
         if(basename == file){
             matched = true;
