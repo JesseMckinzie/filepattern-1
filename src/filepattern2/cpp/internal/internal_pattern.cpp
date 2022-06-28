@@ -109,36 +109,39 @@ void InternalPattern::groupByHelper(const vector<string>& groups){
 }
 
 
-void InternalPattern::groupBy(vector<string>& groups) {    
+void InternalPattern::groupBy(vector<string>& groups, vector<Tuple>& files) {    
+
+    if (files.size() == 0) files = this->valid_files_;
+
     vector<std::pair<std::string, Types>> grouped_variables;
     this->setGroup(groups);
     this->valid_grouped_files_.clear();
     Tuple member;
 
     if(groups.size() == 0) {
-        this->valid_grouped_files_.push_back(make_pair(grouped_variables, this->valid_files_));
+        this->valid_grouped_files_.push_back(make_pair(grouped_variables, files));
         return;
     }
     
     string group_by = groups[0];
     // Sort the matched files by the group_by parameter 
-    sort(this->valid_files_.begin(), this->valid_files_.end(), [&group_by = as_const(group_by)](Tuple& p1, Tuple& p2){
+    sort(files.begin(), files.end(), [&group_by = as_const(group_by)](Tuple& p1, Tuple& p2){
         return get<0>(p1)[group_by] < get<0>(p2)[group_by];
     });
 
-    Types current_value = get<0>(this->valid_files_[0])[group_by]; // get the value of variable
+    Types current_value = get<0>(files[0])[group_by]; // get the value of variable
     vector<Tuple> empty_vec;
     int i = 0;
     int group_ptr = 0;
 
     //group files into vectors based on group_by variable 
-    while(i < this->valid_files_.size()){
+    while(i < files.size()){
         //this->validGroupedFiles.push_back(empty_vec);
         grouped_variables.clear();
         grouped_variables.push_back(make_pair(group_by, current_value));
         this->valid_grouped_files_.push_back(make_pair(grouped_variables, empty_vec));
-        while(std::get<0>(this->valid_files_[i])[group_by] == current_value) {
-            this->valid_grouped_files_[group_ptr].second.push_back(this->valid_files_[i]);
+        while(std::get<0>(files[i])[group_by] == current_value) {
+            this->valid_grouped_files_[group_ptr].second.push_back(files[i]);
 
             // sort group of variables
             sort(this->valid_grouped_files_[group_ptr].second.begin(), this->valid_grouped_files_[group_ptr].second.end(), [](Tuple& m1, Tuple& m2){
@@ -146,22 +149,26 @@ void InternalPattern::groupBy(vector<string>& groups) {
             });
 
             ++i;
-            if (i >= this->valid_files_.size()) break;
+            if (i >= files.size()) break;
         }
 
-        if (i < this->valid_files_.size()) current_value = get<0>(this->valid_files_[i])[group_by];
+        if (i < files.size()) current_value = get<0>(files[i])[group_by];
         ++group_ptr;
     }
 
     groups.erase(groups.begin());
     this->groupByHelper(groups);
     
+    //if(matching){
+    //    get_matching(the group)
+    //}
+    
 }
 
 void InternalPattern::getMatchingLoop(vector<Tuple>& iter, 
                                       const string& variable, 
                                       const vector<Types>& values, 
-                                      Types& temp){
+                                      Types& temp) {
     for(auto& file: iter){
         temp = get<0>(file)[variable];
         for(const auto& value: values){  
@@ -171,6 +178,7 @@ void InternalPattern::getMatchingLoop(vector<Tuple>& iter,
         }
     }
 }
+
 
 void InternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& variableMap){
     string variable = get<0>(variableMap); // get key from argument
@@ -193,13 +201,31 @@ void InternalPattern::getMatchingHelper(const tuple<string, vector<Types>>& vari
     }
 }
 
-vector<Tuple> InternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables){
+void InternalPattern::getMatchingGrouped() {
+
+    for(const auto& vec: this->valid_grouped_files_)
+        this->matching_.clear();
+        // match files for each argument
+        for(const auto& variableMap: this->matching_variables_){
+            this->getMatchingHelper(variableMap);
+        }
+
+}
+
+vector<Tuple> InternalPattern::getMatching(const vector<tuple<string, vector<Types>>>& variables, bool inplace){
 
     this->matching_.clear();
 
     // match files for each argument
     for(const auto& variableMap: variables){
         this->getMatchingHelper(variableMap);
+    }
+
+    this->matching_grouped_.push_back(matching_);
+
+    if (inplace) {
+        vector<Tuple> empty;
+        return empty;
     }
 
     return this->matching_;

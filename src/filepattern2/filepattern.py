@@ -1,5 +1,5 @@
 from . import backend
-import re, pathlib
+import re, pathlib, typing
 
 
 class PatternObject:
@@ -23,7 +23,7 @@ class PatternObject:
 
         if self._block_size == "":
             try:
-                return self._file_pattern.getMatching(mapping)
+                return self._file_pattern.getMatching(mapping, False)
             except Exception as e:
                 print(e)
         else:
@@ -109,8 +109,8 @@ class PatternObject:
         
         return self._file_pattern.getVariables()
 
-    def __call__(self, group_by=""):
-        """Iterate thorugh files parsed using a filepattern
+    def __call__(self, group_by: typing.Union[str, list] = [], **kwargs):
+        """Iterate through files parsed using a filepattern
 
         This method returns an iterable of filenames matched to the filepattern. If
         a group_by variable is provided, lists of files where the variable is held constant are
@@ -123,12 +123,26 @@ class PatternObject:
             group_by: A string consisting of a single variable or a list of variables to group filenames by.
         """
         
+        mapping = []
+        for key, value in kwargs.items():
+            mapping.append((key, value))
+            
+        self._file_pattern.setMatchingVariables(mapping);
+        
+        if(group_by == [] or group_by == "" or group_by == [""]):
+            return self
+        
         if (isinstance(group_by, str)):
-                group_by = [group_by]
+            group_by = [group_by]
+                
         self._file_pattern.setGroup(group_by)
         if self._block_size == "":  
             if len(group_by) == 0 or group_by[0] != "":
-                self._file_pattern.groupBy(group_by)
+                if(len(mapping) == 0):
+                    self._file_pattern.groupBy(group_by, [])
+                else:
+                    self._file_pattern.groupBy(group_by, self._file_pattern.getMatching(mapping, False))
+                    
             return self
         
         if len(group_by) == 0 or (group_by != [""] and len(group_by) != 1):
@@ -146,6 +160,7 @@ class PatternObject:
                 yield file
         else:
             while True:
+
                 for block in self._file_pattern.__iter__():
 
                     if self._length() == 0:

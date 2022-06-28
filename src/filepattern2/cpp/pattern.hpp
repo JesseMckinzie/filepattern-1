@@ -77,6 +77,10 @@ class Pattern {
         std::vector<std::string> named_groups_;
         std::vector<std::string> tmp_directories_; // store paths to all temporary directories used
 
+        std::vector<std::tuple<std::string, std::vector<Types>>> matching_variables_;
+
+        void setMatchingVariables(std::vector<std::tuple<std::string, std::vector<Types>>>& matching_variables);
+        
         /**
          * @brief Convert to pattern to regex and update class variables from the returned 
          * tuple of getRegex.

@@ -147,6 +147,8 @@ vector<Tuple> ExternalPattern::getMatchingBlock(){
         size += m::getSize(temp);
     }
 
+     
+
     return vec;
 }
 
@@ -303,7 +305,7 @@ void ExternalPattern::nextGroup(){
             this->first_call_ = false;
         } else {
             // add to block if value matches current value
-            //grouped_variables.clear();
+            //grouped_variables.clear(); 
             //grouped_variables.push_back(make_pair(group[0], current_value));
             if(!value_added){
                 grouped_variables.push_back(make_pair(this->group_[0], this->current_value_));
@@ -341,7 +343,7 @@ void ExternalPattern::next(){
 }
 
 int ExternalPattern::currentBlockLength(){
-    if(this->group_[0] == "") return this->current_block_.size();// + this->currentGroup.size();
+    if(this->group_.size() == 0 || this->group_[0] == "") return this->current_block_.size();// + this->currentGroup.size();
     else return this->current_group_[0].second.size();
 }
 
