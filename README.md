@@ -43,7 +43,7 @@ import filepattern2 as fp
 
 path = 'path/to/directory'
 
-pattern = fp.FilePattern.infer_pattern(path)
+pattern = fp.infer_pattern(path)
 
 print(pattern)
 
