@@ -39,7 +39,7 @@ jobs:
 
     - name: Install filepattern
       working-directory: ${{github.workspace}}
-      run: python3 setup.py install
+      run: python3 -m pip install .
 
     - name: Run Unit Tests
       working-directory: ${{github.workspace}}
