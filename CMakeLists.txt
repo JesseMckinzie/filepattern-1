@@ -89,8 +89,6 @@ if (NOT BUILD_PYTHON_LIB) # Not taking the setup.py route, just building libs
 	endif ()
 endif()
 
-
-
 if(BUILD_PYTHON_LIB)
 	add_subdirectory(lib/pybind11)
 	pybind11_add_module(backend
@@ -105,8 +103,6 @@ if(BUILD_PYTHON_LIB)
 endif()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-
 
 if (RUN_GTEST)
 	# Download and unpack googletest at configure time
