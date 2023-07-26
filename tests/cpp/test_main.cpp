@@ -25,10 +25,6 @@ TEST(FILEPATTERN, TEST_STRINGPATTERN_GROUP_BY) {
     test_stringpattern_group_by();
 }
 
-
-
-
-
 TEST(FILEPATTERN, TEST_EXTERNAL_FILEPATTERN) {
     test_external_filepattern();
 }
