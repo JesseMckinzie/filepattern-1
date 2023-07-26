@@ -104,6 +104,8 @@ endif()
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+option(RUN_GTEST "Downloads google unit test API and runs google test scripts to test Filepattern" OFF)
+
 if (RUN_GTEST)
 	# Download and unpack googletest at configure time
 	configure_file(tests/cpp/CMakeLists.txt.gtest googletest-download/CMakeLists.txt)
