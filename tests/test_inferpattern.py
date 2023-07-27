@@ -93,4 +93,4 @@ class TestExternalInference():
         path = self.root_directory + '/test_vectorpattern_data.txt'
         pattern = fp.infer_pattern(path=path, block_size='1 KB')
         
-        assert pattern == 'x0{r:d}_y01_wx0_wy0_c1.ome.tif'
+        assert pattern == 'x{r:dd}_y01_wx0_wy0_c1.ome.tif'
