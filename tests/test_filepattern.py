@@ -229,7 +229,7 @@ class TestFilePattern():
                 assert fp_data.test_fp[i][0]["c"] == result[i].c
                 assert os.path.basename(fp_data.test_fp[i][1][0]) == os.path.basename(result[i].path[0])
                 
-    def test_named_group_direcotry(self):
+    def test_named_group_directory(self):
         
         path = self.root_directory + '/test_data/recursive_data'
         
