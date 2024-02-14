@@ -12,22 +12,19 @@
   </properties>
 
   <scm>
-      <url>https://github.com/JesseMckinzie/filepattern.git</url>
-      <connection>scm:git:https://github.com/JesseMckinzie/filepattern.git</connection>
-      <developerConnection>scm:git:https://github.com/JesseMckinzie/filepattern.git</developerConnection>
+      <url>https://github.com/JesseMckinzie/filepattern-1.git</url>
+      <connection>scm:git:https://github.com/JesseMckinzie/filepattern-1.git</connection>
+      <developerConnection>scm:git:https://github.com/JesseMckinzie/filepattern-1.git</developerConnection>
       <tag>HEAD</tag>
    </scm>
 
    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
+      <repository>
+        <id>github</id>
+        <name>GitHub Packages</name>
+        <url>https://maven.pkg.github.com/JesseMckinzie/filepattern-1</url>
+      </repository>
+   </distributionManagement>
 
   <dependencies>
 
@@ -140,97 +137,5 @@
 
         </plugins>
     </build>
-    <profiles>
-        <profile>
-            <id>release</id>
-            <properties>
-                <version.maven-release-plugin>3.0.0-M7</version.maven-release-plugin>
-                <version.maven-gpg-plugin>3.0.1</version.maven-gpg-plugin>
-                <version.nexus-staging-maven-plugin>1.6.13</version.nexus-staging-maven-plugin>
-            </properties>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-source-plugin</artifactId>
-                            <version>2.2.1</version>
-                            <executions>
-                                <execution>
-                                    <id>attach-sources</id>
-                                    <goals>
-                                        <goal>jar</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                            </plugin>
-                            <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-javadoc-plugin</artifactId>
-                            <version>3.5.0</version>
-                            <executions>
-                                <execution>
-                                    <id>attach-javadocs</id>
-                                    <goals>
-                                        <goal>jar</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                        </plugin>
-                        <plugin>
-                            <artifactId>maven-release-plugin</artifactId>
-                            <version>${version.maven-release-plugin}</version>
-                            <configuration>
-                                <tagNameFormat>@{project.version}</tagNameFormat>
-                            </configuration>
-                        </plugin>
-                        <!-- The key's name & passphrase are configured via GitHub's setup-java action. -->
-                        <plugin>
-                            <artifactId>maven-gpg-plugin</artifactId>
-                            <version>${version.maven-gpg-plugin}</version>
-                            <executions>
-                                <execution>
-                                    <id>sign-artifacts</id>
-                                    <phase>verify</phase>
-                                    <goals>
-                                        <goal>sign</goal>
-                                    </goals>
-                                    <configuration>
-                                        <!-- This is required to make sure the plugin does not stop asking for -->
-                                        <!-- user input on the passphrase -->
-                                        <gpgArguments>
-                                            <arg>--pinentry-mode</arg>
-                                            <arg>loopback</arg>
-                                        </gpgArguments>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.sonatype.plugins</groupId>
-                            <artifactId>nexus-staging-maven-plugin</artifactId>
-                            <version>${version.nexus-staging-maven-plugin}</version>
-                            <extensions>true</extensions>
-                            <configuration>
-                                <serverId>ossrh</serverId>
-                                <nexusUrl>https://s01.oss.sonatype.org</nexusUrl>
-                                <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                                <tokenAuth>true</tokenAuth>
-                            </configuration>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>
