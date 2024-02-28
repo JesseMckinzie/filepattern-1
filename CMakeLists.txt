@@ -12,6 +12,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(RUN_GTEST "Downloads google unit test API and runs google test scripts to test Filepattern" OFF)
 
+set(CMAKE_CXX_FLAGS "-Wall")
 
 if(BUILD_PYTHON_LIB)
 	find_package(pybind11 CONFIG REQUIRED)
