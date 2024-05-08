@@ -225,7 +225,6 @@ void InternalPattern::sortFiles(){
         #else
             return comparator(get<1>(m1)[0].u8string(), get<1>(m2)[0].u8string());
         #endif
-        return comparator(get<1>(m1)[0], get<1>(m2)[0]);
     });
 }
 
